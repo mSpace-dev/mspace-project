@@ -43,6 +43,8 @@ export async function GET(request: NextRequest) {
     const marketType = searchParams.get('marketType');
     const commodity = searchParams.get('commodity');
     const location = searchParams.get('location');
+    const market = searchParams.get('market');
+    const date = searchParams.get('date');
     const significantOnly = searchParams.get('significantOnly') === 'true';
 
     const db = await getDatabase();
@@ -50,14 +52,28 @@ export async function GET(request: NextRequest) {
     // Build the MongoDB query filter
     const filter: any = {};
 
-    // Get the latest date first
-    const latestDateResult = await db.collection('price_changes').findOne(
-      {},
-      { sort: { date: -1 }, projection: { date: 1 } }
-    );
+    // Handle date filtering
+    if (date) {
+      const targetDate = new Date(date);
+      // Set time to beginning of day for comparison
+      targetDate.setHours(0, 0, 0, 0);
+      const nextDay = new Date(targetDate);
+      nextDay.setDate(nextDay.getDate() + 1);
+      
+      filter.date = {
+        $gte: targetDate,
+        $lt: nextDay
+      };
+    } else {
+      // Get the latest date first if no date specified
+      const latestDateResult = await db.collection('price_changes').findOne(
+        {},
+        { sort: { date: -1 }, projection: { date: 1 } }
+      );
 
-    if (latestDateResult) {
-      filter.date = latestDateResult.date;
+      if (latestDateResult) {
+        filter.date = latestDateResult.date;
+      }
     }
 
     if (category) {
@@ -73,7 +89,11 @@ export async function GET(request: NextRequest) {
     }
 
     if (location) {
-      filter.market_location = new RegExp(location, 'i');
+      filter.market_name = new RegExp(location, 'i');
+    }
+
+    if (market) {
+      filter.market_name = new RegExp(market, 'i');
     }
 
     if (significantOnly) {
@@ -94,7 +114,7 @@ export async function GET(request: NextRequest) {
       unit: row.commodity_unit,
       market: row.market_name,
       marketType: row.market_type,
-      location: row.market_location,
+      location: row.market_name.replace('_retail', ''), // Extract location from market name
       yesterdayPrice: row.yesterday_price,
       todayPrice: row.today_price,
       changeAmount: row.change_amount,
@@ -113,6 +133,8 @@ export async function GET(request: NextRequest) {
         marketType,
         commodity,
         location,
+        market,
+        date,
         significantOnly
       },
       timestamp: new Date().toISOString()

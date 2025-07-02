@@ -542,7 +542,7 @@ def main():
     
     # Read the price data file
     try:
-        with open('e:/mspace project/pricefetch/price_data_20250702.txt', 'r', encoding='utf-8') as f:
+        with open('e:/mspace project/pricefetch/price_data.txt', 'r', encoding='utf-8') as f:
             text_content = f.read()
         
         print("🔍 Parsing price data...")
