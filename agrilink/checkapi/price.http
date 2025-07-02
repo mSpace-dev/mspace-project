@@ -2,3 +2,28 @@
 ###
 GET http://localhost:3000/api/prices
 
+
+###
+GET http://localhost:3000/api/prices
+
+/*
+# MongoDB Authentication Issues
+
+The error `bad auth : Authentication failed` means:
+1. Wrong username/password in connection string
+2. Database user doesn't exist
+3. User doesn't have proper permissions
+4. Connection string format is incorrect
+
+## Check your MongoDB Atlas settings:
+1. Go to MongoDB Atlas Dashboard
+2. Check Database Access → Database Users
+3. Verify username and password
+4. Ensure user has read/write permissions
+5. Check Network Access → IP Whitelist
+*/
+### Test API Health (without DB)
+GET http://localhost:3000/api/health
+
+### Test MongoDB Connection
+GET http://localhost:3000/api/test-db
