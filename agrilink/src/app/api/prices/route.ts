@@ -1,91 +1,131 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { MongoClient, Db } from 'mongodb';
 
-// Mock data for demonstration - replace with actual database queries
-const mockPrices = [
-  {
-    id: 1,
-    crop: 'Rice',
-    variety: 'Nadu',
-    price: 85.50,
-    unit: 'kg',
-    market: 'Pettah',
-    district: 'Colombo',
-    province: 'Western',
-    date: new Date().toISOString(),
-    change: '+2.5%',
-    trend: 'up'
-  },
-  {
-    id: 2,
-    crop: 'Coconut',
-    variety: 'King Coconut',
-    price: 45.00,
-    unit: 'piece',
-    market: 'Gampaha',
-    district: 'Gampaha',
-    province: 'Western',
-    date: new Date().toISOString(),
-    change: '-1.2%',
-    trend: 'down'
-  },
-  {
-    id: 3,
-    crop: 'Tomato',
-    variety: 'Local',
-    price: 120.00,
-    unit: 'kg',
-    market: 'Kandy Central',
-    district: 'Kandy',
-    province: 'Central',
-    date: new Date().toISOString(),
-    change: '+5.8%',
-    trend: 'up'
+
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017';
+const DB_NAME = process.env.DB_NAME || 'Agrilink';
+
+let client: MongoClient | null = null;
+let clientPromise: Promise<MongoClient> | null = null;
+
+async function getDatabase(): Promise<Db> {
+  if (!clientPromise) {
+    client = new MongoClient(MONGODB_URI);
+    clientPromise = client.connect();
   }
-];
+  
+  const connectedClient = await clientPromise;
+  return connectedClient.db(DB_NAME);
+}
 
-// GET /api/prices - Fetch all prices or filter by query parameters
+interface PriceData {
+  id: string;
+  commodity: string;
+  category: string;
+  unit: string;
+  market: string;
+  marketType: 'wholesale' | 'retail';
+  location: string;
+  yesterdayPrice: number | null;
+  todayPrice: number | null;
+  changePercent: number | null;
+  changeAmount: number | null;
+  trend: 'increase' | 'decrease' | 'stable';
+  significantChange: boolean;
+  date: string;
+}
+
+// GET /api/prices - Fetch price data with optional filters
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const crop = searchParams.get('crop');
-    const district = searchParams.get('district');
-    const province = searchParams.get('province');
-    const market = searchParams.get('market');
+    const category = searchParams.get('category');
+    const marketType = searchParams.get('marketType');
+    const commodity = searchParams.get('commodity');
+    const location = searchParams.get('location');
+    const significantOnly = searchParams.get('significantOnly') === 'true';
 
-    let filteredPrices = [...mockPrices];
+    const db = await getDatabase();
 
-    // Apply filters
-    if (crop) {
-      filteredPrices = filteredPrices.filter(p => 
-        p.crop.toLowerCase().includes(crop.toLowerCase())
-      );
+    // Build the MongoDB query filter
+    const filter: any = {};
+
+    // Get the latest date first
+    const latestDateResult = await db.collection('price_changes').findOne(
+      {},
+      { sort: { date: -1 }, projection: { date: 1 } }
+    );
+
+    if (latestDateResult) {
+      filter.date = latestDateResult.date;
     }
-    if (district) {
-      filteredPrices = filteredPrices.filter(p => 
-        p.district.toLowerCase().includes(district.toLowerCase())
-      );
+
+    if (category) {
+      filter.commodity_category = new RegExp(category, 'i');
     }
-    if (province) {
-      filteredPrices = filteredPrices.filter(p => 
-        p.province.toLowerCase().includes(province.toLowerCase())
-      );
+
+    if (marketType) {
+      filter.market_type = marketType;
     }
-    if (market) {
-      filteredPrices = filteredPrices.filter(p => 
-        p.market.toLowerCase().includes(market.toLowerCase())
-      );
+
+    if (commodity) {
+      filter.commodity_name = new RegExp(commodity, 'i');
     }
+
+    if (location) {
+      filter.market_location = new RegExp(location, 'i');
+    }
+
+    if (significantOnly) {
+      filter.significant_change = true;
+    }
+
+    // Get the price changes from MongoDB
+    const results = await db.collection('price_changes')
+      .find(filter)
+      .sort({ change_percentage: -1 })
+      .toArray();
+
+    // Transform the results to match the expected format
+    const prices: PriceData[] = results.map((row: any) => ({
+      id: row._id.toString(),
+      commodity: row.commodity_name,
+      category: row.commodity_category,
+      unit: row.commodity_unit,
+      market: row.market_name,
+      marketType: row.market_type,
+      location: row.market_location,
+      yesterdayPrice: row.yesterday_price,
+      todayPrice: row.today_price,
+      changeAmount: row.change_amount,
+      changePercent: row.change_percentage,
+      trend: row.trend,
+      significantChange: row.significant_change,
+      date: row.date instanceof Date ? row.date.toISOString() : row.date
+    }));
 
     return NextResponse.json({
       success: true,
-      data: filteredPrices,
-      count: filteredPrices.length,
+      data: prices,
+      total: prices.length,
+      filters: {
+        category,
+        marketType,
+        commodity,
+        location,
+        significantOnly
+      },
       timestamp: new Date().toISOString()
     });
+
   } catch (error) {
-    console.error('Error fetching prices:', error);
+    console.error('MongoDB error:', error);
     return NextResponse.json(
-      { success: false, error: 'Failed to fetch prices' },
+      { 
+        success: false, 
+        error: 'Failed to fetch prices from database',
+        details: process.env.NODE_ENV === 'development' ? String(error) : undefined
+      },
       { status: 500 }
     );
   }
@@ -93,45 +133,56 @@ export async function GET(request: NextRequest) {
 
 // POST /api/prices - Add new price data (for admin/data entry)
 export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const { crop, variety, price, unit, market, district, province } = body;
+    try {
+        const body = await request.json();
+        const { commodity, category, unit, market, marketType, location, price } = body;
 
-    // Validate required fields
-    if (!crop || !price || !unit || !market || !district || !province) {
-      return NextResponse.json(
-        { success: false, error: 'Missing required fields' },
-        { status: 400 }
-      );
+        // Validate required fields
+        if (!commodity || !price || !unit || !market || !marketType || !location) {
+            return NextResponse.json(
+                { success: false, error: 'Missing required fields' },
+                { status: 400 }
+            );
+        }
+
+        const db = await getDatabase();
+
+        // Create new price entry
+        const newPrice = {
+            commodity_name: commodity,
+            commodity_category: category || 'Other',
+            commodity_unit: unit,
+            market_name: market,
+            market_type: marketType,
+            market_location: location,
+            today_price: parseFloat(price),
+            yesterday_price: null,
+            change_amount: 0,
+            change_percentage: 0,
+            trend: 'stable',
+            significant_change: false,
+            date: new Date(),
+            created_at: new Date(),
+            updated_at: new Date()
+        };
+
+        const result = await db.collection('price_changes').insertOne(newPrice);
+
+        return NextResponse.json({
+            success: true,
+            data: {
+                id: result.insertedId,
+                ...newPrice
+            },
+            message: 'Price data added successfully'
+        }, { status: 201 });
+    } catch (error) {
+        console.error('Error adding price:', error);
+        return NextResponse.json(
+            { success: false, error: 'Failed to add price data' },
+            { status: 500 }
+        );
     }
-
-    // In a real app, save to database
-    const newPrice = {
-      id: mockPrices.length + 1,
-      crop,
-      variety: variety || 'Standard',
-      price: parseFloat(price),
-      unit,
-      market,
-      district,
-      province,
-      date: new Date().toISOString(),
-      change: '0%',
-      trend: 'stable'
-    };
-
-    mockPrices.push(newPrice);
-
-    return NextResponse.json({
-      success: true,
-      data: newPrice,
-      message: 'Price data added successfully'
-    }, { status: 201 });
-  } catch (error) {
-    console.error('Error adding price:', error);
-    return NextResponse.json(
-      { success: false, error: 'Failed to add price data' },
-      { status: 500 }
-    );
-  }
 }
+
+
