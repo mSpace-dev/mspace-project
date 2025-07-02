@@ -1,0 +1,57 @@
+Wholesale and Retail Prices: Selected Food Commodities - 01 July 2025
+Wholesale Prices Retail Prices
+Item Unit
+Pettah Dambulla Pettah Dambulla Narahenpita
+Yesterday Today Yesterday Today Yesterday Today Yesterday Today Yesterday Today
+V E G E T A B L E S
+Beans Rs./kg 5 00.00 4 50.00 4 90.00 5 25.00 5 50.00 5 00.00 5 20.00 5 55.00 7 00.00 6 60.00
+Carrot Rs./kg 2 00.00 2 00.00 2 15.00 2 95.00 2 50.00 2 50.00 2 45.00 3 25.00 5 20.00 4 00.00
+Cabbage Rs./kg 2 00.00 2 00.00 2 10.00 2 25.00 2 50.00 2 50.00 2 40.00 2 55.00 4 00.00 3 60.00
+Tomato Rs./kg 1 50.00 1 20.00 1 25.00 8 5.00 2 00.00 1 70.00 1 55.00 1 15.00 2 80.00 2 40.00
+Brinjal Rs./kg 4 00.00 3 50.00 2 90.00 4 00.00 4 50.00 4 00.00 3 20.00 4 30.00 6 00.00 6 00.00
+Pumpkin Rs./kg 1 20.00 1 30.00 1 35.00 1 15.00 1 70.00 1 80.00 1 65.00 1 45.00 2 00.00 2 00.00
+Snake gourd Rs./kg 1 50.00 1 50.00 9 5.00 9 5.00 2 00.00 2 00.00 1 25.00 1 25.00 3 60.00 3 60.00
+Green Chilli Rs./kg 5 00.00 5 00.00 4 40.00 4 40.00 5 50.00 5 50.00 4 70.00 4 70.00 8 00.00 8 00.00
+Lime Rs./kg 2 00.00 2 00.00 1 90.00 1 65.00 2 50.00 2 50.00 2 20.00 1 95.00 6 00.00 6 00.00
+O T H E R
+Red Onion (Local) Rs./kg 3 83.00 3 75.00 n.a. 3 65.00 n.a. n.a. n.a. 3 85.00 n.a. n.a.
+Red Onion (lmp) Rs./kg 3 60.00 3 50.00 3 00.00 2 80.00 4 70.00 4 70.00 3 20.00 3 00.00 5 20.00 5 20.00
+Big Onion (Local) Rs./kg n.a. n.a. n.a. n.a. n.a. n.a. n.a. n.a. n.a. n.a.
+Big Onion (Imp) Rs./kg 1 06.00 1 04.00 9 8.00 9 8.00 1 40.00 1 40.00 1 18.00 1 18.00 1 50.00 1 50.00
+Potato (Local) Rs./kg 3 03.00 3 03.00 n.a. 2 45.00 3 70.00 3 70.00 n.a. 2 65.00 3 80.00 3 80.00
+Potato (Imp) Rs./kg 1 60.00 1 58.00 1 45.00 1 45.00 1 95.00 1 95.00 1 65.00 1 65.00 2 20.00 2 20.00
+Dried Chilli (Imp) Rs./kg 6 50.00 6 25.00 n.a. n.a. 6 50.00 6 50.00 n.a. n.a. 7 60.00 7 60.00
+Coconut (Avg.) Rs./Nut 1 40.00 1 40.00 1 15.00 1 20.00 2 00.00 2 00.00 1 20.00 1 25.00 1 80.00 1 80.00
+Coconut oil Rs./Ltr 8 53.00 8 20.00 9 33.00 8 67.00 8 66.00 8 66.00
+Red Dhal Rs./kg 2 50.00 2 50.00 2 70.00 2 70.00 2 80.00 2 80.00
+Sugar (White) Rs./kg 2 15.00 2 15.00 2 30.00 2 30.00 2 30.00 2 30.00
+Egg (White) Rs./Each 3 1.00 3 1.00 3 1.50 3 1.50 3 4.00 3 4.00
+Katta (Imp) Rs./kg 1 ,600.00 1 ,600.00 1 ,950.00 1 ,950.00 2 ,800.00 2 ,800.00
+Sprat (Imp) Rs./kg 8 50.00 8 50.00 1 ,000.00 1 ,000.00 n.a. n.a.
+F R U I T S
+Banana (Sour) Rs./kg 8 0.00 1 00.00 6 5.00 5 5.00 1 20.00 1 50.00 9 5.00 8 5.00 1 60.00 1 60.00
+Papaw Rs./kg 8 0.00 8 0.00 9 5.00 8 8.00 1 20.00 1 20.00 1 25.00 1 18.00 2 20.00 2 20.00
+Pineapple Rs./kg n.a. n.a. 2 85.00 2 65.00 3 50.00 3 50.00 3 15.00 2 95.00 3 90.00 3 90.00
+Apple (Imp) Rs./Each 1 90.00 1 90.00 2 50.00 2 50.00
+Orange (Imp) Rs./Each 1 90.00 1 90.00 2 60.00 2 60.00
+R I C E
+Marandagahamula
+Samba Rs./kg 2 35.00 2 38.00 2 37.00 2 37.00 2 40.00 2 50.00 2 44.00 2 44.00 2 40.00 2 40.00
+Nadu Rs./kg 2 23.00 2 28.00 2 18.00 2 19.00 2 30.00 2 35.00 2 35.00 2 35.00 2 30.00 2 30.00
+Kekulu (White) Rs./kg 2 13.00 2 10.00 2 07.00 2 07.00 2 20.00 2 30.00 2 22.00 2 22.00 2 20.00 2 20.00
+Kekulu (Red) Rs./kg 2 13.00 2 10.00 2 12.00 2 12.00 2 20.00 2 30.00 2 22.00 2 22.00 2 20.00 2 20.00
+Ponni Samba (Imp) Rs./kg 2 28.00 2 30.00 n.a. n.a. 2 30.00 2 40.00 n.a. n.a.
+Nadu (Imp) Rs./kg 2 10.00 2 10.00 n.a. n.a. 2 20.00 2 20.00 2 20.00 2 20.00
+Kekulu (White) (Imp) Rs./kg 2 08.00 2 08.00 n.a. n.a. 2 20.00 2 20.00 2 10.00 2 10.00
+F I S H
+Peliyagoda Negombo Negombo
+Kelawalla Rs./kg 1 ,500.00 1 ,450.00 1 ,200.00 1 ,200.00 1 ,740.00 1 ,740.00 2 ,520.00 2 ,520.00
+Thalapath Rs./kg 2 ,100.00 2 ,200.00 1 ,850.00 1 ,850.00 2 ,270.00 2 ,270.00 n.a. n.a.
+Balaya Rs./kg 1 ,000.00 1 ,000.00 n.a. 8 20.00 n.a. 9 90.00 1 ,120.00 1 ,280.00
+Paraw Rs./kg 1 ,400.00 1 ,400.00 n.a. 1 ,420.00 n.a. 2 ,475.00 1 ,600.00 1 ,860.00
+Salaya Rs./kg 5 50.00 6 00.00 4 90.00 5 20.00 6 20.00 6 40.00 7 40.00 5 80.00
+Hurulla Rs./kg 1 ,200.00 1 ,100.00 n.a. 1 ,220.00 n.a. 1 ,440.00 n.a. n.a.
+Linna Rs./kg 8 50.00 8 50.00 8 20.00 8 30.00 9 90.00 9 90.00 1 ,040.00 1 ,060.00
+n.a. - Price is not reported in the respective market
+Price increased by more than 5% compared to yesterday
+Price decreased by more than 5% compared to yesterday
