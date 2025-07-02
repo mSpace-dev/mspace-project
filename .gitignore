@@ -1,1 +1,4 @@
 /package-lock.json
+agrilink/model/model-checkpoint.ipynb
+agrilink/model/agri_price_demand_data.csv
+agrilink/model/model.joblib
