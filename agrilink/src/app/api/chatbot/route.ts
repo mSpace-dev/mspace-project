@@ -1,39 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
+import OpenAI from 'openai';
 
-// Mock chatbot responses
-const getBotResponse = (message: string): string => {
-  const lowerMessage = message.toLowerCase();
-  
-  if (lowerMessage.includes('price') && lowerMessage.includes('rice')) {
-    return 'Current rice prices in Colombo: Nadu Rs.85.50/kg, Samba Rs.92.00/kg. Prices increased by 2.5% today.';
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+async function getBotResponse(message: string): Promise<string> {
+  try {
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      messages: [
+        { role: 'system', content: 'You are an agricultural assistant for Sri Lanka. Answer concisely and factually.' },
+        { role: 'user', content: message }
+      ],
+      max_tokens: 100,
+    });
+    return completion.choices[0].message.content || "Sorry, I couldn't generate a response.";
+  } catch (error) {
+    console.error('OpenAI error:', error);
+    return 'Sorry, there was an error generating a response.';
   }
-  
-  if (lowerMessage.includes('price') && lowerMessage.includes('coconut')) {
-    return 'Current coconut prices: King Coconut Rs.45.00/piece, Regular Coconut Rs.38.00/piece. Prices stable today.';
-  }
-  
-  if (lowerMessage.includes('weather')) {
-    return 'Weather forecast for this week: Partly cloudy with occasional showers. Good conditions for most crops. Harvest timing recommendations available.';
-  }
-  
-  if (lowerMessage.includes('market') || lowerMessage.includes('where')) {
-    return 'Best markets near you: Pettah (Colombo), Gampaha Central, Kandy Central. Check our app for real-time availability.';
-  }
-  
-  if (lowerMessage.includes('forecast') || lowerMessage.includes('predict')) {
-    return 'Price forecasts show rice prices likely to increase 3-5% next week due to seasonal demand. Coconut prices expected to remain stable.';
-  }
-  
-  if (lowerMessage.includes('alert') || lowerMessage.includes('notify')) {
-    return 'To set price alerts, reply with: ALERT [CROP] [PRICE] [ABOVE/BELOW]. Example: ALERT RICE 90 ABOVE';
-  }
-  
-  if (lowerMessage.includes('help')) {
-    return 'AgriLink Bot Commands:\n• Price [crop] - Get current prices\n• Forecast [crop] - Get price predictions\n• Market [location] - Find nearby markets\n• Alert [crop] [price] [above/below] - Set price alerts\n• Weather - Get weather updates';
-  }
-  
-  return 'Hello! I can help with crop prices, forecasts, markets, and alerts. Type "help" for commands or ask about specific crops.';
-};
+}
 
 // POST /api/chatbot - Process chatbot message
 export async function POST(request: NextRequest) {
@@ -48,8 +33,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate bot response
-    const botResponse = getBotResponse(message);
+    // Generate bot response using OpenAI
+    const botResponse = await getBotResponse(message);
 
     // Log conversation (in production, save to database)
     const conversation = {

@@ -1,4 +1,5 @@
 import Head from "next/head";
+import Chatbot from "../components/chatbot";
 
 export default function Home() {
   return (
@@ -62,6 +63,16 @@ export default function Home() {
               title="🔗 Open API Access"
               desc="Integrate AgriLink alerts into your apps, platforms, or marketplaces."
             />
+          </div>
+        </section>
+
+        {/* Chatbot Section */}
+        <section className="py-16 px-6 bg-white">
+          <h2 className="text-2xl font-bold text-center text-green-700 mb-6">
+            Chat with AgriLink
+          </h2>
+          <div className="flex justify-center">
+            <Chatbot />
           </div>
         </section>
       </main>
