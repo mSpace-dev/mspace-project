@@ -73,9 +73,6 @@ const CustomerSchema = new mongoose.Schema<ICustomer>({
   timestamps: true,
 });
 
-// Create index for email
-CustomerSchema.index({ email: 1 });
-
 const Customer = mongoose.models.Customer || mongoose.model<ICustomer>('Customer', CustomerSchema);
 
 export default Customer;
