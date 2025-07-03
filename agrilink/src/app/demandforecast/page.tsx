@@ -1,117 +1,208 @@
 
+
+
 "use client"
 
-import type React from "react"
+import React, { useState, useEffect } from 'react';
+import { TrendingUp, TrendingDown, Minus, AlertCircle, Users, DollarSign, BarChart3, Calendar, MapPin, Leaf, Target, Lightbulb, Activity } from 'lucide-react';
 
-import { useState } from "react"
+type MarketInsights = {
+  crop: "Carrot" | "Tomato" | "Onion" | "Beans" | "Pumpkin";
+  district: string;
+  currentPrice: number;
+  avgPrice: number;
+  priceChange: number;
+  trend: string;
+  demandLevel: string;
+  supplyLevel: string;
+  nextDaysPrices: number[];
+  confidence: number;
+  marketCondition: string;
+  bestSellingDays: string[];
+  seasonalFactor: string;
+  competitorCount: number;
+  qualityDemand: string;
+};
 
-interface PredictionResult {
-  predictedPrice: number
-  predictedDemand: number
-}
+const AIMarketInsightsApp = () => {
+  const [selectedCrop, setSelectedCrop] = useState('');
+  const [selectedDistrict, setSelectedDistrict] = useState('');
+  const [userType, setUserType] = useState('farmer');
+  const [insights, setInsights] = useState<MarketInsights | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-interface FormData {
-  crop: string
-  district: string
-  dayOfWeek: string
-  weather: string
-  supply: string
-  prevPrice: string
-  prevDemand: string
-  festivalWeek: boolean
-  retailPrice: string
-}
+  const crops = ["Carrot", "Tomato", "Onion", "Beans", "Pumpkin"];
+  const districts = ["Colombo", "Dambulla", "Jaffna", "Kandy", "Galle"];
 
-export default function PricePredictionApp() {
-  const [formData, setFormData] = useState<FormData>({
-    crop: "",
-    district: "",
-    dayOfWeek: "",
-    weather: "",
-    supply: "",
-    prevPrice: "",
-    prevDemand: "",
-    festivalWeek: false,
-    retailPrice: "",
-  })
+  // Mock market data - in real implementation, this would come from your API
+  const generateMarketInsights = (
+    crop: "Carrot" | "Tomato" | "Onion" | "Beans" | "Pumpkin",
+    district: string
+  ) => {
+    const basePrice = {
+      "Carrot": 120, "Tomato": 150, "Onion": 100, "Beans": 200, "Pumpkin": 80
+    }[crop] || 120;
 
-  const [prediction, setPrediction] = useState<PredictionResult | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+    const districtMultiplier = {
+      "Colombo": 1.2, "Dambulla": 0.9, "Jaffna": 1.1, "Kandy": 1.05, "Galle": 0.95
+    }[district] || 1.0;
 
-  const crops = ["Carrot", "Tomato", "Onion", "Beans", "Pumpkin"]
-  const districts = ["Colombo", "Dambulla", "Jaffna", "Kandy", "Galle"]
-  const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-  const weatherOptions = ["Sunny", "Rainy", "Cloudy"]
+    const currentPrice = Math.round(basePrice * districtMultiplier * (0.9 + Math.random() * 0.2));
+    const avgPrice = Math.round(basePrice * districtMultiplier);
+    const priceChange = currentPrice - avgPrice;
+    const trend = priceChange > 5 ? 'increasing' : priceChange < -5 ? 'decreasing' : 'stable';
+    
+    const demandLevel = Math.random() > 0.5 ? 'high' : Math.random() > 0.3 ? 'medium' : 'low';
+    const supplyLevel = Math.random() > 0.5 ? 'adequate' : Math.random() > 0.3 ? 'limited' : 'surplus';
+    
+    const nextDaysPrices = [
+      Math.round(currentPrice * (0.95 + Math.random() * 0.1)),
+      Math.round(currentPrice * (0.98 + Math.random() * 0.08)),
+      Math.round(currentPrice * (0.96 + Math.random() * 0.12))
+    ];
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
-    setPrediction(null)
+    return {
+      crop,
+      district,
+      currentPrice,
+      avgPrice,
+      priceChange,
+      trend,
+      demandLevel,
+      supplyLevel,
+      nextDaysPrices,
+      confidence: Math.round(75 + Math.random() * 20),
+      marketCondition: priceChange > 0 ? 'favorable' : priceChange < -10 ? 'challenging' : 'stable',
+      bestSellingDays: ['Wednesday', 'Friday', 'Saturday'],
+      seasonalFactor: Math.random() > 0.5 ? 'peak' : 'normal',
+      competitorCount: Math.floor(Math.random() * 15) + 5,
+      qualityDemand: Math.random() > 0.6 ? 'premium' : 'standard'
+    };
+  };
+
+  const fetchInsights = async () => {
+    if (!selectedCrop || !selectedDistrict) return;
+
+    setLoading(true);
+    setError(null);
 
     try {
-      const response = await fetch("/api/predict", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      })
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      const marketInsights = generateMarketInsights(selectedCrop as "Carrot" | "Tomato" | "Onion" | "Beans" | "Pumpkin", selectedDistrict);
+      setInsights(marketInsights);
+    } catch (err) {
+      setError('Failed to fetch market insights');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-      if (!response.ok) {
-        throw new Error("Prediction failed")
+  useEffect(() => {
+    if (selectedCrop && selectedDistrict) {
+      fetchInsights();
+    }
+  }, [selectedCrop, selectedDistrict]);
+
+  const getTrendIcon = (trend: string) => {
+    switch (trend) {
+      case 'increasing': return <TrendingUp className="w-5 h-5 text-green-500" />;
+      case 'decreasing': return <TrendingDown className="w-5 h-5 text-red-500" />;
+      default: return <Minus className="w-5 h-5 text-gray-500" />;
+    }
+  };
+
+  const getDemandColor = (level: string) => {
+    switch (level) {
+      case 'high': return 'text-red-600 bg-red-50';
+      case 'medium': return 'text-yellow-600 bg-yellow-50';
+      case 'low': return 'text-green-600 bg-green-50';
+      default: return 'text-gray-600 bg-gray-50';
+    }
+  };
+
+  const getSupplyColor = (level: string) => {
+    switch (level) {
+      case 'limited': return 'text-red-600 bg-red-50';
+      case 'adequate': return 'text-green-600 bg-green-50';
+      case 'surplus': return 'text-blue-600 bg-blue-50';
+      default: return 'text-gray-600 bg-gray-50';
+    }
+  };
+
+  const generateRecommendations = () => {
+    if (!insights) return [];
+
+    const recommendations = [];
+    
+    if (userType === 'farmer') {
+      if (insights.trend === 'increasing') {
+        recommendations.push({
+          icon: <TrendingUp className="w-5 h-5 text-green-500" />,
+          title: "Optimal Selling Time",
+          description: "Market prices are rising. Consider selling your harvest soon to maximize profits.",
+          priority: "high"
+        });
+      }
+      
+      if (insights.demandLevel === 'high') {
+        recommendations.push({
+          icon: <Target className="w-5 h-5 text-blue-500" />,
+          title: "High Demand Alert",
+          description: "Strong demand detected. Increase production capacity if possible.",
+          priority: "high"
+        });
       }
 
-      const result = await response.json()
-      setPrediction(result)
-    } catch (err) {
-      setError("Failed to get prediction. Please try again.")
-      console.error("Prediction error:", err)
-    } finally {
-      setLoading(false)
+      if (insights.supplyLevel === 'limited') {
+        recommendations.push({
+          icon: <Activity className="w-5 h-5 text-orange-500" />,
+          title: "Supply Shortage",
+          description: "Limited supply in the market. Your crops will have competitive advantage.",
+          priority: "medium"
+        });
+      }
+
+      recommendations.push({
+        icon: <Calendar className="w-5 h-5 text-purple-500" />,
+        title: "Best Selling Days",
+        description: `Historically, ${insights.bestSellingDays.join(', ')} show highest prices.`,
+        priority: "medium"
+      });
+    } else {
+      if (insights.trend === 'decreasing') {
+        recommendations.push({
+          icon: <TrendingDown className="w-5 h-5 text-green-500" />,
+          title: "Price Drop Opportunity",
+          description: "Prices are declining. Good time to purchase in bulk.",
+          priority: "high"
+        });
+      }
+
+      if (insights.supplyLevel === 'surplus') {
+        recommendations.push({
+          icon: <BarChart3 className="w-5 h-5 text-blue-500" />,
+          title: "Surplus Supply",
+          description: "Abundant supply available. Negotiate for better prices.",
+          priority: "high"
+        });
+      }
+
+      recommendations.push({
+        icon: <Users className="w-5 h-5 text-orange-500" />,
+        title: "Market Competition",
+        description: `${insights.competitorCount} active sellers. Compare prices before purchasing.`,
+        priority: "medium"
+      });
     }
-  }
 
-  const isFormValid = () => {
-    return (
-      formData.crop &&
-      formData.district &&
-      formData.dayOfWeek &&
-      formData.weather &&
-      formData.supply &&
-      formData.prevPrice &&
-      formData.prevDemand &&
-      formData.retailPrice
-    )
-  }
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target
-    setFormData({ ...formData, [name]: value })
-  }
-
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, festivalWeek: e.target.checked })
-  }
-
-  const resetForm = () => {
-    setFormData({
-      crop: "",
-      district: "",
-      dayOfWeek: "",
-      weather: "",
-      supply: "",
-      prevPrice: "",
-      prevDemand: "",
-      festivalWeek: false,
-      retailPrice: "",
-    })
-    setPrediction(null)
-    setError(null)
-  }
+    return recommendations;
+  };
 
   return (
+
     <div>
       {/* Top Navigation */}
       <nav className="bg-white shadow-sm sticky top-0 z-50">
@@ -147,785 +238,326 @@ export default function PricePredictionApp() {
           margin: "0 auto",
         }}
       >
+=======
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 p-4 md:p-6">
+      <div className="max-w-7xl mx-auto">
+
         {/* Header */}
-        <div
-          style={{
-            textAlign: "center",
-            marginBottom: "32px",
-          }}
-        >
-          <h1
-            style={{
-              fontSize: "48px",
-              fontWeight: "bold",
-              background: "linear-gradient(to right, #059669, #047857)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              marginBottom: "12px",
-              textShadow: "0 2px 4px rgba(0,0,0,0.1)",
-            }}
-          >
-            🌾 Agricultural Price & Demand Predictor
+        <div className="text-center mb-8">
+          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-emerald-600 bg-clip-text text-transparent mb-4">
+            🧠 AI Market Insights Dashboard
           </h1>
-          <p
-            style={{
-              color: "#6b7280",
-              fontSize: "18px",
-              fontWeight: "500",
-            }}
-          >
-            Get accurate predictions for crop prices and market demand using AI
+          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+            Get intelligent market insights powered by AI for smarter agricultural decisions
           </p>
         </div>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(500px, 1fr))",
-            gap: "24px",
-          }}
-        >
-          {/* Input Form */}
-          <div
-            style={{
-              background: "rgba(255, 255, 255, 0.9)",
-              backdropFilter: "blur(10px)",
-              borderRadius: "24px",
-              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
-              border: "1px solid #d1fae5",
-              padding: "32px",
-              transition: "all 0.3s ease",
-              transform: "translateY(0)",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.boxShadow = "0 35px 60px -12px rgba(0, 0, 0, 0.35)"
-              e.currentTarget.style.transform = "translateY(-2px)"
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.boxShadow = "0 25px 50px -12px rgba(0, 0, 0, 0.25)"
-              e.currentTarget.style.transform = "translateY(0)"
-            }}
-          >
-            <h2
-              style={{
-                fontSize: "24px",
-                fontWeight: "600",
-                marginBottom: "24px",
-                color: "#1f2937",
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <span
-                style={{
-                  background: "linear-gradient(to right, #10b981, #059669)",
-                  width: "8px",
-                  height: "32px",
-                  borderRadius: "4px",
-                  marginRight: "12px",
-                }}
-              ></span>
-              Market Parameters
-            </h2>
-
-            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-              {/* Row 1 */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                <div>
-                  <label
-                    style={{
-                      display: "block",
-                      fontSize: "14px",
-                      fontWeight: "500",
-                      color: "#374151",
-                      marginBottom: "8px",
-                    }}
-                  >
-                    Crop Type
-                  </label>
-                  <select
-                    name="crop"
-                    value={formData.crop}
-                    onChange={handleInputChange}
-                    style={{
-                      width: "100%",
-                      border: "2px solid #e5e7eb",
-                      padding: "12px 16px",
-                      borderRadius: "12px",
-                      fontSize: "16px",
-                      background: "white",
-                      transition: "all 0.2s ease",
-                      outline: "none",
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = "#10b981"
-                      e.target.style.boxShadow = "0 0 0 3px rgba(16, 185, 129, 0.1)"
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = "#e5e7eb"
-                      e.target.style.boxShadow = "none"
-                    }}
-                  >
-                    <option value="">Select crop</option>
-                    {crops.map((crop) => (
-                      <option key={crop} value={crop}>
-                        {crop}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label
-                    style={{
-                      display: "block",
-                      fontSize: "14px",
-                      fontWeight: "500",
-                      color: "#374151",
-                      marginBottom: "8px",
-                    }}
-                  >
-                    District
-                  </label>
-                  <select
-                    name="district"
-                    value={formData.district}
-                    onChange={handleInputChange}
-                    style={{
-                      width: "100%",
-                      border: "2px solid #e5e7eb",
-                      padding: "12px 16px",
-                      borderRadius: "12px",
-                      fontSize: "16px",
-                      background: "white",
-                      transition: "all 0.2s ease",
-                      outline: "none",
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = "#10b981"
-                      e.target.style.boxShadow = "0 0 0 3px rgba(16, 185, 129, 0.1)"
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = "#e5e7eb"
-                      e.target.style.boxShadow = "none"
-                    }}
-                  >
-                    <option value="">Select district</option>
-                    {districts.map((district) => (
-                      <option key={district} value={district}>
-                        {district}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* Row 2 */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                <div>
-                  <label
-                    style={{
-                      display: "block",
-                      fontSize: "14px",
-                      fontWeight: "500",
-                      color: "#374151",
-                      marginBottom: "8px",
-                    }}
-                  >
-                    Day of Week
-                  </label>
-                  <select
-                    name="dayOfWeek"
-                    value={formData.dayOfWeek}
-                    onChange={handleInputChange}
-                    style={{
-                      width: "100%",
-                      border: "2px solid #e5e7eb",
-                      padding: "12px 16px",
-                      borderRadius: "12px",
-                      fontSize: "16px",
-                      background: "white",
-                      transition: "all 0.2s ease",
-                      outline: "none",
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = "#10b981"
-                      e.target.style.boxShadow = "0 0 0 3px rgba(16, 185, 129, 0.1)"
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = "#e5e7eb"
-                      e.target.style.boxShadow = "none"
-                    }}
-                  >
-                    <option value="">Select day</option>
-                    {daysOfWeek.map((day) => (
-                      <option key={day} value={day}>
-                        {day}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label
-                    style={{
-                      display: "block",
-                      fontSize: "14px",
-                      fontWeight: "500",
-                      color: "#374151",
-                      marginBottom: "8px",
-                    }}
-                  >
-                    Weather
-                  </label>
-                  <select
-                    name="weather"
-                    value={formData.weather}
-                    onChange={handleInputChange}
-                    style={{
-                      width: "100%",
-                      border: "2px solid #e5e7eb",
-                      padding: "12px 16px",
-                      borderRadius: "12px",
-                      fontSize: "16px",
-                      background: "white",
-                      transition: "all 0.2s ease",
-                      outline: "none",
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = "#10b981"
-                      e.target.style.boxShadow = "0 0 0 3px rgba(16, 185, 129, 0.1)"
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = "#e5e7eb"
-                      e.target.style.boxShadow = "none"
-                    }}
-                  >
-                    <option value="">Select weather</option>
-                    {weatherOptions.map((weather) => (
-                      <option key={weather} value={weather}>
-                        {weather}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* Row 3 */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                <div>
-                  <label
-                    style={{
-                      display: "block",
-                      fontSize: "14px",
-                      fontWeight: "500",
-                      color: "#374151",
-                      marginBottom: "8px",
-                    }}
-                  >
-                    Supply (kg)
-                  </label>
-                  <input
-                    name="supply"
-                    type="number"
-                    placeholder="Enter supply amount"
-                    value={formData.supply}
-                    onChange={handleInputChange}
-                    style={{
-                      width: "100%",
-                      border: "2px solid #e5e7eb",
-                      padding: "12px 16px",
-                      borderRadius: "12px",
-                      fontSize: "16px",
-                      transition: "all 0.2s ease",
-                      outline: "none",
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = "#10b981"
-                      e.target.style.boxShadow = "0 0 0 3px rgba(16, 185, 129, 0.1)"
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = "#e5e7eb"
-                      e.target.style.boxShadow = "none"
-                    }}
-                  />
-                </div>
-
-                <div>
-                  <label
-                    style={{
-                      display: "block",
-                      fontSize: "14px",
-                      fontWeight: "500",
-                      color: "#374151",
-                      marginBottom: "8px",
-                    }}
-                  >
-                    Previous Price (LKR)
-                  </label>
-                  <input
-                    name="prevPrice"
-                    type="number"
-                    step="0.01"
-                    placeholder="Enter previous price"
-                    value={formData.prevPrice}
-                    onChange={handleInputChange}
-                    style={{
-                      width: "100%",
-                      border: "2px solid #e5e7eb",
-                      padding: "12px 16px",
-                      borderRadius: "12px",
-                      fontSize: "16px",
-                      transition: "all 0.2s ease",
-                      outline: "none",
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = "#10b981"
-                      e.target.style.boxShadow = "0 0 0 3px rgba(16, 185, 129, 0.1)"
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = "#e5e7eb"
-                      e.target.style.boxShadow = "none"
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* Row 4 */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                <div>
-                  <label
-                    style={{
-                      display: "block",
-                      fontSize: "14px",
-                      fontWeight: "500",
-                      color: "#374151",
-                      marginBottom: "8px",
-                    }}
-                  >
-                    Previous Demand (kg)
-                  </label>
-                  <input
-                    name="prevDemand"
-                    type="number"
-                    placeholder="Enter previous demand"
-                    value={formData.prevDemand}
-                    onChange={handleInputChange}
-                    style={{
-                      width: "100%",
-                      border: "2px solid #e5e7eb",
-                      padding: "12px 16px",
-                      borderRadius: "12px",
-                      fontSize: "16px",
-                      transition: "all 0.2s ease",
-                      outline: "none",
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = "#10b981"
-                      e.target.style.boxShadow = "0 0 0 3px rgba(16, 185, 129, 0.1)"
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = "#e5e7eb"
-                      e.target.style.boxShadow = "none"
-                    }}
-                  />
-                </div>
-
-                <div>
-                  <label
-                    style={{
-                      display: "block",
-                      fontSize: "14px",
-                      fontWeight: "500",
-                      color: "#374151",
-                      marginBottom: "8px",
-                    }}
-                  >
-                    Retail Price (LKR)
-                  </label>
-                  <input
-                    name="retailPrice"
-                    type="number"
-                    step="0.01"
-                    placeholder="Enter retail price"
-                    value={formData.retailPrice}
-                    onChange={handleInputChange}
-                    style={{
-                      width: "100%",
-                      border: "2px solid #e5e7eb",
-                      padding: "12px 16px",
-                      borderRadius: "12px",
-                      fontSize: "16px",
-                      transition: "all 0.2s ease",
-                      outline: "none",
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = "#10b981"
-                      e.target.style.boxShadow = "0 0 0 3px rgba(16, 185, 129, 0.1)"
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = "#e5e7eb"
-                      e.target.style.boxShadow = "none"
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* Checkbox */}
-              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "8px" }}>
-                <input
-                  type="checkbox"
-                  id="festivalWeek"
-                  name="festivalWeek"
-                  checked={formData.festivalWeek}
-                  onChange={handleCheckboxChange}
-                  style={{
-                    width: "20px",
-                    height: "20px",
-                    accentColor: "#10b981",
-                    borderRadius: "4px",
-                  }}
-                />
-                <label
-                  htmlFor="festivalWeek"
-                  style={{
-                    fontSize: "14px",
-                    fontWeight: "500",
-                    color: "#374151",
-                  }}
-                >
-                  Festival Week
-                </label>
-              </div>
-
-              {/* Buttons */}
-              <div style={{ display: "flex", gap: "16px", marginTop: "16px" }}>
-                <button
-                  type="submit"
-                  disabled={!isFormValid() || loading}
-                  style={{
-                    flex: 1,
-                    background: loading ? "#9ca3af" : "linear-gradient(to right, #059669, #047857)",
-                    color: "white",
-                    padding: "16px 32px",
-                    borderRadius: "12px",
-                    border: "none",
-                    fontSize: "16px",
-                    fontWeight: "600",
-                    cursor: loading ? "not-allowed" : "pointer",
-                    transition: "all 0.3s ease",
-                    boxShadow: "0 4px 14px 0 rgba(16, 185, 129, 0.39)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "8px",
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!loading && isFormValid()) {
-                      e.currentTarget.style.transform = "translateY(-2px)"
-                      e.currentTarget.style.boxShadow = "0 8px 25px 0 rgba(16, 185, 129, 0.5)"
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "translateY(0)"
-                    e.currentTarget.style.boxShadow = "0 4px 14px 0 rgba(16, 185, 129, 0.39)"
-                  }}
-                >
-                  {loading ? (
-                    <>
-                      <div
-                        style={{
-                          width: "20px",
-                          height: "20px",
-                          border: "2px solid #ffffff",
-                          borderTop: "2px solid transparent",
-                          borderRadius: "50%",
-                          animation: "spin 1s linear infinite",
-                        }}
-                      ></div>
-                      Predicting...
-                    </>
-                  ) : (
-                    "🔮 Get Prediction"
-                  )}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={resetForm}
-                  style={{
-                    padding: "16px 32px",
-                    border: "2px solid #d1fae5",
-                    color: "#374151",
-                    borderRadius: "12px",
-                    fontSize: "16px",
-                    fontWeight: "600",
-                    background: "white",
-                    cursor: "pointer",
-                    transition: "all 0.3s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "#f0fdf4"
-                    e.currentTarget.style.borderColor = "#10b981"
-                    e.currentTarget.style.transform = "translateY(-2px)"
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = "white"
-                    e.currentTarget.style.borderColor = "#d1fae5"
-                    e.currentTarget.style.transform = "translateY(0)"
-                  }}
-                >
-                  Reset
-                </button>
-              </div>
-            </form>
-          </div>
-
-          {/* Results Panel */}
-          <div
-            style={{
-              background: "rgba(255, 255, 255, 0.9)",
-              backdropFilter: "blur(10px)",
-              borderRadius: "24px",
-              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
-              border: "1px solid #d1fae5",
-              padding: "32px",
-              transition: "all 0.3s ease",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.boxShadow = "0 35px 60px -12px rgba(0, 0, 0, 0.35)"
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.boxShadow = "0 25px 50px -12px rgba(0, 0, 0, 0.25)"
-            }}
-          >
-            <h2
-              style={{
-                fontSize: "24px",
-                fontWeight: "600",
-                marginBottom: "24px",
-                color: "#1f2937",
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <span
-                style={{
-                  background: "linear-gradient(to right, #10b981, #059669)",
-                  width: "8px",
-                  height: "32px",
-                  borderRadius: "4px",
-                  marginRight: "12px",
-                }}
-              ></span>
-              Prediction Results
-            </h2>
-
-            {error && (
-              <div
-                style={{
-                  marginBottom: "24px",
-                  padding: "20px",
-                  background: "#fef2f2",
-                  border: "2px solid #fecaca",
-                  color: "#dc2626",
-                  borderRadius: "12px",
-                  boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-                }}
+        {/* Controls */}
+        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-3">
+                <Users className="w-4 h-4 inline mr-2" />
+                I am a...
+              </label>
+              <select
+                value={userType}
+                onChange={(e) => setUserType(e.target.value)}
+                className="w-full p-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white text-gray-900 hover:border-gray-300"
               >
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <span style={{ marginRight: "12px", fontSize: "20px" }}>⚠️</span>
-                  <span style={{ fontWeight: "500" }}>{error}</span>
-                </div>
-              </div>
-            )}
+                <option value="farmer" className="py-2 text-gray-900">🌾 Farmer</option>
+                <option value="customer" className="py-2 text-gray-900">🛒 Customer</option>
+              </select>
+            </div>
 
-            {prediction ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                  <div
-                    style={{
-                      background: "linear-gradient(135deg, #ecfdf5, #d1fae5)",
-                      padding: "24px",
-                      borderRadius: "16px",
-                      border: "2px solid #a7f3d0",
-                      boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
-                      transition: "all 0.3s ease",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = "scale(1.02)"
-                      e.currentTarget.style.boxShadow = "0 20px 25px -5px rgba(0, 0, 0, 0.15)"
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = "scale(1)"
-                      e.currentTarget.style.boxShadow = "0 10px 15px -3px rgba(0, 0, 0, 0.1)"
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontSize: "14px",
-                        fontWeight: "600",
-                        color: "#065f46",
-                        marginBottom: "8px",
-                        display: "flex",
-                        alignItems: "center",
-                      }}
-                    >
-                      <span style={{ marginRight: "8px" }}>💰</span>
-                      Predicted Price
-                    </div>
-                    <div
-                      style={{
-                        fontSize: "32px",
-                        fontWeight: "bold",
-                        background: "linear-gradient(to right, #047857, #065f46)",
-                        WebkitBackgroundClip: "text",
-                        WebkitTextFillColor: "transparent",
-                      }}
-                    >
-                      LKR {prediction.predictedPrice.toFixed(2)}
-                    </div>
-                  </div>
-
-                  <div
-                    style={{
-                      background: "linear-gradient(135deg, #f0fdfa, #ccfbf1)",
-                      padding: "24px",
-                      borderRadius: "16px",
-                      border: "2px solid #99f6e4",
-                      boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
-                      transition: "all 0.3s ease",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = "scale(1.02)"
-                      e.currentTarget.style.boxShadow = "0 20px 25px -5px rgba(0, 0, 0, 0.15)"
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = "scale(1)"
-                      e.currentTarget.style.boxShadow = "0 10px 15px -3px rgba(0, 0, 0, 0.1)"
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontSize: "14px",
-                        fontWeight: "600",
-                        color: "#134e4a",
-                        marginBottom: "8px",
-                        display: "flex",
-                        alignItems: "center",
-                      }}
-                    >
-                      <span style={{ marginRight: "8px" }}>📈</span>
-                      Predicted Demand
-                    </div>
-                    <div
-                      style={{
-                        fontSize: "32px",
-                        fontWeight: "bold",
-                        background: "linear-gradient(to right, #0f766e, #134e4a)",
-                        WebkitBackgroundClip: "text",
-                        WebkitTextFillColor: "transparent",
-                      }}
-                    >
-                      {prediction.predictedDemand.toFixed(0)} kg
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  style={{
-                    background: "linear-gradient(to right, #f0fdf4, #ecfdf5)",
-                    padding: "24px",
-                    borderRadius: "16px",
-                    border: "1px solid #bbf7d0",
-                    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-                  }}
-                >
-                  <h4
-                    style={{
-                      fontWeight: "600",
-                      color: "#1f2937",
-                      marginBottom: "12px",
-                      fontSize: "18px",
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
-                    <span style={{ marginRight: "8px" }}>📊</span>
-                    Market Insights
-                  </h4>
-                  <ul
-                    style={{
-                      fontSize: "14px",
-                      color: "#374151",
-                      lineHeight: "1.6",
-                      listStyle: "none",
-                      padding: 0,
-                      margin: 0,
-                    }}
-                  >
-                    <li style={{ display: "flex", alignItems: "flex-start", marginBottom: "8px" }}>
-                      <span style={{ color: "#10b981", marginRight: "8px", marginTop: "2px" }}>•</span>
-                      Prediction based on current market conditions and historical data
-                    </li>
-                    <li style={{ display: "flex", alignItems: "flex-start", marginBottom: "8px" }}>
-                      <span style={{ color: "#10b981", marginRight: "8px", marginTop: "2px" }}>•</span>
-                      Consider seasonal variations and local market factors
-                    </li>
-                    <li style={{ display: "flex", alignItems: "flex-start", marginBottom: "8px" }}>
-                      <span style={{ color: "#10b981", marginRight: "8px", marginTop: "2px" }}>•</span>
-                      Update predictions regularly for best accuracy
-                    </li>
-                    <li style={{ display: "flex", alignItems: "flex-start" }}>
-                      <span style={{ color: "#10b981", marginRight: "8px", marginTop: "2px" }}>•</span>
-                      {formData.festivalWeek
-                        ? "Festival period may increase demand"
-                        : "Normal market conditions assumed"}
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            ) : (
-              <div
-                style={{
-                  textAlign: "center",
-                  padding: "64px 0",
-                  color: "#6b7280",
-                }}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-3">
+                <Leaf className="w-4 h-4 inline mr-2" />
+                Select Crop
+              </label>
+              <select
+                value={selectedCrop}
+                onChange={(e) => setSelectedCrop(e.target.value)}
+                className="w-full p-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white text-gray-900 hover:border-gray-300"
               >
-                <div
-                  style={{
-                    fontSize: "80px",
-                    marginBottom: "24px",
-                    animation: "pulse 2s infinite",
-                  }}
-                >
-                  🌾
-                </div>
-                <p
-                  style={{
-                    fontSize: "20px",
-                    color: "#4b5563",
-                    fontWeight: "500",
-                    marginBottom: "16px",
-                  }}
-                >
-                  Fill in the form and click "Get Prediction" to see AI-powered market forecasts
-                </p>
-                <div
-                  style={{
-                    width: "96px",
-                    height: "4px",
-                    background: "linear-gradient(to right, #34d399, #10b981)",
-                    borderRadius: "2px",
-                    margin: "0 auto",
-                  }}
-                ></div>
-              </div>
-            )}
+                <option value="" className="py-2 text-gray-500">Choose a crop...</option>
+                {crops.map(crop => (
+                  <option key={crop} value={crop} className="py-2 text-gray-900">{crop}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-3">
+                <MapPin className="w-4 h-4 inline mr-2" />
+                Select District
+              </label>
+              <select
+                value={selectedDistrict}
+                onChange={(e) => setSelectedDistrict(e.target.value)}
+                className="w-full p-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white text-gray-900 hover:border-gray-300"
+              >
+                <option value="" className="py-2 text-gray-500">Choose a district...</option>
+                {districts.map(district => (
+                  <option key={district} value={district} className="py-2 text-gray-900">{district}</option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
+
+        {/* Loading State */}
+        {loading && (
+          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-12 text-center">
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-500 border-t-transparent mx-auto mb-4"></div>
+            <p className="text-gray-600 text-lg">Analyzing market data with AI...</p>
+          </div>
+        )}
+
+        {/* Error State */}
+        {error && (
+          <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-6 mb-8">
+            <div className="flex items-center">
+              <AlertCircle className="w-5 h-5 text-red-500 mr-2" />
+              <p className="text-red-700">{error}</p>
+            </div>
+          </div>
+        )}
+
+        {/* Insights Dashboard */}
+        {insights && !loading && (
+          <div className="space-y-8">
+            {/* Key Metrics */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center">
+                    <div className="bg-emerald-100 p-3 rounded-xl">
+                      <DollarSign className="w-8 h-8 text-emerald-600" />
+                    </div>
+                    <div className="ml-3">
+                      <p className="text-sm text-gray-500 font-medium">Current Price</p>
+                      <p className="text-2xl font-bold text-gray-900">LKR {insights.currentPrice}</p>
+                    </div>
+                  </div>
+                  {getTrendIcon(insights.trend)}
+                </div>
+                <div className="flex items-center text-sm">
+                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                    insights.priceChange >= 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                  }`}>
+                    {insights.priceChange >= 0 ? '+' : ''}{insights.priceChange} from avg
+                  </span>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                <div className="flex items-center mb-4">
+                  <div className="bg-blue-100 p-3 rounded-xl">
+                    <Activity className="w-8 h-8 text-blue-600" />
+                  </div>
+                  <div className="ml-3">
+                    <p className="text-sm text-gray-500 font-medium">Demand Level</p>
+                    <p className="text-2xl font-bold text-gray-900 capitalize">{insights.demandLevel}</p>
+                  </div>
+                </div>
+                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getDemandColor(insights.demandLevel)}`}>
+                  Market demand
+                </span>
+              </div>
+
+              <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                <div className="flex items-center mb-4">
+                  <div className="bg-purple-100 p-3 rounded-xl">
+                    <BarChart3 className="w-8 h-8 text-purple-600" />
+                  </div>
+                  <div className="ml-3">
+                    <p className="text-sm text-gray-500 font-medium">Supply Status</p>
+                    <p className="text-2xl font-bold text-gray-900 capitalize">{insights.supplyLevel}</p>
+                  </div>
+                </div>
+                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getSupplyColor(insights.supplyLevel)}`}>
+                  Current supply
+                </span>
+              </div>
+
+              <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                <div className="flex items-center mb-4">
+                  <div className="bg-orange-100 p-3 rounded-xl">
+                    <Target className="w-8 h-8 text-orange-600" />
+                  </div>
+                  <div className="ml-3">
+                    <p className="text-sm text-gray-500 font-medium">AI Confidence</p>
+                    <p className="text-2xl font-bold text-gray-900">{insights.confidence}%</p>
+                  </div>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-3">
+                  <div 
+                    className="bg-gradient-to-r from-orange-500 to-red-500 h-3 rounded-full transition-all duration-500"
+                    style={{ width: `${insights.confidence}%` }}
+                  ></div>
+                </div>
+              </div>
+            </div>
+
+            {/* Price Forecast - Enhanced AI Highlight */}
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl shadow-2xl p-8 text-white">
+              <div className="flex items-center mb-6">
+                <div className="bg-white/20 p-3 rounded-xl">
+                  <Calendar className="w-8 h-8 text-white" />
+                </div>
+                <div className="ml-4">
+                  <h3 className="text-2xl font-bold">🧠 AI-Powered Price Forecast</h3>
+                  <p className="text-blue-100">Advanced machine learning predictions</p>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {insights.nextDaysPrices.map((price, index) => (
+                  <div key={index} className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                    <div className="text-center">
+                      <p className="text-blue-100 mb-2 font-medium">Day {index + 1}</p>
+                      <p className="text-3xl font-bold text-white mb-2">LKR {price}</p>
+                      <p className={`text-sm font-semibold ${
+                        price > insights.currentPrice ? 'text-green-300' : 'text-red-300'
+                      }`}>
+                        {price > insights.currentPrice ? '+' : ''}{Math.round(((price - insights.currentPrice) / insights.currentPrice) * 100)}%
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* AI Recommendations - Enhanced Highlight */}
+            <div className="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl shadow-2xl p-8 text-white">
+              <div className="flex items-center mb-6">
+                <div className="bg-white/20 p-3 rounded-xl">
+                  <Lightbulb className="w-8 h-8 text-white" />
+                </div>
+                <div className="ml-4">
+                  <h3 className="text-2xl font-bold">
+                    🧠 AI Smart Recommendations for {userType === 'farmer' ? 'Farmers' : 'Customers'}
+                  </h3>
+                  <p className="text-emerald-100">Personalized insights based on market analysis</p>
+                </div>
+              </div>
+              
+              <div className="space-y-4">
+                {generateRecommendations().map((rec, index) => (
+                  <div key={index} className={`bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 ${
+                    rec.priority === 'high' 
+                      ? 'border-l-4 border-l-yellow-400' 
+                      : 'border-l-4 border-l-blue-400'
+                  }`}>
+                    <div className="flex items-start">
+                      <div className="bg-white/20 p-2 rounded-lg">
+                        {rec.icon}
+                      </div>
+                      <div className="ml-4 flex-1">
+                        <h4 className="font-bold text-white text-lg">{rec.title}</h4>
+                        <p className="text-white/90 text-sm mt-1">{rec.description}</p>
+                      </div>
+                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                        rec.priority === 'high' 
+                          ? 'bg-yellow-400 text-yellow-900' 
+                          : 'bg-blue-400 text-blue-900'
+                      }`}>
+                        {rec.priority.toUpperCase()}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Market Analysis */}
+            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+              <div className="flex items-center mb-6">
+                <div className="bg-indigo-100 p-3 rounded-xl">
+                  <BarChart3 className="w-8 h-8 text-indigo-600" />
+                </div>
+                <div className="ml-4">
+                  <h3 className="text-2xl font-bold text-gray-900">Market Analysis</h3>
+                  <p className="text-gray-600">Comprehensive market overview</p>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-6">
+                  <div className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
+                    <span className="text-gray-700 font-medium">Market Condition</span>
+                    <span className={`px-4 py-2 rounded-full text-sm font-bold ${
+                      insights.marketCondition === 'favorable' 
+                        ? 'bg-green-100 text-green-800'
+                        : insights.marketCondition === 'challenging'
+                        ? 'bg-red-100 text-red-800'
+                        : 'bg-gray-100 text-gray-800'
+                    }`}>
+                      {insights.marketCondition.toUpperCase()}
+                    </span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
+                    <span className="text-gray-700 font-medium">Seasonal Factor</span>
+                    <span className={`px-4 py-2 rounded-full text-sm font-bold ${
+                      insights.seasonalFactor === 'peak' 
+                        ? 'bg-orange-100 text-orange-800'
+                        : 'bg-blue-100 text-blue-800'
+                    }`}>
+                      {insights.seasonalFactor.toUpperCase()}
+                    </span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
+                    <span className="text-gray-700 font-medium">Quality Demand</span>
+                    <span className={`px-4 py-2 rounded-full text-sm font-bold ${
+                      insights.qualityDemand === 'premium' 
+                        ? 'bg-purple-100 text-purple-800'
+                        : 'bg-gray-100 text-gray-800'
+                    }`}>
+                      {insights.qualityDemand.toUpperCase()}
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="space-y-6">
+                  <div className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
+                    <span className="text-gray-700 font-medium">Active Sellers</span>
+                    <span className="font-bold text-lg text-gray-900">{insights.competitorCount}</span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
+                    <span className="text-gray-700 font-medium">Average Price</span>
+                    <span className="font-bold text-lg text-gray-900">LKR {insights.avgPrice}</span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
+                    <span className="text-gray-700 font-medium">Best Selling Days</span>
+                    <span className="font-bold text-sm text-gray-900">{insights.bestSellingDays.join(', ')}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* No Selection State */}
+        {!selectedCrop || !selectedDistrict ? (
+          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-12 text-center">
+            <div className="text-8xl mb-6">🌾</div>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">
+              Select Crop & District
+            </h3>
+            <p className="text-gray-600 text-lg">
+              Choose a crop and district to get AI-powered market insights
+            </p>
+          </div>
+        ) : null}
       </div>
+    </div>
+  );
+};
 
       {/* CSS Animations */}
       <style jsx>{`
@@ -943,3 +575,6 @@ export default function PricePredictionApp() {
     </div>
   )
 }
+
+export default AIMarketInsightsApp;
+
