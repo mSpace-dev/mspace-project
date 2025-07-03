@@ -39,6 +39,10 @@ export default function Home() {
     }
   ];
 
+  const navigateToHome = () => {
+    window.location.href = '/home';
+  };
+
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
@@ -125,7 +129,7 @@ export default function Home() {
         <nav className="bg-white shadow-sm sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center py-4">
-              <div className="flex items-center cursor-pointer" onClick={() => window.location.href = '/home'}>
+              <div className="flex items-center cursor-pointer" onClick={navigateToHome}>
                 <h1 className="text-2xl font-bold text-green-700 hover:text-green-600 transition-colors">AgriLink</h1>
                 <span className="ml-2 text-sm text-gray-500">Sri Lanka</span>
               </div>
@@ -811,7 +815,7 @@ function ProductCategory({ icon, name, image }: ProductCategoryProps) {
       tabIndex={0} 
       aria-label={`View ${name} products and prices`}
       onClick={handleCategoryClick}
-      onKeyPress={handleKeyPress}
+      onKeyDown={handleKeyPress}
     >
       {imagePath && !imageError ? (
         <div className="product-category-image h-32 relative">

@@ -1,11 +1,17 @@
+"use client";
+
 export default function Alerts() {
+  const navigateToHome = () => {
+    window.location.href = '/home';
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100">
       {/* Top Navigation */}
       <nav className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <div className="flex items-center cursor-pointer" onClick={() => window.location.href = '/home'}>
+            <div className="flex items-center cursor-pointer" onClick={navigateToHome}>
               <h1 className="text-2xl font-bold text-green-700 hover:text-green-600 transition-colors">AgriLink</h1>
               <span className="ml-2 text-sm text-gray-500">Sri Lanka</span>
             </div>
