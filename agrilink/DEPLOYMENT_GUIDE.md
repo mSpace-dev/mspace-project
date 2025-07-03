@@ -1,17 +1,24 @@
 # 🚀 AgriLink Deployment Guide
 
+## Quick Start Deployment
+
+### Prerequisites
+- MongoDB Atlas account (or MongoDB database)
+- Git repository (GitHub/GitLab)
+- Domain name (optional)
+
+### Environment Variables Required
+```bash
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/Agrilink?retryWrites=true&w=majority
+DB_NAME=Agrilink
+NODE_ENV=production
+NEXTAUTH_SECRET=your-secret-key
+NEXTAUTH_URL=https://your-domain.com
+```
+
 ## Deployment Options
 
 ### 1. **Vercel (Recommended - Easiest)**
-### 2. **Netlify**
-### 3. **Railway**
-### 4. **Digital Ocean**
-### 5. **AWS/Google Cloud**
-### 6. **Traditional VPS**
-
----
-
-## 🎯 Option 1: Vercel Deployment (Recommended)
 
 Vercel is the fastest and easiest way to deploy Next.js applications.
 
