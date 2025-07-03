@@ -816,20 +816,19 @@ function ProductCategory({ icon, name, image }: ProductCategoryProps) {
     >
       {imagePath && !imageError ? (
         <div className="product-category-image h-32 relative">
-          {!imageLoaded && (
-            <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse flex items-center justify-center">
-              <div className="text-2xl animate-pulse">{icon}</div>
-            </div>
-          )}
           <img 
             src={imagePath} 
             alt={`${name} category`}
-            className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-110 ${
-              imageLoaded ? 'opacity-100' : 'opacity-0'
-            }`}
-            loading="lazy"
-            onLoad={() => setImageLoaded(true)}
-            onError={() => setImageError(true)}
+            className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
+            loading="eager"
+            onLoad={() => {
+              console.log(`Image loaded: ${imagePath}`);
+              setImageLoaded(true);
+            }}
+            onError={() => {
+              console.log(`Image failed to load: ${imagePath}`);
+              setImageError(true);
+            }}
           />
           <div className="absolute top-2 right-2 product-category-icon text-2xl rounded-full p-2 animate-float">
             {icon}
