@@ -284,10 +284,11 @@ export default function SellerPage() {
                       value={formData.businessType}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
                     >
+                      <option value="" className="text-gray-500">Select business type</option>
                       {businessTypes.map(type => (
-                        <option key={type.value} value={type.value}>{type.label}</option>
+                        <option key={type.value} value={type.value} className="text-gray-900">{type.label}</option>
                       ))}
                     </select>
                   </div>
@@ -303,11 +304,12 @@ export default function SellerPage() {
                       value={formData.district}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+                      style={{ color: '#111827' }}
                     >
-                      <option value="">Select your district</option>
+                      <option value="" className="text-gray-500" style={{ color: '#9CA3AF' }}>Select your district</option>
                       {districts.map(district => (
-                        <option key={district} value={district}>{district}</option>
+                        <option key={district} value={district} className="text-gray-900" style={{ color: '#111827' }}>{district}</option>
                       ))}
                     </select>
                   </div>
@@ -321,11 +323,11 @@ export default function SellerPage() {
                       value={formData.province}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
                     >
-                      <option value="">Select your province</option>
+                      <option value="" className="text-gray-500">Select your province</option>
                       {provinces.map(province => (
-                        <option key={province} value={province}>{province}</option>
+                        <option key={province} value={province} className="text-gray-900">{province}</option>
                       ))}
                     </select>
                   </div>

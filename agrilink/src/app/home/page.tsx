@@ -380,12 +380,12 @@ export default function Home() {
               <ProductCategory 
                 icon="🥕" 
                 name="Vegetables"
-                image="https://images.unsplash.com/photo-1506806732259-39c2d0268443?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+                image="https://cdn.britannica.com/17/196817-159-9E487F15/vegetables.jpg"
               />
               <ProductCategory 
                 icon="🌾" 
                 name="Rice & Grains"
-                image="https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+                image="https://cdn.britannica.com/89/140889-050-EC3F62A5/Heap-grains-rice-food.jpg"
               />
               <ProductCategory 
                 icon="🥭" 
@@ -395,47 +395,47 @@ export default function Home() {
               <ProductCategory 
                 icon="🌶️" 
                 name="Spices"
-                image="https://images.unsplash.com/photo-1596040033229-a9821ebd058d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+                image="https://cdn.britannica.com/13/234213-050-73781543/spices-herbs-cooking-ingredients.jpg"
               />
               <ProductCategory 
                 icon="🥥" 
                 name="Coconut Products"
-                image="https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+                image="https://cdn.britannica.com/73/234573-050-8DDF7509/coconuts-palm-tree-tropical-fruit.jpg"
               />
               <ProductCategory 
                 icon="🫘" 
                 name="Legumes"
-                image="https://images.unsplash.com/photo-1586201375761-83865001e31c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+                image="https://cdn.britannica.com/40/140840-050-4C56936A/Legumes-beans-lentils-peas-chickpeas.jpg"
               />
               <ProductCategory 
                 icon="🍃" 
                 name="Herbs"
-                image="https://images.unsplash.com/photo-1628260412297-a3377e45006f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+                image="https://cdn.britannica.com/86/234586-050-4B2A4F12/fresh-herbs-basil-parsley-cilantro.jpg"
               />
               <ProductCategory 
                 icon="🥛" 
                 name="Dairy"
-                image="https://images.unsplash.com/photo-1550583724-b2692b85b150?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+                image="https://cdn.britannica.com/84/234584-050-2A9F3B63/dairy-products-milk-cheese-yogurt.jpg"
               />
               <ProductCategory 
                 icon="🐟" 
                 name="Fish & Seafood"
-                image="https://images.unsplash.com/photo-1544943910-4c1dc44aab44?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+                image="https://cdn.britannica.com/91/234591-050-7F6B8F4E/fresh-fish-seafood-market-display.jpg"
               />
               <ProductCategory 
                 icon="🍯" 
                 name="Honey & Sweets"
-                image="https://images.unsplash.com/photo-1587049352846-4a222e784d38?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+                image="https://cdn.britannica.com/12/234512-050-A8C4E8F2/honey-honeycomb-natural-sweetener.jpg"
               />
               <ProductCategory 
                 icon="🫒" 
                 name="Oils"
-                image="https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+                image="https://cdn.britannica.com/85/234585-050-9B8F3C4A/cooking-oils-olive-oil-bottles.jpg"
               />
               <ProductCategory 
                 icon="☕" 
                 name="Beverages"
-                image="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+                image="https://cdn.britannica.com/92/234592-050-6F8A2B8C/coffee-beans-tea-leaves-beverages.jpg"
               />
             </div>
             <div className="text-center mt-12">
@@ -786,12 +786,33 @@ function ProductCategory({ icon, name, image }: ProductCategoryProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
+  const handleCategoryClick = () => {
+    // Navigate to prices page with category filter
+    window.location.href = `/prices?category=${encodeURIComponent(name.toLowerCase())}`;
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleCategoryClick();
+    }
+  };
+
   return (
-    <div className="product-category-card group" role="button" tabIndex={0} aria-label={`View ${name} products`}>
+    <div 
+      className="product-category-card group cursor-pointer" 
+      role="button" 
+      tabIndex={0} 
+      aria-label={`View ${name} products and prices`}
+      onClick={handleCategoryClick}
+      onKeyPress={handleKeyPress}
+    >
       {image && !imageError ? (
         <div className="product-category-image h-32 relative">
           {!imageLoaded && (
-            <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse flex items-center justify-center">
+              <div className="text-2xl animate-pulse">{icon}</div>
+            </div>
           )}
           <img 
             src={image} 
@@ -816,6 +837,9 @@ function ProductCategory({ icon, name, image }: ProductCategoryProps) {
         <h3 className="text-sm font-semibold text-gray-800 text-center transition-colors duration-300 group-hover:text-green-700">
           {name}
         </h3>
+        <p className="text-xs text-gray-500 text-center mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          Click to view prices
+        </p>
       </div>
     </div>
   );
