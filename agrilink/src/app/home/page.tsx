@@ -380,62 +380,62 @@ export default function Home() {
               <ProductCategory 
                 icon="🥕" 
                 name="Vegetables"
-                image="https://cdn.britannica.com/17/196817-159-9E487F15/vegetables.jpg"
+                image="/images/categories/vegetables.jpg"
               />
               <ProductCategory 
                 icon="🌾" 
                 name="Rice & Grains"
-                image="https://cdn.britannica.com/89/140889-050-EC3F62A5/Heap-grains-rice-food.jpg"
+                image="/images/categories/rice-grains.jpg"
               />
               <ProductCategory 
                 icon="🥭" 
                 name="Fruits"
-                image="https://images.unsplash.com/photo-1619566636858-adf3ef46400b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+                image="/images/categories/fruits.jpg"
               />
               <ProductCategory 
                 icon="🌶️" 
                 name="Spices"
-                image="https://cdn.britannica.com/13/234213-050-73781543/spices-herbs-cooking-ingredients.jpg"
+                image="/images/categories/spices.jpg"
               />
               <ProductCategory 
                 icon="🥥" 
                 name="Coconut Products"
-                image="https://cdn.britannica.com/73/234573-050-8DDF7509/coconuts-palm-tree-tropical-fruit.jpg"
+                image="/images/categories/coconut-products.jpg"
               />
               <ProductCategory 
                 icon="🫘" 
                 name="Legumes"
-                image="https://cdn.britannica.com/40/140840-050-4C56936A/Legumes-beans-lentils-peas-chickpeas.jpg"
+                image="/images/categories/legumes.jpg"
               />
               <ProductCategory 
                 icon="🍃" 
                 name="Herbs"
-                image="https://cdn.britannica.com/86/234586-050-4B2A4F12/fresh-herbs-basil-parsley-cilantro.jpg"
+                image="/images/categories/herbs.jpg"
               />
               <ProductCategory 
                 icon="🥛" 
                 name="Dairy"
-                image="https://cdn.britannica.com/84/234584-050-2A9F3B63/dairy-products-milk-cheese-yogurt.jpg"
+                image="/images/categories/dairy.jpg"
               />
               <ProductCategory 
                 icon="🐟" 
                 name="Fish & Seafood"
-                image="https://cdn.britannica.com/91/234591-050-7F6B8F4E/fresh-fish-seafood-market-display.jpg"
+                image="/images/categories/fish-seafood.jpg"
               />
               <ProductCategory 
                 icon="🍯" 
                 name="Honey & Sweets"
-                image="https://cdn.britannica.com/12/234512-050-A8C4E8F2/honey-honeycomb-natural-sweetener.jpg"
+                image="/images/categories/honey-sweets.jpg"
               />
               <ProductCategory 
                 icon="🫒" 
                 name="Oils"
-                image="https://cdn.britannica.com/85/234585-050-9B8F3C4A/cooking-oils-olive-oil-bottles.jpg"
+                image="/images/categories/oils.jpg"
               />
               <ProductCategory 
                 icon="☕" 
                 name="Beverages"
-                image="https://cdn.britannica.com/92/234592-050-6F8A2B8C/coffee-beans-tea-leaves-beverages.jpg"
+                image="/images/categories/beverages.jpg"
               />
             </div>
             <div className="text-center mt-12">
