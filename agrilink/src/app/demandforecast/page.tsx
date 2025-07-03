@@ -196,13 +196,11 @@ const AIMarketInsightsApp = () => {
         description: `${insights.competitorCount} active sellers. Compare prices before purchasing.`,
         priority: "medium"
       });
-    }
 
     return recommendations;
   };
 
   return (
-
     <div>
       {/* Top Navigation */}
       <nav className="bg-white shadow-sm sticky top-0 z-50">

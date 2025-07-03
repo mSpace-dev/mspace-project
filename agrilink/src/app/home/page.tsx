@@ -11,6 +11,12 @@ export default function Home() {
   const [isCarouselPaused, setIsCarouselPaused] = useState(false);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
+  
+  // Newsletter subscription states
+  const [email, setEmail] = useState('');
+  const [isSubscribing, setIsSubscribing] = useState(false);
+  const [subscriptionMessage, setSubscriptionMessage] = useState('');
+  const [subscriptionStatus, setSubscriptionStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   const slides = [
     {
@@ -83,6 +89,62 @@ export default function Home() {
       nextSlide();
     } else if (isRightSwipe) {
       prevSlide();
+    }
+  };
+
+  // Newsletter subscription handler
+  const handleSubscription = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!email) {
+      setSubscriptionMessage('Please enter your email address');
+      setSubscriptionStatus('error');
+      return;
+    }
+
+    // Basic email validation
+    const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+    if (!emailRegex.test(email)) {
+      setSubscriptionMessage('Please enter a valid email address');
+      setSubscriptionStatus('error');
+      return;
+    }
+
+    setIsSubscribing(true);
+    setSubscriptionMessage('');
+    setSubscriptionStatus('idle');
+
+    try {
+      const response = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSubscriptionMessage('🎉 Successfully subscribed! Check your email for confirmation.');
+        setSubscriptionStatus('success');
+        setEmail(''); // Clear the input
+      } else {
+        setSubscriptionMessage(data.error || 'Failed to subscribe. Please try again.');
+        setSubscriptionStatus('error');
+      }
+    } catch (error) {
+      console.error('Subscription error:', error);
+      setSubscriptionMessage('Network error. Please check your connection and try again.');
+      setSubscriptionStatus('error');
+    } finally {
+      setIsSubscribing(false);
+      
+      // Clear message after 5 seconds
+      setTimeout(() => {
+        setSubscriptionMessage('');
+        setSubscriptionStatus('idle');
+      }, 5000);
     }
   };
 
@@ -682,18 +744,47 @@ export default function Home() {
             <p className="text-gray-600 mb-8">
               Receive news from our farmers and the latest agricultural price insights
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+            <form onSubmit={handleSubscription} className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
               <input
                 type="email"
                 placeholder="Enter your email address"
-                className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={isSubscribing}
+                className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
               />
-              <button className="btn-agrilink text-white px-6 py-3 rounded-lg font-semibold whitespace-nowrap">
-                Subscribe
+              <button 
+                type="submit"
+                disabled={isSubscribing || !email.trim()}
+                className="btn-agrilink text-white px-6 py-3 rounded-lg font-semibold whitespace-nowrap disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-200 hover:transform hover:-translate-y-1"
+              >
+                {isSubscribing ? (
+                  <span className="flex items-center gap-2">
+                    <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Subscribing...
+                  </span>
+                ) : (
+                  'Subscribe'
+                )}
               </button>
-            </div>
+            </form>
+            
+            {/* Subscription feedback */}
+            {subscriptionMessage && (
+              <div className={`mt-4 p-3 rounded-lg text-sm font-medium ${
+                subscriptionStatus === 'success' 
+                  ? 'bg-green-100 text-green-800 border border-green-200' 
+                  : 'bg-red-100 text-red-800 border border-red-200'
+              }`}>
+                {subscriptionMessage}
+              </div>
+            )}
+            
             <p className="text-sm text-gray-500 mt-4">
-              By subscribing, you agree to our privacy policy and terms of service.
+              By subscribing, you agree to our privacy policy and terms of service. You can unsubscribe at any time.
             </p>
           </div>
         </section>

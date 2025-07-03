@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Edit, Trash2, Plus, Eye, BarChart3 } from 'lucide-react';
 import AnalyticsDashboard from '../../components/AnalyticsDashboard';
 import ProductEditModal from '../../components/ProductEditModal';
+import EmailNotificationManager from '@/components/EmailNotificationManager';
 
 interface Seller {
   _id: string;
@@ -366,6 +367,16 @@ export default function SellerDashboard() {
               Analytics
             </button>
             <button
+              onClick={() => setActiveTab('notifications')}
+              className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                activeTab === 'notifications'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              Email Notifications
+            </button>
+            <button
               onClick={() => setActiveTab('profile')}
               className={`py-4 px-1 border-b-2 font-medium text-sm ${
                 activeTab === 'profile'
@@ -536,6 +547,11 @@ export default function SellerDashboard() {
         {/* Analytics Tab */}
         {activeTab === 'analytics' && (
           <AnalyticsDashboard products={products} sellerId={seller?._id || ''} />
+        )}
+
+        {/* Email Notifications Tab */}
+        {activeTab === 'notifications' && (
+          <EmailNotificationManager />
         )}
 
         {/* Profile Tab */}
