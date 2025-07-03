@@ -87,9 +87,25 @@ export default function Home() {
       setShowScrollTop(window.scrollY > 300);
     };
 
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') {
+        prevSlide();
+      } else if (e.key === 'ArrowRight') {
+        nextSlide();
+      } else if (e.key === ' ') {
+        e.preventDefault();
+        setIsCarouselPaused(!isCarouselPaused);
+      }
+    };
+
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    window.addEventListener('keydown', handleKeyDown);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isCarouselPaused]);
 
   // Auto-slide functionality
   useEffect(() => {
@@ -158,6 +174,9 @@ export default function Home() {
           className="relative h-[70vh] overflow-hidden"
           onMouseEnter={() => setIsCarouselPaused(true)}
           onMouseLeave={() => setIsCarouselPaused(false)}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
         >
           <div className="relative w-full h-full">
             {slides.map((slide, index) => (
