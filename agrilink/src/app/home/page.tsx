@@ -783,7 +783,6 @@ type ProductCategoryProps = {
 };
 
 function ProductCategory({ icon, name, image }: ProductCategoryProps) {
-  const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
   const handleCategoryClick = () => {
@@ -805,16 +804,6 @@ function ProductCategory({ icon, name, image }: ProductCategoryProps) {
       ? `/${image}`
       : undefined;
 
-  // Set a timeout to show image if it takes too long to load
-  useEffect(() => {
-    if (imagePath && !imageError) {
-      const timer = setTimeout(() => {
-        setImageLoaded(true);
-      }, 1000); // Show image after 1 second regardless
-      return () => clearTimeout(timer);
-    }
-  }, [imagePath, imageError]);
-
   return (
     <div 
       className="product-category-card group cursor-pointer" 
@@ -826,33 +815,22 @@ function ProductCategory({ icon, name, image }: ProductCategoryProps) {
     >
       {imagePath && !imageError ? (
         <div className="product-category-image h-32 relative">
-          {!imageLoaded && (
-            <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse flex items-center justify-center z-10">
-              <div className="text-2xl animate-pulse">{icon}</div>
-            </div>
-          )}
           <img 
             src={imagePath} 
             alt={`${name} category`}
-            className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-110 ${
-              imageLoaded ? 'opacity-100 z-0' : 'opacity-0 z-0'
-            }`}
-            loading="eager"
-            onLoad={() => {
-              console.log(`Image loaded: ${imagePath}`);
-              setImageLoaded(true);
-            }}
+            className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105"
             onError={() => {
               console.log(`Image failed to load: ${imagePath}`);
               setImageError(true);
             }}
+            style={{ display: 'block' }}
           />
-          <div className="absolute top-2 right-2 product-category-icon text-2xl rounded-full p-2 animate-float">
+          <div className="absolute top-2 right-2 product-category-icon text-xl rounded-full p-2 animate-float">
             {icon}
           </div>
         </div>
       ) : (
-        <div className="p-4 product-category-image h-32 flex items-center justify-center bg-gradient-to-br from-green-100 to-blue-100">
+        <div className="product-category-image h-32 flex items-center justify-center bg-gradient-to-br from-green-100 to-blue-100">
           <div className="text-4xl animate-float">{icon}</div>
         </div>
       )}
