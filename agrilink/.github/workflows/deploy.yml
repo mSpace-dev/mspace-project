@@ -1,0 +1,52 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Create .env file
+      run: |
+        echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env
+        echo "SMTP_HOST=${{ secrets.SMTP_HOST }}" >> .env
+        echo "SMTP_PORT=${{ secrets.SMTP_PORT }}" >> .env
+        echo "SMTP_USER=${{ secrets.SMTP_USER }}" >> .env
+        echo "SMTP_PASS=${{ secrets.SMTP_PASS }}" >> .env
+        echo "NEXT_PUBLIC_BASE_URL=${{ secrets.NEXT_PUBLIC_BASE_URL }}" >> .env
+        echo "CRON_SECRET=${{ secrets.CRON_SECRET }}" >> .env
+
+    - name: Run linting
+      run: npm run lint
+
+    - name: Build application
+      run: npm run build
+
+    - name: Run tests (if any)
+      run: npm test --if-present
+
+    # Deploy to Vercel
+    - name: Deploy to Vercel
+      uses: amondnet/vercel-action@v20
+      with:
+        vercel-token: ${{ secrets.VERCEL_TOKEN }}
+        vercel-args: '--prod'
+        vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+        vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
