@@ -380,7 +380,7 @@ export default function Home() {
               <ProductCategory 
                 icon="🥕" 
                 name="Vegetables"
-                
+                image="/images/categories/vegetables.webp"
               />
               <ProductCategory 
                 icon="🌾" 
@@ -436,6 +436,7 @@ export default function Home() {
                 icon="☕" 
                 name="Beverages"
                 image="/images/categories/beverages.jpg"
+                
               />
             </div>
             <div className="text-center mt-12">
