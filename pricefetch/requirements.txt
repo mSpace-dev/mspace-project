@@ -1,5 +1,0 @@
-pymongo==4.6.0
-requests==2.31.0
-beautifulsoup4==4.12.2
-pdfplumber==0.10.3
-python-dotenv==1.0.0

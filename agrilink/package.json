@@ -9,8 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@types/bcryptjs": "^3.0.0",
-    "@types/mongodb": "^4.0.7",
     "bcryptjs": "^3.0.2",
     "lucide-react": "^0.525.0",
     "mongodb": "^6.17.0",
