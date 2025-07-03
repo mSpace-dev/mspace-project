@@ -17,24 +17,14 @@ export async function POST(req: NextRequest) {
       district,
       province,
       address,
-      licenseNumber,
-      bankDetails
+      licenseNumber
     } = await req.json();
 
     // Validate required fields
     if (!name || !email || !password || !phone || !businessName || !businessType || 
-        !district || !province || !address || !bankDetails) {
+        !district || !province || !address) {
       return NextResponse.json(
         { error: 'All required fields must be provided' },
-        { status: 400 }
-      );
-    }
-
-    // Validate bank details
-    if (!bankDetails.accountName || !bankDetails.accountNumber || 
-        !bankDetails.bankName || !bankDetails.branchCode) {
-      return NextResponse.json(
-        { error: 'Complete bank details are required' },
         { status: 400 }
       );
     }
@@ -63,7 +53,6 @@ export async function POST(req: NextRequest) {
       province,
       address,
       licenseNumber,
-      bankDetails,
       isVerified: false,
       products: [],
     });
@@ -82,7 +71,6 @@ export async function POST(req: NextRequest) {
       province: seller.province,
       address: seller.address,
       licenseNumber: seller.licenseNumber,
-      bankDetails: seller.bankDetails,
       isVerified: seller.isVerified,
       products: seller.products,
       createdAt: seller.createdAt,

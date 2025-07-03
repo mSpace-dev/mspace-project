@@ -21,12 +21,6 @@ export default function SellerPage() {
     province: '',
     address: '',
     licenseNumber: '',
-    bankDetails: {
-      accountName: '',
-      accountNumber: '',
-      bankName: '',
-      branchCode: '',
-    },
   });
 
   const districts = [
@@ -49,30 +43,13 @@ export default function SellerPage() {
     { value: 'cooperative', label: 'Cooperative' },
   ];
 
-  const banks = [
-    'Bank of Ceylon', 'People\'s Bank', 'Commercial Bank', 'Hatton National Bank',
-    'Sampath Bank', 'Nations Trust Bank', 'DFCC Bank', 'Union Bank',
-    'Pan Asia Banking Corporation', 'NDB Bank', 'Seylan Bank'
-  ];
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     
-    if (name.startsWith('bankDetails.')) {
-      const bankField = name.split('.')[1];
-      setFormData(prev => ({
-        ...prev,
-        bankDetails: {
-          ...prev.bankDetails,
-          [bankField]: value
-        }
-      }));
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value
-      }));
-    }
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -133,12 +110,6 @@ export default function SellerPage() {
       province: '',
       address: '',
       licenseNumber: '',
-      bankDetails: {
-        accountName: '',
-        accountNumber: '',
-        bankName: '',
-        branchCode: '',
-      },
     });
   };
 
@@ -360,75 +331,6 @@ export default function SellerPage() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Enter your business license number"
                   />
-                </div>
-
-                {/* Bank Details Section */}
-                <div className="border-t pt-6">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-4">Bank Details</h3>
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Account Holder Name *
-                      </label>
-                      <input
-                        type="text"
-                        name="bankDetails.accountName"
-                        value={formData.bankDetails.accountName}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="Enter account holder name"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Account Number *
-                      </label>
-                      <input
-                        type="text"
-                        name="bankDetails.accountNumber"
-                        value={formData.bankDetails.accountNumber}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="Enter account number"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Bank Name *
-                      </label>
-                      <select
-                        name="bankDetails.bankName"
-                        value={formData.bankDetails.bankName}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      >
-                        <option value="">Select your bank</option>
-                        {banks.map(bank => (
-                          <option key={bank} value={bank}>{bank}</option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Branch Code *
-                      </label>
-                      <input
-                        type="text"
-                        name="bankDetails.branchCode"
-                        value={formData.bankDetails.branchCode}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="Enter branch code"
-                      />
-                    </div>
-                  </div>
                 </div>
               </>
             )}

@@ -12,12 +12,6 @@ export interface ISeller {
   province: string;
   address: string;
   licenseNumber?: string;
-  bankDetails: {
-    accountName: string;
-    accountNumber: string;
-    bankName: string;
-    branchCode: string;
-  };
   isVerified: boolean;
   products: mongoose.Types.ObjectId[];
   createdAt?: Date;
@@ -75,24 +69,6 @@ const SellerSchema = new mongoose.Schema<ISeller>({
   licenseNumber: {
     type: String,
     trim: true,
-  },
-  bankDetails: {
-    accountName: {
-      type: String,
-      required: [true, 'Please provide account holder name'],
-    },
-    accountNumber: {
-      type: String,
-      required: [true, 'Please provide account number'],
-    },
-    bankName: {
-      type: String,
-      required: [true, 'Please provide bank name'],
-    },
-    branchCode: {
-      type: String,
-      required: [true, 'Please provide branch code'],
-    },
   },
   isVerified: {
     type: Boolean,
