@@ -66,7 +66,7 @@ function TableView({
               value={filters.commodity}
               onChange={(e) => setFilters({...filters, commodity: e.target.value})}
               placeholder="Search commodity..."
-              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-gray-900 bg-white placeholder-gray-500"
             />
           </div>
         </div>
