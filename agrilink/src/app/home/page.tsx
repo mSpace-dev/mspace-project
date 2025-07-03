@@ -380,7 +380,7 @@ export default function Home() {
               <ProductCategory 
                 icon="🥕" 
                 name="Vegetables"
-                image="/images/categories/vegetables.webp"
+                image="./images/categories/vegetables.webp"
               />
               <ProductCategory 
                 icon="🌾" 
@@ -435,8 +435,7 @@ export default function Home() {
               <ProductCategory 
                 icon="☕" 
                 name="Beverages"
-                image="/images/categories/beverages.jpg"
-                
+                image="/public/images/categories/beverages.jpg"
               />
             </div>
             <div className="text-center mt-12">
@@ -799,6 +798,13 @@ function ProductCategory({ icon, name, image }: ProductCategoryProps) {
     }
   };
 
+  // Ensure image path is correct for Next.js public folder
+  const imagePath = image && image.startsWith('/')
+    ? image
+    : image
+      ? `/${image}`
+      : undefined;
+
   return (
     <div 
       className="product-category-card group cursor-pointer" 
@@ -808,7 +814,7 @@ function ProductCategory({ icon, name, image }: ProductCategoryProps) {
       onClick={handleCategoryClick}
       onKeyPress={handleKeyPress}
     >
-      {image && !imageError ? (
+      {imagePath && !imageError ? (
         <div className="product-category-image h-32 relative">
           {!imageLoaded && (
             <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse flex items-center justify-center">
@@ -816,7 +822,7 @@ function ProductCategory({ icon, name, image }: ProductCategoryProps) {
             </div>
           )}
           <img 
-            src={image} 
+            src={imagePath} 
             alt={`${name} category`}
             className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-110 ${
               imageLoaded ? 'opacity-100' : 'opacity-0'
@@ -845,7 +851,6 @@ function ProductCategory({ icon, name, image }: ProductCategoryProps) {
     </div>
   );
 }
-
 type StatCardProps = {
   icon: string;
   number: string;
