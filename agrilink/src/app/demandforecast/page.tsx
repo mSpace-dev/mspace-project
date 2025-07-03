@@ -196,6 +196,7 @@ const AIMarketInsightsApp = () => {
         description: `${insights.competitorCount} active sellers. Compare prices before purchasing.`,
         priority: "medium"
       });
+    }
 
     return recommendations;
   };
@@ -230,43 +231,39 @@ const AIMarketInsightsApp = () => {
           fontFamily: "system-ui, -apple-system, sans-serif",
         }}
       >
-      <div
-        style={{
-          maxWidth: "1200px",
-          margin: "0 auto",
-        }}
-      >
-=======
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 p-4 md:p-6">
-      <div className="max-w-7xl mx-auto">
+        <div
+          style={{
+            maxWidth: "1200px",
+            margin: "0 auto",
+          }}
+        >
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-emerald-600 bg-clip-text text-transparent mb-4">
+              🧠 AI Market Insights Dashboard
+            </h1>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              Get intelligent market insights powered by AI for smarter agricultural decisions
+            </p>
+          </div>
 
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-emerald-600 bg-clip-text text-transparent mb-4">
-            🧠 AI Market Insights Dashboard
-          </h1>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Get intelligent market insights powered by AI for smarter agricultural decisions
-          </p>
-        </div>
-
-        {/* Controls */}
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-3">
-                <Users className="w-4 h-4 inline mr-2" />
-                I am a...
-              </label>
-              <select
-                value={userType}
-                onChange={(e) => setUserType(e.target.value)}
-                className="w-full p-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white text-gray-900 hover:border-gray-300"
-              >
-                <option value="farmer" className="py-2 text-gray-900">🌾 Farmer</option>
-                <option value="customer" className="py-2 text-gray-900">🛒 Customer</option>
-              </select>
-            </div>
+          {/* Controls */}
+          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-3">
+                  <Users className="w-4 h-4 inline mr-2" />
+                  I am a...
+                </label>
+                <select
+                  value={userType}
+                  onChange={(e) => setUserType(e.target.value)}
+                  className="w-full p-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white text-gray-900 hover:border-gray-300"
+                >
+                  <option value="farmer" className="py-2 text-gray-900">🌾 Farmer</option>
+                  <option value="customer" className="py-2 text-gray-900">🛒 Customer</option>
+                </select>
+              </div>
 
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-3">
@@ -552,27 +549,11 @@ const AIMarketInsightsApp = () => {
             </p>
           </div>
         ) : null}
-      </div>
+        </div>
+      </main>
     </div>
   );
 };
-
-      {/* CSS Animations */}
-      <style jsx>{`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-        
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.7; }
-        }
-      `}</style>
-    </main>
-    </div>
-  )
-}
 
 export default AIMarketInsightsApp;
 

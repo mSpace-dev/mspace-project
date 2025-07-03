@@ -1,4 +1,7 @@
 {
+  "buildCommand": "npm run build",
+  "installCommand": "npm install",
+  "framework": "nextjs",
   "redirects": [
     {
       "source": "/",
@@ -6,10 +9,9 @@
       "permanent": false
     }
   ],
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
+  "functions": {
+    "src/app/api/**/*.ts": {
+      "runtime": "@vercel/node"
     }
-  ]
+  }
 }
