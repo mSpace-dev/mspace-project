@@ -117,10 +117,8 @@ export async function PUT(req: NextRequest) {
   try {
     await dbConnect();
 
-    const { searchParams } = new URL(req.url);
-    const productId = searchParams.get('productId');
-    
     const updateData = await req.json();
+    const { productId, ...productData } = updateData;
 
     if (!productId) {
       return NextResponse.json(
@@ -131,7 +129,7 @@ export async function PUT(req: NextRequest) {
 
     const product = await Product.findByIdAndUpdate(
       productId,
-      { ...updateData, updatedAt: new Date() },
+      { ...productData, updatedAt: new Date() },
       { new: true, runValidators: true }
     );
 

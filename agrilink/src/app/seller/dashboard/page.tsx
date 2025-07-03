@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { Edit, Trash2, Plus, Eye, BarChart3 } from 'lucide-react';
+import AnalyticsDashboard from '../../components/AnalyticsDashboard';
+import ProductEditModal from '../../components/ProductEditModal';
 
 interface Seller {
   _id: string;
@@ -56,6 +59,8 @@ export default function SellerDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
   const [loading, setLoading] = useState(true);
   const [showAddProduct, setShowAddProduct] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [showEditProduct, setShowEditProduct] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const router = useRouter();
@@ -251,6 +256,18 @@ export default function SellerDashboard() {
     } catch (error) {
       setError('Error deleting product');
     }
+  };
+
+  const handleEditProduct = (updatedProduct: Product) => {
+    setProducts(prev => prev.map(p => 
+      p._id === updatedProduct._id ? updatedProduct : p
+    ));
+    setSuccess('Product updated successfully!');
+  };
+
+  const handleDeleteFromModal = (productId: string) => {
+    setProducts(prev => prev.filter(p => p._id !== productId));
+    setSuccess('Product deleted successfully!');
   };
 
   const handleLogout = () => {
@@ -481,13 +498,21 @@ export default function SellerDashboard() {
                     </div>
 
                     <div className="mt-4 flex space-x-2">
-                      <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-3 rounded">
+                      <button 
+                        onClick={() => {
+                          setSelectedProduct(product);
+                          setShowEditProduct(true);
+                        }}
+                        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-3 rounded flex items-center justify-center"
+                      >
+                        <Edit className="h-4 w-4 mr-1" />
                         Edit
                       </button>
                       <button
                         onClick={() => handleDeleteProduct(product._id)}
-                        className="flex-1 bg-red-600 hover:bg-red-700 text-white text-sm font-medium py-2 px-3 rounded"
+                        className="flex-1 bg-red-600 hover:bg-red-700 text-white text-sm font-medium py-2 px-3 rounded flex items-center justify-center"
                       >
+                        <Trash2 className="h-4 w-4 mr-1" />
                         Delete
                       </button>
                     </div>
@@ -512,63 +537,7 @@ export default function SellerDashboard() {
 
         {/* Analytics Tab */}
         {activeTab === 'analytics' && (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-900">Analytics & Insights</h2>
-            
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Price Intelligence</h3>
-              <p className="text-gray-600">
-                AI-powered price predictions and market insights will be available here. 
-                Our machine learning models analyze your product data to provide:
-              </p>
-              <ul className="mt-4 space-y-2 text-gray-600">
-                <li>• Optimal pricing recommendations</li>
-                <li>• Demand forecasting for your products</li>
-                <li>• Market trends and seasonal patterns</li>
-                <li>• Competitive pricing analysis</li>
-                <li>• Sales performance metrics</li>
-              </ul>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-white rounded-lg shadow p-6">
-                <h4 className="text-lg font-medium text-gray-900 mb-4">Product Categories</h4>
-                <div className="space-y-2">
-                  {categories.map(category => {
-                    const count = products.filter(p => p.category === category.value).length;
-                    return (
-                      <div key={category.value} className="flex justify-between">
-                        <span className="text-gray-600">{category.label}</span>
-                        <span className="font-medium">{count}</span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div className="bg-white rounded-lg shadow p-6">
-                <h4 className="text-lg font-medium text-gray-900 mb-4">Status Overview</h4>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Available</span>
-                    <span className="font-medium text-green-600">{products.filter(p => p.status === 'available').length}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Sold</span>
-                    <span className="font-medium text-blue-600">{products.filter(p => p.status === 'sold').length}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Expired</span>
-                    <span className="font-medium text-red-600">{products.filter(p => p.status === 'expired').length}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Pending</span>
-                    <span className="font-medium text-yellow-600">{products.filter(p => p.status === 'pending').length}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <AnalyticsDashboard products={products} sellerId={seller?._id || ''} />
         )}
 
         {/* Profile Tab */}
@@ -604,7 +573,7 @@ export default function SellerDashboard() {
                       <p className="text-gray-900">{seller.businessName}</p>
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-gray-500">Business Type</label>
+                      <label className="text-sm font-medium text-gray-900">Business Type</label>
                       <p className="text-gray-900 capitalize">{seller.businessType}</p>
                     </div>
                     <div>
@@ -618,7 +587,7 @@ export default function SellerDashboard() {
                   <h3 className="text-lg font-medium text-gray-900 mb-4">Location</h3>
                   <div className="space-y-3">
                     <div>
-                      <label className="text-sm font-medium text-gray-500">District</label>
+                      <label className="text-sm font-medium text-gray-900">District</label>
                       <p className="text-gray-900">{seller.district}</p>
                     </div>
                     <div>
@@ -915,6 +884,321 @@ export default function SellerDashboard() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Edit Product Modal */}
+      {showEditProduct && selectedProduct && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div className="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
+            <div className="mt-3">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-medium text-gray-900">Edit Product</h3>
+                <button
+                  onClick={() => setShowEditProduct(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <span className="sr-only">Close</span>
+                  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  if (!selectedProduct) return;
+
+                  setLoading(true);
+                  setError('');
+                  setSuccess('');
+
+                  try {
+                    const response = await fetch('/api/seller/products', {
+                      method: 'PUT',
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify({
+                        ...productForm,
+                        sellerId: seller._id,
+                        pricePerKg: Number(productForm.pricePerKg),
+                        availableQuantity: Number(productForm.availableQuantity),
+                        _id: selectedProduct._id,
+                      }),
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                      handleEditProduct(data.product);
+                      setShowEditProduct(false);
+                      setProductForm({
+                        name: '',
+                        category: 'vegetables',
+                        variety: '',
+                        description: '',
+                        pricePerKg: '',
+                        availableQuantity: '',
+                        unit: 'kg',
+                        harvestDate: '',
+                        expiryDate: '',
+                        quality: 'standard',
+                        location: {
+                          district: seller.district,
+                          province: seller.province,
+                          address: seller.address,
+                        },
+                      });
+                      setSuccess('Product updated successfully!');
+                    } else {
+                      setError(data.error || 'Failed to update product');
+                    }
+                  } catch (error) {
+                    setError('Error updating product');
+                  } finally {
+                    setLoading(false);
+                  }
+                }}
+                className="space-y-4"
+              >
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Product Name *
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={productForm.name}
+                      onChange={handleProductFormChange}
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Enter product name"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Category *
+                    </label>
+                    <select
+                      name="category"
+                      value={productForm.category}
+                      onChange={handleProductFormChange}
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      {categories.map(category => (
+                        <option key={category.value} value={category.value}>{category.label}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Variety
+                    </label>
+                    <input
+                      type="text"
+                      name="variety"
+                      value={productForm.variety}
+                      onChange={handleProductFormChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="e.g., Red Lady, Ambul"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Quality *
+                    </label>
+                    <select
+                      name="quality"
+                      value={productForm.quality}
+                      onChange={handleProductFormChange}
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      {qualities.map(quality => (
+                        <option key={quality.value} value={quality.value}>{quality.label}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Price per Kg (Rs.) *
+                    </label>
+                    <input
+                      type="number"
+                      name="pricePerKg"
+                      value={productForm.pricePerKg}
+                      onChange={handleProductFormChange}
+                      required
+                      min="0"
+                      step="0.01"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Enter price per kg"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Available Quantity *
+                    </label>
+                    <div className="flex">
+                      <input
+                        type="number"
+                        name="availableQuantity"
+                        value={productForm.availableQuantity}
+                        onChange={handleProductFormChange}
+                        required
+                        min="0"
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Quantity"
+                      />
+                      <select
+                        name="unit"
+                        value={productForm.unit}
+                        onChange={handleProductFormChange}
+                        className="px-3 py-2 border border-gray-300 border-l-0 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        {units.map(unit => (
+                          <option key={unit.value} value={unit.value}>{unit.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Harvest Date
+                    </label>
+                    <input
+                      type="date"
+                      name="harvestDate"
+                      value={productForm.harvestDate}
+                      onChange={handleProductFormChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Expiry Date
+                    </label>
+                    <input
+                      type="date"
+                      name="expiryDate"
+                      value={productForm.expiryDate}
+                      onChange={handleProductFormChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Description
+                  </label>
+                  <textarea
+                    name="description"
+                    value={productForm.description}
+                    onChange={handleProductFormChange}
+                    rows={3}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Describe your product quality, farming methods, etc."
+                  />
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      District *
+                    </label>
+                    <select
+                      name="location.district"
+                      value={productForm.location.district}
+                      onChange={handleProductFormChange}
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="">Select district</option>
+                      {districts.map(district => (
+                        <option key={district} value={district}>{district}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Province *
+                    </label>
+                    <select
+                      name="location.province"
+                      value={productForm.location.province}
+                      onChange={handleProductFormChange}
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="">Select province</option>
+                      {provinces.map(province => (
+                        <option key={province} value={province}>{province}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Specific Location/Address *
+                  </label>
+                  <textarea
+                    name="location.address"
+                    value={productForm.location.address}
+                    onChange={handleProductFormChange}
+                    required
+                    rows={2}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter specific location or farm address"
+                  />
+                </div>
+
+                <div className="flex justify-end space-x-3 mt-6">
+                  <button
+                    type="button"
+                    onClick={() => setShowEditProduct(false)}
+                    className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-lg"
+                  >
+                    {loading ? 'Updating...' : 'Update Product'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Product Edit Modal */}
+      {selectedProduct && (
+        <ProductEditModal
+          product={selectedProduct}
+          isOpen={showEditProduct}
+          onClose={() => {
+            setShowEditProduct(false);
+            setSelectedProduct(null);
+          }}
+          onSave={handleEditProduct}
+          onDelete={handleDeleteFromModal}
+        />
       )}
     </div>
   );

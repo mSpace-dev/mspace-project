@@ -106,11 +106,11 @@ export default function CustomerDashboard() {
                 <p className="text-gray-900">{customer.phone}</p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-500">District</label>
+                <label className="block text-sm font-medium text-gray-900">District</label>
                 <p className="text-gray-900">{customer.district}</p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-500">Province</label>
+                <label className="block text-sm font-medium text-gray-900">Province</label>
                 <p className="text-gray-900">{customer.province}</p>
               </div>
             </div>
