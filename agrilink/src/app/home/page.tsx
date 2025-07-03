@@ -380,7 +380,7 @@ export default function Home() {
               <ProductCategory 
                 icon="🥕" 
                 name="Vegetables"
-                image="/images/categories/vegetables.jpg"
+                
               />
               <ProductCategory 
                 icon="🌾" 
