@@ -364,24 +364,84 @@ export default function Home() {
         </section>
 
         {/* Product Categories */}
-        <section className="py-16 px-6 bg-white">
+        <section className="py-20 px-6 bg-gradient-to-br from-green-50 via-blue-50 to-white">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-3xl font-bold text-center text-gray-800 mb-12">
-              Track Prices for All Agricultural Products
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
-              <ProductCategory icon="🥕" name="Vegetables" />
-              <ProductCategory icon="🌾" name="Rice & Grains" />
-              <ProductCategory icon="🥭" name="Fruits" />
-              <ProductCategory icon="🌶️" name="Spices" />
-              <ProductCategory icon="🥥" name="Coconut Products" />
-              <ProductCategory icon="🫘" name="Legumes" />
-              <ProductCategory icon="🍃" name="Herbs" />
-              <ProductCategory icon="🥛" name="Dairy" />
-              <ProductCategory icon="🐟" name="Fish & Seafood" />
-              <ProductCategory icon="🍯" name="Honey & Sweets" />
-              <ProductCategory icon="🫒" name="Oils" />
-              <ProductCategory icon="☕" name="Beverages" />
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
+                Track Prices for All Agricultural Products
+              </h2>
+              <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+                Discover comprehensive price tracking across all major agricultural categories. 
+                Stay informed with real-time market data and make better business decisions.
+              </p>
+              <div className="mt-8 w-24 h-1 bg-gradient-to-r from-green-500 to-blue-500 mx-auto rounded-full"></div>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+              <ProductCategory 
+                icon="🥕" 
+                name="Vegetables"
+                image="https://images.unsplash.com/photo-1506806732259-39c2d0268443?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+              />
+              <ProductCategory 
+                icon="🌾" 
+                name="Rice & Grains"
+                image="https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+              />
+              <ProductCategory 
+                icon="🥭" 
+                name="Fruits"
+                image="https://images.unsplash.com/photo-1619566636858-adf3ef46400b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+              />
+              <ProductCategory 
+                icon="🌶️" 
+                name="Spices"
+                image="https://images.unsplash.com/photo-1596040033229-a9821ebd058d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+              />
+              <ProductCategory 
+                icon="🥥" 
+                name="Coconut Products"
+                image="https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+              />
+              <ProductCategory 
+                icon="🫘" 
+                name="Legumes"
+                image="https://images.unsplash.com/photo-1586201375761-83865001e31c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+              />
+              <ProductCategory 
+                icon="🍃" 
+                name="Herbs"
+                image="https://images.unsplash.com/photo-1628260412297-a3377e45006f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+              />
+              <ProductCategory 
+                icon="🥛" 
+                name="Dairy"
+                image="https://images.unsplash.com/photo-1550583724-b2692b85b150?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+              />
+              <ProductCategory 
+                icon="🐟" 
+                name="Fish & Seafood"
+                image="https://images.unsplash.com/photo-1544943910-4c1dc44aab44?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+              />
+              <ProductCategory 
+                icon="🍯" 
+                name="Honey & Sweets"
+                image="https://images.unsplash.com/photo-1587049352846-4a222e784d38?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+              />
+              <ProductCategory 
+                icon="🫒" 
+                name="Oils"
+                image="https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+              />
+              <ProductCategory 
+                icon="☕" 
+                name="Beverages"
+                image="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+              />
+            </div>
+            <div className="text-center mt-12">
+              <button className="bg-gradient-to-r from-green-600 to-blue-600 text-white px-8 py-3 rounded-full font-semibold hover:from-green-700 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                View All Categories
+              </button>
             </div>
           </div>
         </section>
@@ -719,13 +779,44 @@ function FeatureCard({ icon, title, desc }: FeatureCardProps) {
 type ProductCategoryProps = {
   icon: string;
   name: string;
+  image?: string;
 };
 
-function ProductCategory({ icon, name }: ProductCategoryProps) {
+function ProductCategory({ icon, name, image }: ProductCategoryProps) {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
   return (
-    <div className="bg-white rounded-xl p-4 border border-gray-100 shadow hover:shadow-md transition-all duration-300 cursor-pointer hover:border-green-200 card-hover">
-      <div className="text-3xl mb-2 text-center">{icon}</div>
-      <h3 className="text-sm font-medium text-gray-800 text-center">{name}</h3>
+    <div className="product-category-card group" role="button" tabIndex={0} aria-label={`View ${name} products`}>
+      {image && !imageError ? (
+        <div className="product-category-image h-32 relative">
+          {!imageLoaded && (
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse"></div>
+          )}
+          <img 
+            src={image} 
+            alt={`${name} category`}
+            className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-110 ${
+              imageLoaded ? 'opacity-100' : 'opacity-0'
+            }`}
+            loading="lazy"
+            onLoad={() => setImageLoaded(true)}
+            onError={() => setImageError(true)}
+          />
+          <div className="absolute top-2 right-2 product-category-icon text-2xl rounded-full p-2 animate-float">
+            {icon}
+          </div>
+        </div>
+      ) : (
+        <div className="p-4 product-category-image h-32 flex items-center justify-center bg-gradient-to-br from-green-100 to-blue-100">
+          <div className="text-4xl animate-float">{icon}</div>
+        </div>
+      )}
+      <div className="product-category-title p-4">
+        <h3 className="text-sm font-semibold text-gray-800 text-center transition-colors duration-300 group-hover:text-green-700">
+          {name}
+        </h3>
+      </div>
     </div>
   );
 }
