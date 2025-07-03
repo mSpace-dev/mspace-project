@@ -47,7 +47,6 @@ export async function POST(req: NextRequest) {
       province: seller.province,
       address: seller.address,
       licenseNumber: seller.licenseNumber,
-      bankDetails: seller.bankDetails,
       isVerified: seller.isVerified,
       products: seller.products,
       createdAt: seller.createdAt,
