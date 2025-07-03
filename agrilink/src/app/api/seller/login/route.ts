@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { dbConnect } from '@/lib/dbConnect';
 import Seller from '@/lib/models/Seller';
+import Product from '@/lib/models/Product';
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,8 +18,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Find seller by email
-    const seller = await Seller.findOne({ email }).populate('products');
+    // Find seller by email (without populating products for login)
+    const seller = await Seller.findOne({ email });
     if (!seller) {
       return NextResponse.json(
         { error: 'Invalid credentials' },

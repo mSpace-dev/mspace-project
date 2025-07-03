@@ -218,7 +218,7 @@ export default function ProductEditModal({ product, isOpen, onClose, onSave, onD
                     name="name"
                     value={formData.name || ''}
                     onChange={handleInputChange}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                     required
                   />
                 </div>
@@ -231,7 +231,7 @@ export default function ProductEditModal({ product, isOpen, onClose, onSave, onD
                     name="category"
                     value={formData.category || ''}
                     onChange={handleInputChange}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                     required
                   >
                     {categories.map(category => (
@@ -251,7 +251,7 @@ export default function ProductEditModal({ product, isOpen, onClose, onSave, onD
                     name="variety"
                     value={formData.variety || ''}
                     onChange={handleInputChange}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                   />
                 </div>
 
@@ -264,7 +264,7 @@ export default function ProductEditModal({ product, isOpen, onClose, onSave, onD
                     value={formData.description || ''}
                     onChange={handleInputChange}
                     rows={3}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                   />
                 </div>
               </div>
@@ -285,7 +285,7 @@ export default function ProductEditModal({ product, isOpen, onClose, onSave, onD
                     onChange={handleInputChange}
                     step="0.01"
                     min="0"
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                     required
                   />
                 </div>
@@ -300,7 +300,7 @@ export default function ProductEditModal({ product, isOpen, onClose, onSave, onD
                     value={formData.availableQuantity || ''}
                     onChange={handleInputChange}
                     min="0"
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                     required
                   />
                 </div>
@@ -313,7 +313,7 @@ export default function ProductEditModal({ product, isOpen, onClose, onSave, onD
                     name="unit"
                     value={formData.unit || ''}
                     onChange={handleInputChange}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                   >
                     {units.map(unit => (
                       <option key={unit.value} value={unit.value}>
@@ -331,7 +331,7 @@ export default function ProductEditModal({ product, isOpen, onClose, onSave, onD
                     name="quality"
                     value={formData.quality || ''}
                     onChange={handleInputChange}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                   >
                     {qualities.map(quality => (
                       <option key={quality.value} value={quality.value}>
@@ -349,7 +349,7 @@ export default function ProductEditModal({ product, isOpen, onClose, onSave, onD
                     name="status"
                     value={formData.status || ''}
                     onChange={handleInputChange}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                   >
                     {statuses.map(status => (
                       <option key={status.value} value={status.value}>
@@ -374,7 +374,7 @@ export default function ProductEditModal({ product, isOpen, onClose, onSave, onD
                     name="harvestDate"
                     value={formData.harvestDate || ''}
                     onChange={handleInputChange}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                   />
                 </div>
 
@@ -387,7 +387,7 @@ export default function ProductEditModal({ product, isOpen, onClose, onSave, onD
                     name="expiryDate"
                     value={formData.expiryDate || ''}
                     onChange={handleInputChange}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                   />
                 </div>
               </div>
@@ -405,7 +405,7 @@ export default function ProductEditModal({ product, isOpen, onClose, onSave, onD
                     name="location.district"
                     value={formData.location?.district || ''}
                     onChange={handleInputChange}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                   >
                     <option value="">Select District</option>
                     {districts.map(district => (
@@ -422,7 +422,7 @@ export default function ProductEditModal({ product, isOpen, onClose, onSave, onD
                     name="location.province"
                     value={formData.location?.province || ''}
                     onChange={handleInputChange}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                   >
                     <option value="">Select Province</option>
                     {provinces.map(province => (
@@ -440,7 +440,7 @@ export default function ProductEditModal({ product, isOpen, onClose, onSave, onD
                     value={formData.location?.address || ''}
                     onChange={handleInputChange}
                     rows={2}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                   />
                 </div>
               </div>

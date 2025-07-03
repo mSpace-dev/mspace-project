@@ -17,12 +17,6 @@ interface Seller {
   province: string;
   address: string;
   licenseNumber?: string;
-  bankDetails: {
-    accountName: string;
-    accountNumber: string;
-    bankName: string;
-    branchCode: string;
-  };
   isVerified: boolean;
   products: string[];
   createdAt: string;
@@ -275,6 +269,10 @@ export default function SellerDashboard() {
     router.push('/seller');
   };
 
+  const navigateToHome = () => {
+    router.push('/home');
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'available': return 'bg-green-100 text-green-800';
@@ -316,8 +314,8 @@ export default function SellerDashboard() {
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-blue-700">AgriLink</h1>
+            <div className="flex items-center cursor-pointer" onClick={navigateToHome}>
+              <h1 className="text-2xl font-bold text-blue-700 hover:text-blue-600 transition-colors">AgriLink</h1>
               <span className="ml-2 text-sm text-gray-500">Seller Dashboard</span>
             </div>
             <div className="flex items-center space-x-4">
@@ -601,41 +599,19 @@ export default function SellerDashboard() {
                   </div>
                 </div>
 
-                <div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-4">Bank Details</h3>
-                  <div className="space-y-3">
-                    <div>
-                      <label className="text-sm font-medium text-gray-500">Account Name</label>
-                      <p className="text-gray-900">{seller.bankDetails.accountName}</p>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-500">Account Number</label>
-                      <p className="text-gray-900">{seller.bankDetails.accountNumber}</p>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-500">Bank Name</label>
-                      <p className="text-gray-900">{seller.bankDetails.bankName}</p>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-500">Branch Code</label>
-                      <p className="text-gray-900">{seller.bankDetails.branchCode}</p>
-                    </div>
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <div className="flex items-center">
+                    <div className={`w-3 h-3 rounded-full ${seller.isVerified ? 'bg-green-500' : 'bg-red-500'} mr-2`}></div>
+                    <span className="text-sm font-medium text-gray-900">
+                      Account Status: {seller.isVerified ? 'Verified' : 'Pending Verification'}
+                    </span>
                   </div>
+                  {!seller.isVerified && (
+                    <p className="text-sm text-gray-600 mt-2">
+                      Your account is pending verification. You can still add products, but they will be reviewed before going live.
+                    </p>
+                  )}
                 </div>
-              </div>
-
-              <div className="mt-6 pt-6 border-t border-gray-200">
-                <div className="flex items-center">
-                  <div className={`w-3 h-3 rounded-full ${seller.isVerified ? 'bg-green-500' : 'bg-red-500'} mr-2`}></div>
-                  <span className="text-sm font-medium text-gray-900">
-                    Account Status: {seller.isVerified ? 'Verified' : 'Pending Verification'}
-                  </span>
-                </div>
-                {!seller.isVerified && (
-                  <p className="text-sm text-gray-600 mt-2">
-                    Your account is pending verification. You can still add products, but they will be reviewed before going live.
-                  </p>
-                )}
               </div>
             </div>
           </div>
@@ -672,7 +648,7 @@ export default function SellerDashboard() {
                       value={productForm.name}
                       onChange={handleProductFormChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                       placeholder="Enter product name"
                     />
                   </div>
@@ -686,7 +662,7 @@ export default function SellerDashboard() {
                       value={productForm.category}
                       onChange={handleProductFormChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                     >
                       {categories.map(category => (
                         <option key={category.value} value={category.value}>{category.label}</option>
@@ -703,7 +679,7 @@ export default function SellerDashboard() {
                       name="variety"
                       value={productForm.variety}
                       onChange={handleProductFormChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                       placeholder="e.g., Red Lady, Ambul"
                     />
                   </div>
@@ -717,7 +693,7 @@ export default function SellerDashboard() {
                       value={productForm.quality}
                       onChange={handleProductFormChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                     >
                       {qualities.map(quality => (
                         <option key={quality.value} value={quality.value}>{quality.label}</option>
@@ -737,7 +713,7 @@ export default function SellerDashboard() {
                       required
                       min="0"
                       step="0.01"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                       placeholder="Enter price per kg"
                     />
                   </div>
@@ -754,14 +730,14 @@ export default function SellerDashboard() {
                         onChange={handleProductFormChange}
                         required
                         min="0"
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                         placeholder="Quantity"
                       />
                       <select
                         name="unit"
                         value={productForm.unit}
                         onChange={handleProductFormChange}
-                        className="px-3 py-2 border border-gray-300 border-l-0 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="px-3 py-2 border border-gray-300 border-l-0 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                       >
                         {units.map(unit => (
                           <option key={unit.value} value={unit.value}>{unit.label}</option>
@@ -779,7 +755,7 @@ export default function SellerDashboard() {
                       name="harvestDate"
                       value={productForm.harvestDate}
                       onChange={handleProductFormChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                     />
                   </div>
 
@@ -792,7 +768,7 @@ export default function SellerDashboard() {
                       name="expiryDate"
                       value={productForm.expiryDate}
                       onChange={handleProductFormChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                     />
                   </div>
                 </div>
@@ -806,7 +782,7 @@ export default function SellerDashboard() {
                     value={productForm.description}
                     onChange={handleProductFormChange}
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                     placeholder="Describe your product quality, farming methods, etc."
                   />
                 </div>
@@ -821,7 +797,7 @@ export default function SellerDashboard() {
                       value={productForm.location.district}
                       onChange={handleProductFormChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                     >
                       <option value="">Select district</option>
                       {districts.map(district => (
@@ -839,7 +815,7 @@ export default function SellerDashboard() {
                       value={productForm.location.province}
                       onChange={handleProductFormChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                     >
                       <option value="">Select province</option>
                       {provinces.map(province => (
@@ -859,7 +835,7 @@ export default function SellerDashboard() {
                     onChange={handleProductFormChange}
                     required
                     rows={2}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                     placeholder="Enter specific location or farm address"
                   />
                 </div>
@@ -973,7 +949,7 @@ export default function SellerDashboard() {
                       value={productForm.name}
                       onChange={handleProductFormChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                       placeholder="Enter product name"
                     />
                   </div>
@@ -987,7 +963,7 @@ export default function SellerDashboard() {
                       value={productForm.category}
                       onChange={handleProductFormChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                     >
                       {categories.map(category => (
                         <option key={category.value} value={category.value}>{category.label}</option>
@@ -1004,7 +980,7 @@ export default function SellerDashboard() {
                       name="variety"
                       value={productForm.variety}
                       onChange={handleProductFormChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                       placeholder="e.g., Red Lady, Ambul"
                     />
                   </div>
@@ -1018,7 +994,7 @@ export default function SellerDashboard() {
                       value={productForm.quality}
                       onChange={handleProductFormChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                     >
                       {qualities.map(quality => (
                         <option key={quality.value} value={quality.value}>{quality.label}</option>
@@ -1038,7 +1014,7 @@ export default function SellerDashboard() {
                       required
                       min="0"
                       step="0.01"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                       placeholder="Enter price per kg"
                     />
                   </div>
@@ -1055,14 +1031,14 @@ export default function SellerDashboard() {
                         onChange={handleProductFormChange}
                         required
                         min="0"
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                         placeholder="Quantity"
                       />
                       <select
                         name="unit"
                         value={productForm.unit}
                         onChange={handleProductFormChange}
-                        className="px-3 py-2 border border-gray-300 border-l-0 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="px-3 py-2 border border-gray-300 border-l-0 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                       >
                         {units.map(unit => (
                           <option key={unit.value} value={unit.value}>{unit.label}</option>
@@ -1080,7 +1056,7 @@ export default function SellerDashboard() {
                       name="harvestDate"
                       value={productForm.harvestDate}
                       onChange={handleProductFormChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                     />
                   </div>
 
@@ -1093,7 +1069,7 @@ export default function SellerDashboard() {
                       name="expiryDate"
                       value={productForm.expiryDate}
                       onChange={handleProductFormChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                     />
                   </div>
                 </div>
@@ -1107,7 +1083,7 @@ export default function SellerDashboard() {
                     value={productForm.description}
                     onChange={handleProductFormChange}
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                     placeholder="Describe your product quality, farming methods, etc."
                   />
                 </div>
@@ -1122,7 +1098,7 @@ export default function SellerDashboard() {
                       value={productForm.location.district}
                       onChange={handleProductFormChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                     >
                       <option value="">Select district</option>
                       {districts.map(district => (
@@ -1140,7 +1116,7 @@ export default function SellerDashboard() {
                       value={productForm.location.province}
                       onChange={handleProductFormChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                     >
                       <option value="">Select province</option>
                       {provinces.map(province => (
@@ -1160,7 +1136,7 @@ export default function SellerDashboard() {
                     onChange={handleProductFormChange}
                     required
                     rows={2}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                     placeholder="Enter specific location or farm address"
                   />
                 </div>
