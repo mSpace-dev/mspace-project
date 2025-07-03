@@ -805,6 +805,16 @@ function ProductCategory({ icon, name, image }: ProductCategoryProps) {
       ? `/${image}`
       : undefined;
 
+  // Set a timeout to show image if it takes too long to load
+  useEffect(() => {
+    if (imagePath && !imageError) {
+      const timer = setTimeout(() => {
+        setImageLoaded(true);
+      }, 1000); // Show image after 1 second regardless
+      return () => clearTimeout(timer);
+    }
+  }, [imagePath, imageError]);
+
   return (
     <div 
       className="product-category-card group cursor-pointer" 
@@ -816,10 +826,17 @@ function ProductCategory({ icon, name, image }: ProductCategoryProps) {
     >
       {imagePath && !imageError ? (
         <div className="product-category-image h-32 relative">
+          {!imageLoaded && (
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse flex items-center justify-center z-10">
+              <div className="text-2xl animate-pulse">{icon}</div>
+            </div>
+          )}
           <img 
             src={imagePath} 
             alt={`${name} category`}
-            className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
+            className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-110 ${
+              imageLoaded ? 'opacity-100 z-0' : 'opacity-0 z-0'
+            }`}
             loading="eager"
             onLoad={() => {
               console.log(`Image loaded: ${imagePath}`);
