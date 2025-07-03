@@ -18,8 +18,22 @@ export default function Home() {
           </p>
           <div className="mt-8 flex justify-center gap-4 flex-wrap">
             <a
+              href="/customer"
+              className="bg-green-600 hover:bg-green-700 text-white font-semibold px-8 py-4 rounded-xl shadow text-lg"
+            >
+              Customer Portal
+            </a>
+            <a
+              href="/seller"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-xl shadow text-lg"
+            >
+              Seller Portal
+            </a>
+          </div>
+          <div className="mt-4 flex justify-center gap-4 flex-wrap">
+            <a
               href="/prices"
-              className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-xl shadow"
+              className="bg-white border border-green-600 text-green-700 hover:bg-green-100 font-semibold px-6 py-3 rounded-xl shadow"
             >
               View Prices
             </a>
