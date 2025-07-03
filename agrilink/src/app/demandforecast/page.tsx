@@ -51,7 +51,7 @@ export default function PricePredictionApp() {
     setPrediction(null)
 
     try {
-      const response = await fetch("/api/predict", {
+      const response = await fetch("/api/demandforecast", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -148,7 +148,7 @@ export default function PricePredictionApp() {
           </h1>
           <p
             style={{
-              color: "#6b7280",
+              color: "#11b7280",
               fontSize: "18px",
               fontWeight: "500",
             }}
@@ -233,6 +233,7 @@ export default function PricePredictionApp() {
                       borderRadius: "12px",
                       fontSize: "16px",
                       background: "white",
+                      color: "#374151",
                       transition: "all 0.2s ease",
                       outline: "none",
                     }}
@@ -277,6 +278,7 @@ export default function PricePredictionApp() {
                       borderRadius: "12px",
                       fontSize: "16px",
                       background: "white",
+                      color: "#374151",
                       transition: "all 0.2s ease",
                       outline: "none",
                     }}
@@ -324,6 +326,7 @@ export default function PricePredictionApp() {
                       borderRadius: "12px",
                       fontSize: "16px",
                       background: "white",
+                      color: "#374151",
                       transition: "all 0.2s ease",
                       outline: "none",
                     }}
@@ -368,6 +371,7 @@ export default function PricePredictionApp() {
                       borderRadius: "12px",
                       fontSize: "16px",
                       background: "white",
+                      color: "#374151",
                       transition: "all 0.2s ease",
                       outline: "none",
                     }}
@@ -416,6 +420,7 @@ export default function PricePredictionApp() {
                       padding: "12px 16px",
                       borderRadius: "12px",
                       fontSize: "16px",
+                      color: "#374151",
                       transition: "all 0.2s ease",
                       outline: "none",
                     }}
@@ -456,6 +461,7 @@ export default function PricePredictionApp() {
                       borderRadius: "12px",
                       fontSize: "16px",
                       transition: "all 0.2s ease",
+                      color: "#374151",
                       outline: "none",
                     }}
                     onFocus={(e) => {
@@ -497,6 +503,7 @@ export default function PricePredictionApp() {
                       borderRadius: "12px",
                       fontSize: "16px",
                       transition: "all 0.2s ease",
+                      color: "#374151",
                       outline: "none",
                     }}
                     onFocus={(e) => {
@@ -517,6 +524,7 @@ export default function PricePredictionApp() {
                       fontSize: "14px",
                       fontWeight: "500",
                       color: "#374151",
+                      
                       marginBottom: "8px",
                     }}
                   >
@@ -535,6 +543,7 @@ export default function PricePredictionApp() {
                       padding: "12px 16px",
                       borderRadius: "12px",
                       fontSize: "16px",
+                      color: "#374151",
                       transition: "all 0.2s ease",
                       outline: "none",
                     }}
@@ -921,3 +930,5 @@ export default function PricePredictionApp() {
     </main>
   )
 }
+
+
