@@ -23,11 +23,11 @@ function TableView({
             <select
               value={filters.category}
               onChange={(e) => setFilters({...filters, category: e.target.value})}
-              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-gray-900 bg-white"
             >
-              <option value="">All Categories</option>
+              <option value="" className="text-gray-900">All Categories</option>
               {categories.map((cat: string) => (
-                <option key={cat} value={cat}>{cat}</option>
+                <option key={cat} value={cat} className="text-gray-900">{cat}</option>
               ))}
             </select>
           </div>
@@ -37,11 +37,11 @@ function TableView({
             <select
               value={filters.marketType}
               onChange={(e) => setFilters({...filters, marketType: e.target.value})}
-              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-gray-900 bg-white"
             >
-              <option value="">All Markets</option>
-              <option value="wholesale">Wholesale</option>
-              <option value="retail">Retail</option>
+              <option value="" className="text-gray-900">All Markets</option>
+              <option value="wholesale" className="text-gray-900">Wholesale</option>
+              <option value="retail" className="text-gray-900">Retail</option>
             </select>
           </div>
 
@@ -50,11 +50,11 @@ function TableView({
             <select
               value={filters.market}
               onChange={(e) => setFilters({...filters, market: e.target.value})}
-              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-gray-900 bg-white"
             >
-              <option value="">All Markets</option>
+              <option value="" className="text-gray-900">All Markets</option>
               {markets.map((market: string) => (
-                <option key={market} value={market}>{market}</option>
+                <option key={market} value={market} className="text-gray-900">{market}</option>
               ))}
             </select>
           </div>
@@ -66,7 +66,7 @@ function TableView({
               value={filters.commodity}
               onChange={(e) => setFilters({...filters, commodity: e.target.value})}
               placeholder="Search commodity..."
-              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-gray-900 bg-white placeholder-gray-500"
             />
           </div>
         </div>

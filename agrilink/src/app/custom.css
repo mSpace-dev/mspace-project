@@ -54,12 +54,13 @@ html {
 .product-category-card {
   position: relative;
   overflow: hidden;
-  border-radius: 12px;
+  border-radius: 16px;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
   box-shadow: 
     0 4px 8px rgba(0, 0, 0, 0.1),
     0 1px 3px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(229, 231, 235, 0.8);
 }
 
 .product-category-card:hover {
@@ -67,7 +68,8 @@ html {
   box-shadow: 
     0 20px 40px rgba(0, 0, 0, 0.15),
     0 8px 16px rgba(0, 0, 0, 0.1),
-    0 0 0 1px rgba(34, 197, 94, 0.2);
+    0 0 0 1px rgba(34, 197, 94, 0.3);
+  border-color: rgba(34, 197, 94, 0.2);
 }
 
 .product-category-card::before {
@@ -95,6 +97,19 @@ html {
   position: relative;
   overflow: hidden;
   background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-radius: 8px 8px 0 0;
+}
+
+.product-category-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: all 0.3s ease;
+}
+
+.product-category-card:hover .product-category-image img {
+  transform: scale(1.05);
 }
 
 .product-category-image::after {
@@ -103,14 +118,15 @@ html {
   bottom: 0;
   left: 0;
   right: 0;
-  height: 40%;
+  height: 30%;
   background: linear-gradient(
     to top,
-    rgba(0, 0, 0, 0.3) 0%,
+    rgba(0, 0, 0, 0.2) 0%,
     rgba(0, 0, 0, 0.1) 50%,
     transparent 100%
   );
   pointer-events: none;
+  z-index: 1;
 }
 
 .product-category-icon {
@@ -119,6 +135,8 @@ html {
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transition: all 0.3s ease;
+  z-index: 2;
+  position: relative;
 }
 
 .product-category-card:hover .product-category-icon {

@@ -218,11 +218,11 @@ export default function CustomerPage() {
                     value={formData.district}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900 bg-white"
                   >
-                    <option value="">Select your district</option>
+                    <option value="" className="text-gray-500">Select your district</option>
                     {districts.map(district => (
-                      <option key={district} value={district}>{district}</option>
+                      <option key={district} value={district} className="text-gray-900">{district}</option>
                     ))}
                   </select>
                 </div>
@@ -236,11 +236,11 @@ export default function CustomerPage() {
                     value={formData.province}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900 bg-white"
                   >
-                    <option value="">Select your province</option>
+                    <option value="" className="text-gray-500">Select your province</option>
                     {provinces.map(province => (
-                      <option key={province} value={province}>{province}</option>
+                      <option key={province} value={province} className="text-gray-900">{province}</option>
                     ))}
                   </select>
                 </div>

@@ -318,11 +318,11 @@ export default function Prices() {
               <select
                 value={filters.date}
                 onChange={(e) => setFilters({...filters, date: e.target.value})}
-                className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-gray-900 bg-white"
               >
-                <option value="">Latest</option>
+                <option value="" className="text-gray-900">Latest</option>
                 {availableDates.map(date => (
-                  <option key={date} value={date}>
+                  <option key={date} value={date} className="text-gray-900">
                     {new Date(date).toLocaleDateString()}
                   </option>
                 ))}
@@ -335,11 +335,11 @@ export default function Prices() {
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                  className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-gray-900 bg-white"
                 >
-                  <option value="">All Categories</option>
+                  <option value="" className="text-gray-900">All Categories</option>
                   {categories.map(cat => (
-                    <option key={cat} value={cat}>{cat}</option>
+                    <option key={cat} value={cat} className="text-gray-900">{cat}</option>
                   ))}
                 </select>
               </div>
