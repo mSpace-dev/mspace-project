@@ -112,14 +112,35 @@ export default function PricePredictionApp() {
   }
 
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        background: "linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 50%, #f0fdfa 100%)",
-        padding: "24px",
-        fontFamily: "system-ui, -apple-system, sans-serif",
-      }}
-    >
+    <div>
+      {/* Top Navigation */}
+      <nav className="bg-white shadow-sm sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4">
+            <div className="flex items-center cursor-pointer" onClick={() => window.location.href = '/home'}>
+              <h1 className="text-2xl font-bold text-green-700 hover:text-green-600 transition-colors">AgriLink</h1>
+              <span className="ml-2 text-sm text-gray-500">Sri Lanka</span>
+            </div>
+            
+            {/* Navigation Links */}
+            <div className="hidden md:flex items-center space-x-8">
+              <a href="/prices" className="text-gray-700 hover:text-green-600 transition-colors">Prices</a>
+              <a href="/alerts" className="text-gray-700 hover:text-green-600 transition-colors">Alerts</a>
+              <a href="/demandforecast" className="text-gray-700 hover:text-green-600 transition-colors font-medium">Forecasts</a>
+              <a href="/customer" className="btn-agrilink text-white px-4 py-2 rounded-lg">Log In</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+      
+      <main
+        style={{
+          minHeight: "100vh",
+          background: "linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 50%, #f0fdfa 100%)",
+          padding: "24px",
+          fontFamily: "system-ui, -apple-system, sans-serif",
+        }}
+      >
       <div
         style={{
           maxWidth: "1200px",
@@ -919,5 +940,6 @@ export default function PricePredictionApp() {
         }
       `}</style>
     </main>
+    </div>
   )
 }

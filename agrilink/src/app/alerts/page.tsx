@@ -1,6 +1,27 @@
 export default function Alerts() {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100">
+      {/* Top Navigation */}
+      <nav className="bg-white shadow-sm sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4">
+            <div className="flex items-center cursor-pointer" onClick={() => window.location.href = '/home'}>
+              <h1 className="text-2xl font-bold text-green-700 hover:text-green-600 transition-colors">AgriLink</h1>
+              <span className="ml-2 text-sm text-gray-500">Sri Lanka</span>
+            </div>
+            
+            {/* Navigation Links */}
+            <div className="hidden md:flex items-center space-x-8">
+              <a href="/prices" className="text-gray-700 hover:text-green-600 transition-colors">Prices</a>
+              <a href="/alerts" className="text-gray-700 hover:text-green-600 transition-colors font-medium">Alerts</a>
+              <a href="/demandforecast" className="text-gray-700 hover:text-green-600 transition-colors">Forecasts</a>
+              <a href="/customer" className="btn-agrilink text-white px-4 py-2 rounded-lg">Log In</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+      
+      <main className="bg-gradient-to-br from-green-50 via-white to-green-100">
       <div className="container mx-auto px-6 py-20">
         <h1 className="text-4xl md:text-6xl font-bold text-green-700 mb-8 text-center">
           Price Alerts
@@ -17,5 +38,6 @@ export default function Alerts() {
         </div>
       </div>
     </main>
+    </div>
   );
 }
