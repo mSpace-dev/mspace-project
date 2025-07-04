@@ -83,7 +83,7 @@ export default function EmailCampaignPage() {
       if (response.ok) {
         setNotification({
           type: "success",
-          message: `Email sent successfully to ${result.sentCount} subscribers!`,
+          message: `Email campaign sent successfully to ${result.sentCount} subscribers! Check the campaign history to view details.`,
         });
         setSubject("");
         setMessage("");
@@ -149,6 +149,15 @@ export default function EmailCampaignPage() {
               </div>
             </div>
             <div className="flex items-center space-x-4">
+              <button
+                onClick={() => router.push('/admin/campaign-history')}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm flex items-center"
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                View History
+              </button>
               <span className="text-sm text-gray-600">Welcome, {admin.name}</span>
               <button
                 onClick={handleLogout}

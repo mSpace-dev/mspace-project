@@ -21,9 +21,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Send the email campaign
-    const sentCount = await sendBulkCustomEmail(subject.trim(), message.trim());
+    const result = await sendBulkCustomEmail(subject.trim(), message.trim(), 'Admin Dashboard');
 
-    if (sentCount === 0) {
+    if (result.successCount === 0) {
       return NextResponse.json(
         { error: 'No subscribers found or email service is not configured' },
         { status: 400 }
@@ -32,8 +32,10 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      sentCount,
-      message: `Email campaign sent successfully to ${sentCount} subscribers`
+      sentCount: result.successCount,
+      totalRecipients: result.recipientEmails.length,
+      message: `Email campaign sent successfully to ${result.successCount} subscribers`,
+      timestamp: new Date().toISOString()
     });
 
   } catch (error) {
