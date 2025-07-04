@@ -291,7 +291,7 @@ export default function Prices() {
             Price Table
           </button>
           
-          <button
+          {/* <button
             onClick={() => setCurrentView('commodity-cards')}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition ${
               currentView === 'commodity-cards' 
@@ -301,7 +301,7 @@ export default function Prices() {
           >
             <Grid3X3 className="w-5 h-5" />
             Commodity Cards
-          </button>
+          </button> */}
           
           <button
             onClick={() => setCurrentView('category-charts')}
