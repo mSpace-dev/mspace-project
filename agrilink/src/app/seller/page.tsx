@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function SellerPage() {
-  const [isLogin, setIsLogin] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -59,17 +58,12 @@ export default function SellerPage() {
     setSuccess('');
 
     try {
-      const url = isLogin ? '/api/seller/login' : '/api/seller/register';
-      const payload = isLogin 
-        ? { email: formData.email, password: formData.password }
-        : formData;
-
-      const response = await fetch(url, {
+      const response = await fetch('/api/seller/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(formData),
       });
 
       const data = await response.json();
@@ -96,7 +90,7 @@ export default function SellerPage() {
   };
 
   const toggleForm = () => {
-    setIsLogin(!isLogin);
+    // No longer needed - this is registration only
     setError('');
     setSuccess('');
     setFormData({
@@ -138,13 +132,10 @@ export default function SellerPage() {
         <div className="bg-white rounded-2xl shadow-lg p-8">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-blue-700 mb-2">
-              {isLogin ? 'Welcome Back!' : 'Join AgriLink as a Seller'}
+              Join AgriLink as a Seller
             </h2>
             <p className="text-gray-600">
-              {isLogin 
-                ? 'Sign in to access your seller dashboard' 
-                : 'Start selling your agricultural products and reach more customers'
-              }
+              Start selling your agricultural products and reach more customers
             </p>
           </div>
 
@@ -161,39 +152,37 @@ export default function SellerPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {!isLogin && (
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Full Name *
-                  </label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter your full name"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Phone Number *
-                  </label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter your phone number"
-                  />
-                </div>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Full Name *
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter your full name"
+                />
               </div>
-            )}
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Phone Number *
+                </label>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter your phone number"
+                />
+              </div>
+            </div>
 
             <div className="grid md:grid-cols-2 gap-6">
               <div>
@@ -228,37 +217,40 @@ export default function SellerPage() {
               </div>
             </div>
 
-            {!isLogin && (
-              <>
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Business Name *
-                    </label>
-                    <input
-                      type="text"
-                      name="businessName"
-                      value={formData.businessName}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="Enter your business name"
-                    />
-                  </div>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Business Name *
+                </label>
+                <input
+                  type="text"
+                  name="businessName"
+                  value={formData.businessName}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter your business name"
+                />
+              </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Business Type *
-                    </label>
-                    <select
-                      name="businessType"
-                      value={formData.businessType}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-                    >
-                      <option value="" className="text-gray-500">Select business type</option>
-                      {businessTypes.map(type => (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Business Type *
+                </label>
+                <select
+                  name="businessType"
+                  value={formData.businessType}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+                >
+                  <option value="" className="text-gray-500">Select business type</option>
+                  {businessTypes.map(type => (
+                    <option key={type.value} value={type.value} className="text-gray-900">{type.label}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
                         <option key={type.value} value={type.value} className="text-gray-900">{type.label}</option>
                       ))}
                     </select>

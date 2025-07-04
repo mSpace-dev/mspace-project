@@ -201,7 +201,7 @@ export default function Home() {
                 <a href="/prices" className="text-gray-700 hover:text-green-600 transition-colors">Prices</a>
                 <a href="/alerts" className="text-gray-700 hover:text-green-600 transition-colors">Alerts</a>
                 <a href="/demandforecast" className="text-gray-700 hover:text-green-600 transition-colors">Forecasts</a>
-                <a href="/customer" className="btn-agrilink text-white px-4 py-2 rounded-lg">Log In</a>
+                <a href="/login" className="btn-agrilink text-white px-4 py-2 rounded-lg">Log In</a>
               </div>
 
               {/* Mobile Menu Button */}
@@ -228,7 +228,7 @@ export default function Home() {
                   <a href="/prices" className="text-gray-700 hover:text-green-600 transition-colors">Prices</a>
                   <a href="/alerts" className="text-gray-700 hover:text-green-600 transition-colors">Alerts</a>
                   <a href="/demandforecast" className="text-gray-700 hover:text-green-600 transition-colors">Forecasts</a>
-                  <a href="/customer" className="btn-agrilink text-white px-4 py-2 rounded-lg text-center">Log In</a>
+                  <a href="/login" className="btn-agrilink text-white px-4 py-2 rounded-lg text-center">Log In</a>
                 </div>
               </div>
             )}
