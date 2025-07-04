@@ -202,15 +202,29 @@ export default function AdminDashboard() {
                     </div>
                     <div className="ml-4">
                       <h3 className="text-lg font-medium text-gray-900">Email Campaign</h3>
-                      <p className="text-sm text-gray-500">Send emails to all subscribed users about offers, new services, or platform updates</p>
+                      <p className="text-sm text-gray-500">Send emails to all subscribed users and view campaign history</p>
                     </div>
                   </div>
-                  <button
-                    onClick={() => router.push('/admin/email-campaign')}
-                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
-                  >
-                    Send Email Campaign
-                  </button>
+                  <div className="flex space-x-3">
+                    <button
+                      onClick={() => router.push('/admin/campaign-history')}
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center"
+                    >
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      View History
+                    </button>
+                    <button
+                      onClick={() => router.push('/admin/email-campaign')}
+                      className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center"
+                    >
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      </svg>
+                      Send Campaign
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

@@ -321,7 +321,7 @@ export const createCustomEmailTemplate = (subject: string, message: string): Ema
   `
 });
 
-export async function sendBulkCustomEmail(subject: string, message: string): Promise<number> {
+export async function sendBulkCustomEmail(subject: string, message: string, sentBy?: string): Promise<{ successCount: number; recipientEmails: string[] }> {
   try {
     await dbConnect();
     
@@ -330,19 +330,22 @@ export async function sendBulkCustomEmail(subject: string, message: string): Pro
     
     if (subscribers.length === 0) {
       console.log('No subscribers found for bulk notification');
-      return 0;
+      return { successCount: 0, recipientEmails: [] };
     }
 
     const emails = subscribers.map((sub: any) => sub.email);
     const template = createCustomEmailTemplate(subject, message);
     const batchSize = 50; // Send in batches to avoid rate limits
     let successCount = 0;
+    let errorCount = 0;
 
     for (let i = 0; i < emails.length; i += batchSize) {
       const batch = emails.slice(i, i + batchSize);
       const success = await sendEmail(batch, template);
       if (success) {
         successCount += batch.length;
+      } else {
+        errorCount += batch.length;
       }
       
       // Small delay between batches
@@ -351,10 +354,35 @@ export async function sendBulkCustomEmail(subject: string, message: string): Pro
       }
     }
 
+    // Save campaign history to database
+    try {
+      const EmailCampaign = (await import('@/lib/models/EmailCampaign')).default;
+      
+      const campaignStatus = errorCount === 0 ? 'sent' : 
+                           successCount === 0 ? 'failed' : 'partial';
+
+      await EmailCampaign.create({
+        subject,
+        message,
+        sentAt: new Date(),
+        sentToCount: successCount,
+        sentBy: sentBy || 'Admin',
+        recipientEmails: emails,
+        status: campaignStatus,
+        errorCount,
+        campaignType: 'manual'
+      });
+
+      console.log(`Campaign saved to database: ${successCount}/${emails.length} successful sends`);
+    } catch (saveError) {
+      console.error('Failed to save campaign to database:', saveError);
+      // Don't fail the email sending if database save fails
+    }
+
     console.log(`Bulk custom email sent to ${successCount}/${emails.length} subscribers`);
-    return successCount;
+    return { successCount, recipientEmails: emails };
   } catch (error) {
     console.error('Failed to send bulk custom email:', error);
-    return 0;
+    return { successCount: 0, recipientEmails: [] };
   }
 }

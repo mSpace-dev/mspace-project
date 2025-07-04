@@ -379,21 +379,6 @@ export default function Home() {
                   Seller Portal
                 </a>
               </div>
-
-              <div className="flex justify-center gap-4 flex-wrap">
-                <a
-                  href="/prices"
-                  className="bg-white border border-green-600 text-green-700 hover:bg-green-50 font-semibold px-6 py-3 rounded-xl shadow transition-all duration-200 hover:-translate-y-1"
-                >
-                  View Current Prices
-                </a>
-                <a
-                  href="/alerts"
-                  className="bg-white border border-green-600 text-green-700 hover:bg-green-50 font-semibold px-6 py-3 rounded-xl shadow transition-all duration-200 hover:-translate-y-1"
-                >
-                  Subscribe to Alerts
-                </a>
-              </div>
             </div>
           </div>
         </section>
