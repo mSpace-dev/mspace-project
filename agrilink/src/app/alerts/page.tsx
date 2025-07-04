@@ -251,15 +251,19 @@ export default function Alerts() {
                         if (e.target.value) addCategory(key, e.target.value);
                         e.target.value = "";
                       }}
-                      className="border-gray-300 rounded-lg p-2"
+                      className="w-full bg-white text-gray-400 border-gray-300 rounded-lg p-2 focus:ring-green-300 focus:outline-none"
                     >
-                      <option value="" disabled>
+                      <option value="" disabled className="text-gray-400">
                         Select category
                       </option>
                       {categoryOptions
                         .filter((opt) => !subs.categories.includes(opt))
                         .map((opt) => (
-                          <option key={opt} value={opt}>
+                          <option
+                            key={opt}
+                            value={opt}
+                            className="text-gray-800"
+                          >
                             {opt}
                           </option>
                         ))}
@@ -292,7 +296,7 @@ export default function Alerts() {
                         if (e.target.value) addCrop(key, e.target.value);
                         e.target.value = "";
                       }}
-                      className="border-gray-300 rounded-lg p-2"
+                      className="w-full bg-white text-gray-400 border-gray-300 rounded-lg p-2 focus:ring-green-300 focus:outline-none"
                       disabled={subs.categories.length === 0}
                     >
                       <option value="" disabled>
@@ -303,7 +307,11 @@ export default function Alerts() {
                       {availableCrops
                         .filter((opt) => !subs.crops.includes(opt))
                         .map((opt) => (
-                          <option key={opt} value={opt}>
+                          <option
+                            key={opt}
+                            value={opt}
+                            className="text-gray-800"
+                          >
                             {opt}
                           </option>
                         ))}
@@ -332,11 +340,11 @@ export default function Alerts() {
                   <select
                     value={subs.location}
                     onChange={(e) => handleLocationChange(key, e.target.value)}
-                    className="w-full border-gray-300 rounded-lg p-2 mb-4"
+                    className="w-full bg-white text-gray-400 border-gray-300 rounded-lg p-2 focus:ring-green-300 focus:outline-none"
                   >
                     <option value="">Select Location</option>
                     {locationOptions.map((loc) => (
-                      <option key={loc} value={loc}>
+                      <option key={loc} value={loc} className="text-gray-800">
                         {loc}
                       </option>
                     ))}
