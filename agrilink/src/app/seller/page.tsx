@@ -251,100 +251,93 @@ export default function SellerPage() {
                 </select>
               </div>
             </div>
-                        <option key={type.value} value={type.value} className="text-gray-900">{type.label}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
 
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      District *
-                    </label>
-                    <select
-                      name="district"
-                      value={formData.district}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-                      style={{ color: '#111827' }}
-                    >
-                      <option value="" className="text-gray-500" style={{ color: '#9CA3AF' }}>Select your district</option>
-                      {districts.map(district => (
-                        <option key={district} value={district} className="text-gray-900" style={{ color: '#111827' }}>{district}</option>
-                      ))}
-                    </select>
-                  </div>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  District *
+                </label>
+                <select
+                  name="district"
+                  value={formData.district}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+                  style={{ color: '#111827' }}
+                >
+                  <option value="" className="text-gray-500" style={{ color: '#9CA3AF' }}>Select your district</option>
+                  {districts.map(district => (
+                    <option key={district} value={district} className="text-gray-900" style={{ color: '#111827' }}>{district}</option>
+                  ))}
+                </select>
+              </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Province *
-                    </label>
-                    <select
-                      name="province"
-                      value={formData.province}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-                    >
-                      <option value="" className="text-gray-500">Select your province</option>
-                      {provinces.map(province => (
-                        <option key={province} value={province} className="text-gray-900">{province}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Province *
+                </label>
+                <select
+                  name="province"
+                  value={formData.province}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+                >
+                  <option value="" className="text-gray-500">Select your province</option>
+                  {provinces.map(province => (
+                    <option key={province} value={province} className="text-gray-900">{province}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Business Address *
-                  </label>
-                  <textarea
-                    name="address"
-                    value={formData.address}
-                    onChange={handleInputChange}
-                    required
-                    rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter your complete business address"
-                  />
-                </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Business Address *
+              </label>
+              <textarea
+                name="address"
+                value={formData.address}
+                onChange={handleInputChange}
+                required
+                rows={3}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter your complete business address"
+              />
+            </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    License Number (Optional)
-                  </label>
-                  <input
-                    type="text"
-                    name="licenseNumber"
-                    value={formData.licenseNumber}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter your business license number"
-                  />
-                </div>
-              </>
-            )}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                License Number (Optional)
+              </label>
+              <input
+                type="text"
+                name="licenseNumber"
+                value={formData.licenseNumber}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter your business license number"
+              />
+            </div>
 
             <button
               type="submit"
               disabled={loading}
               className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 px-4 rounded-lg transition duration-200"
             >
-              {loading ? 'Please wait...' : (isLogin ? 'Sign In' : 'Register as Seller')}
+              {loading ? 'Creating Account...' : 'Register as Seller'}
             </button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-gray-600">
-              {isLogin ? "Don't have an account? " : "Already have an account? "}
-              <button
-                onClick={toggleForm}
+              Already have an account?{' '}
+              <a
+                href="/login"
                 className="text-blue-600 hover:text-blue-700 font-medium"
               >
-                {isLogin ? 'Register' : 'Sign In'}
-              </button>
+                Sign In
+              </a>
             </p>
           </div>
         </div>

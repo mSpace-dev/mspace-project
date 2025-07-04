@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { dbConnect } from '@/lib/dbConnect';
 import Admin from '@/lib/models/Admin';
+import { generateToken, generateRefreshToken } from '@/lib/jwt';
 
 export async function POST(req: NextRequest) {
   try {
@@ -39,6 +40,17 @@ export async function POST(req: NextRequest) {
     admin.lastLogin = new Date();
     await admin.save();
 
+    // Generate JWT tokens
+    const jwtPayload = {
+      adminId: admin._id.toString(),
+      email: admin.email,
+      role: admin.role,
+      permissions: admin.permissions,
+    };
+
+    const accessToken = generateToken(jwtPayload);
+    const refreshToken = generateRefreshToken(jwtPayload);
+
     // Return success response without password
     const adminResponse = {
       _id: admin._id,
@@ -55,7 +67,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       { 
         message: 'Login successful', 
-        admin: adminResponse 
+        admin: adminResponse,
+        accessToken,
+        refreshToken,
+        expiresIn: '24h'
       },
       { status: 200 }
     );

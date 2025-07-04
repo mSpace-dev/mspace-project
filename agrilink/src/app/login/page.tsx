@@ -41,7 +41,12 @@ export default function LoginPage() {
       if (adminResponse.ok) {
         const adminData = await adminResponse.json();
         setSuccess(adminData.message);
+        
+        // Store both admin data and tokens
         localStorage.setItem('admin', JSON.stringify(adminData.admin));
+        localStorage.setItem('adminAccessToken', adminData.accessToken);
+        localStorage.setItem('adminRefreshToken', adminData.refreshToken);
+        
         setTimeout(() => {
           router.push('/admin');
         }, 1000);
