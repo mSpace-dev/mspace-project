@@ -1,17 +1,23 @@
 {
-  "buildCommand": "npm run build",
-  "installCommand": "npm install",
-  "framework": "nextjs",
-  "redirects": [
+  "builds": [
     {
-      "source": "/",
-      "destination": "/home",
-      "permanent": false
+      "src": "package.json",
+      "use": "@vercel/node"
     }
   ],
-  "functions": {
-    "src/app/api/**/*.ts": {
-      "runtime": "@vercel/node"
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/"
     }
+  ],
+  "env": {
+    "MONGODB_URI": "@mongodb_uri",
+    "SMTP_HOST": "@smtp_host",
+    "SMTP_PORT": "@smtp_port", 
+    "SMTP_USER": "@smtp_user",
+    "SMTP_PASS": "@smtp_pass",
+    "NEXT_PUBLIC_BASE_URL": "@next_public_base_url",
+    "CRON_SECRET": "@cron_secret"
   }
 }
