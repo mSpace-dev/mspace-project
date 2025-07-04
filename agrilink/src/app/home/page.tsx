@@ -46,6 +46,7 @@ export default function Home() {
   ];
 
   const navigateToHome = () => {
+    // Always navigate to home page when AgriLink logo is clicked
     window.location.href = '/home';
   };
 
