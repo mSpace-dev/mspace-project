@@ -150,9 +150,9 @@ export default function Partners() {
             <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 col-span-2 md:col-span-2">
               <div className="text-center">
                 <img 
-                  src="/images/partners/mobitel-logo.jpg" 
+                  src="/images/partners/mobitel.jpg" 
                   alt="Mobitel"
-                  className="h-26 mx-auto mb-12 object-contain"
+                  className="h-16 mx-auto mb-4 object-contain"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
                     target.style.display = 'none';
