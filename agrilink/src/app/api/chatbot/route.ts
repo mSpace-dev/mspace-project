@@ -1,21 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
-import OpenAI from 'openai';
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+// Gemini API endpoint and key
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
 
 async function getBotResponse(message: string): Promise<string> {
   try {
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
-      messages: [
-        { role: 'system', content: 'You are an agricultural assistant for Sri Lanka. Answer concisely and factually.' },
-        { role: 'user', content: message }
-      ],
-      max_tokens: 100,
+    const res = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: message }] }]
+      })
     });
-    return completion.choices[0].message.content || "Sorry, I couldn't generate a response.";
+    const data = await res.json();
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    return text || "Sorry, I couldn't generate a response.";
   } catch (error) {
-    console.error('OpenAI error:', error);
+    console.error('Gemini error:', error);
     return 'Sorry, there was an error generating a response.';
   }
 }
@@ -33,7 +35,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate bot response using OpenAI
+    // Generate bot response using Gemini
     const botResponse = await getBotResponse(message);
 
     // Log conversation (in production, save to database)

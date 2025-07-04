@@ -1,5 +1,4 @@
 import Head from "next/head";
-import Chatbot from "../components/chatbot";
 
 export default function Home() {
   return (
@@ -15,7 +14,8 @@ export default function Home() {
             Welcome to AgriLink
           </h1>
           <p className="text-gray-600 text-lg md:text-xl max-w-2xl mx-auto">
-            Real-time, AI-powered agricultural price alerts and insights tailored for Sri Lankan farmers, sellers, and consumers.
+            Real-time, AI-powered agricultural price alerts and insights tailored
+            for Sri Lankan farmers, sellers, and consumers.
           </p>
           <div className="mt-8 flex justify-center gap-4 flex-wrap">
             <a
@@ -72,7 +72,12 @@ export default function Home() {
             Chat with AgriLink
           </h2>
           <div className="flex justify-center">
-            <Chatbot />
+            <a
+              href="/chatbot"
+              className="bg-green-600 hover:bg-green-700 text-white font-semibold px-8 py-4 rounded-xl shadow text-lg transition"
+            >
+              Go to Chatbot
+            </a>
           </div>
         </section>
       </main>
