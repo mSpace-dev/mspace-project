@@ -8,12 +8,12 @@ import os
 from dotenv import load_dotenv
 
 # Load environment variables
-load_dotenv('../.env')
+load_dotenv('pricefetch\.env')
 
 class PriceDataParser:
     def __init__(self, mongodb_uri: str = None, db_name: str = "Agrilink"):
         self.mongodb_uri = mongodb_uri or os.getenv('MONGODB_URI', 'mongodb://localhost:27017/')
-        self.db_name = db_name or os.getenv('DB_NAME', 'agrilink')
+        self.db_name = db_name or os.getenv('DB_NAME', 'Agrilink')
         self.client = None
         self.db = None
         
