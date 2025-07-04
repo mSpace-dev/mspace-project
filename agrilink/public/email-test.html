@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriLink Email Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            color: #16a34a;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #16a34a;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background: #15803d;
+        }
+        button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        .success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+        .config {
+            background: #e0f2fe;
+            color: #0c4a6e;
+            border: 1px solid #0ea5e9;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #16a34a;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📧 AgriLink Email Test</h1>
+            <p>Test your email configuration and send test emails</p>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email Address:</label>
+            <input type="email" id="email" placeholder="Enter your email address" required>
+        </div>
+
+        <div class="form-group">
+            <label for="testType">Test Type:</label>
+            <select id="testType">
+                <option value="simple">Simple Test Email</option>
+                <option value="welcome">Welcome Email Template</option>
+                <option value="price_alert">Price Alert Template</option>
+                <option value="test_connection">Test Configuration Only</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <button onclick="checkConfig()">Check Email Configuration</button>
+            <button onclick="sendTestEmail()">Send Test Email</button>
+            <button onclick="testNewsletterSubscription()">Test Newsletter Subscription</button>
+        </div>
+
+        <div id="loading" class="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>Processing...</p>
+        </div>
+
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function showResult(message, type) {
+            hideLoading();
+            const resultDiv = document.getElementById('result');
+            resultDiv.className = `result ${type}`;
+            resultDiv.innerHTML = message;
+            resultDiv.style.display = 'block';
+        }
+
+        async function checkConfig() {
+            showLoading();
+            try {
+                const response = await fetch('/api/test-email');
+                const data = await response.json();
+                
+                const configHtml = `
+                    <h3>Email Configuration Status</h3>
+                    <ul>
+                        <li><strong>SMTP Host:</strong> ${data.configuration.smtp_host}</li>
+                        <li><strong>SMTP Port:</strong> ${data.configuration.smtp_port}</li>
+                        <li><strong>SMTP User:</strong> ${data.configuration.smtp_user}</li>
+                        <li><strong>SMTP Password:</strong> ${data.configuration.smtp_pass}</li>
+                    </ul>
+                    <p><strong>Available Test Types:</strong> ${data.available_types.join(', ')}</p>
+                    <p><em>${data.instructions}</em></p>
+                `;
+                
+                showResult(configHtml, 'config');
+            } catch (error) {
+                showResult(`Error checking configuration: ${error.message}`, 'error');
+            }
+        }
+
+        async function sendTestEmail() {
+            const email = document.getElementById('email').value;
+            const type = document.getElementById('testType').value;
+
+            if (!email) {
+                showResult('Please enter an email address', 'error');
+                return;
+            }
+
+            showLoading();
+            try {
+                const response = await fetch('/api/test-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, type }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showResult(`
+                        <h3>✅ Test Email Sent Successfully!</h3>
+                        <p><strong>Email:</strong> ${data.email}</p>
+                        <p><strong>Type:</strong> ${data.type}</p>
+                        <p><strong>Success:</strong> ${data.success}</p>
+                        <p>Check your inbox for the test email. If you don't see it, check your spam folder.</p>
+                    `, 'success');
+                } else {
+                    showResult(`
+                        <h3>❌ Test Email Failed</h3>
+                        <p><strong>Error:</strong> ${data.error}</p>
+                        ${data.details ? `<p><strong>Details:</strong> ${data.details}</p>` : ''}
+                        <p>Please check your email configuration in the .env file.</p>
+                    `, 'error');
+                }
+            } catch (error) {
+                showResult(`Network error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testNewsletterSubscription() {
+            const email = document.getElementById('email').value;
+
+            if (!email) {
+                showResult('Please enter an email address', 'error');
+                return;
+            }
+
+            showLoading();
+            try {
+                const response = await fetch('/api/newsletter', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showResult(`
+                        <h3>✅ Newsletter Subscription Successful!</h3>
+                        <p><strong>Message:</strong> ${data.message}</p>
+                        <p><strong>Email:</strong> ${data.subscription.email}</p>
+                        <p><strong>Active:</strong> ${data.subscription.isActive}</p>
+                        <p>Check your inbox for a welcome email!</p>
+                    `, 'success');
+                } else {
+                    showResult(`
+                        <h3>❌ Newsletter Subscription Failed</h3>
+                        <p><strong>Error:</strong> ${data.error}</p>
+                    `, 'error');
+                }
+            } catch (error) {
+                showResult(`Network error: ${error.message}`, 'error');
+            }
+        }
+
+        // Auto-check configuration on page load
+        window.onload = function() {
+            checkConfig();
+        };
+    </script>
+</body>
+</html>

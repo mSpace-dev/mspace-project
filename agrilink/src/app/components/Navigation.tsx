@@ -37,7 +37,7 @@ export default function Navigation() {
             <a href="/demandforecast" className="text-gray-700 hover:text-green-600 transition-colors">
               Forecasts
             </a>
-            <a href="/customer" className="btn-agrilink text-white px-4 py-2 rounded-lg">
+            <a href="/login" className="btn-agrilink text-white px-4 py-2 rounded-lg">
               Log In
             </a>
           </div>
@@ -72,7 +72,7 @@ export default function Navigation() {
               <a href="/demandforecast" className="text-gray-700 hover:text-green-600 transition-colors">
                 Forecasts
               </a>
-              <a href="/customer" className="btn-agrilink text-white px-4 py-2 rounded-lg text-center">
+              <a href="/login" className="btn-agrilink text-white px-4 py-2 rounded-lg text-center">
                 Log In
               </a>
             </div>

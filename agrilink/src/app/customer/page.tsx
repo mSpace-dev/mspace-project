@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function CustomerPage() {
-  const [isLogin, setIsLogin] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -47,17 +46,12 @@ export default function CustomerPage() {
     setSuccess('');
 
     try {
-      const url = isLogin ? '/api/customer/login' : '/api/customer/register';
-      const payload = isLogin 
-        ? { email: formData.email, password: formData.password }
-        : formData;
-
-      const response = await fetch(url, {
+      const response = await fetch('/api/customer/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(formData),
       });
 
       const data = await response.json();
@@ -71,7 +65,7 @@ export default function CustomerPage() {
       // Store customer data in localStorage
       localStorage.setItem('customer', JSON.stringify(data.customer));
       
-      // Redirect to dashboard after successful login/registration
+      // Redirect to dashboard after successful registration
       setTimeout(() => {
         router.push('/customer/dashboard');
       }, 1000);
@@ -84,7 +78,7 @@ export default function CustomerPage() {
   };
 
   const toggleForm = () => {
-    setIsLogin(!isLogin);
+    // No longer needed - this is registration only
     setError('');
     setSuccess('');
     setFormData({
@@ -122,13 +116,10 @@ export default function CustomerPage() {
         <div className="bg-white rounded-2xl shadow-lg p-8">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-green-700 mb-2">
-              {isLogin ? 'Welcome Back!' : 'Join AgriLink'}
+              Join AgriLink
             </h2>
             <p className="text-gray-600">
-              {isLogin 
-                ? 'Sign in to access your dashboard' 
-                : 'Create your account to get started with price alerts'
-              }
+              Create your account to get started with price alerts
             </p>
           </div>
 
@@ -145,22 +136,20 @@ export default function CustomerPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {!isLogin && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                  placeholder="Enter your full name"
-                />
-              </div>
-            )}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Full Name
+              </label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                placeholder="Enter your full name"
+              />
+            </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -193,79 +182,75 @@ export default function CustomerPage() {
               />
             </div>
 
-            {!isLogin && (
-              <>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Phone Number
-                  </label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                    placeholder="Enter your phone number"
-                  />
-                </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleInputChange}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                placeholder="Enter your phone number"
+              />
+            </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    District
-                  </label>
-                  <select
-                    name="district"
-                    value={formData.district}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900 bg-white"
-                  >
-                    <option value="" className="text-gray-500">Select your district</option>
-                    {districts.map(district => (
-                      <option key={district} value={district} className="text-gray-900">{district}</option>
-                    ))}
-                  </select>
-                </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                District
+              </label>
+              <select
+                name="district"
+                value={formData.district}
+                onChange={handleInputChange}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900 bg-white"
+              >
+                <option value="" className="text-gray-500">Select your district</option>
+                {districts.map(district => (
+                  <option key={district} value={district} className="text-gray-900">{district}</option>
+                ))}
+              </select>
+            </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Province
-                  </label>
-                  <select
-                    name="province"
-                    value={formData.province}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900 bg-white"
-                  >
-                    <option value="" className="text-gray-500">Select your province</option>
-                    {provinces.map(province => (
-                      <option key={province} value={province} className="text-gray-900">{province}</option>
-                    ))}
-                  </select>
-                </div>
-              </>
-            )}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Province
+              </label>
+              <select
+                name="province"
+                value={formData.province}
+                onChange={handleInputChange}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900 bg-white"
+              >
+                <option value="" className="text-gray-500">Select your province</option>
+                {provinces.map(province => (
+                  <option key={province} value={province} className="text-gray-900">{province}</option>
+                ))}
+              </select>
+            </div>
 
             <button
               type="submit"
               disabled={loading}
               className="w-full bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white font-semibold py-3 px-4 rounded-lg transition duration-200"
             >
-              {loading ? 'Please wait...' : (isLogin ? 'Sign In' : 'Create Account')}
+              {loading ? 'Creating Account...' : 'Create Account'}
             </button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-gray-600">
-              {isLogin ? "Don't have an account? " : "Already have an account? "}
-              <button
-                onClick={toggleForm}
+              Already have an account?{' '}
+              <a
+                href="/login"
                 className="text-green-600 hover:text-green-700 font-medium"
               >
-                {isLogin ? 'Sign Up' : 'Sign In'}
-              </button>
+                Sign In
+              </a>
             </p>
           </div>
         </div>
