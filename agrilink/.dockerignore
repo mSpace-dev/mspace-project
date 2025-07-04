@@ -1,0 +1,14 @@
+node_modules
+npm-debug.log*
+.next
+.env
+.env.local
+.env.production
+.vercel
+*.log
+.DS_Store
+.vscode
+coverage/
+.nyc_output/
+dist/
+build/
