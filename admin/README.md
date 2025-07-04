@@ -1,36 +1,34 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ⚠️ DEPRECATED: Admin Folder
 
-## Getting Started
+## 🚨 **IMPORTANT NOTICE**
 
-First, run the development server:
+This separate admin folder is **NO LONGER NEEDED** and should be **IGNORED**.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### ✅ **Use AgriLink Project Instead**
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+All admin functionality, including the email campaign feature, has been **integrated into the main AgriLink project**.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**Correct way to access admin features:**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Run AgriLink project only:**
+   ```bash
+   cd ../agrilink
+   npm run dev
+   ```
 
-## Learn More
+2. **Access admin dashboard:**
+   - URL: `http://localhost:3002/admin`
+   - Login with your admin credentials
+   - All features including email campaigns are available there
 
-To learn more about Next.js, take a look at the following resources:
+### 🗑️ **This Folder Can Be Deleted**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+This separate admin folder was created during development but is no longer needed. You can safely delete this entire `admin/` folder.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 📧 **Email Campaign Feature**
 
-## Deploy on Vercel
+The email campaign functionality is now available at:
+- **Admin Dashboard**: `/admin` in the AgriLink project
+- **Email Campaign**: `/admin/email-campaign` in the AgriLink project
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+All dependencies, API routes, and functionality are integrated into the main AgriLink project for better maintainability and consistency.
