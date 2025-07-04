@@ -35,6 +35,10 @@ export default function AdminDashboard() {
     router.push('/home');
   };
 
+  const navigateToHome = () => {
+    router.push('/home');
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -56,8 +60,8 @@ export default function AdminDashboard() {
       <header className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">AgriLink Admin</h1>
+            <div className="cursor-pointer" onClick={navigateToHome}>
+              <h1 className="text-2xl font-bold text-gray-900 hover:text-green-600 transition-colors">AgriLink Admin</h1>
               <p className="text-sm text-gray-600">Admin Dashboard</p>
             </div>
             <div className="flex items-center space-x-4">
