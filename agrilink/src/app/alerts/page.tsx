@@ -1,8 +1,23 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export default function Alerts() {
+  const [customerId, setCustomerId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const raw = localStorage.getItem("customer");
+    if (raw) {
+      try {
+        const cust = JSON.parse(raw);
+        // Atlas-style Mongo IDs live in _id
+        setCustomerId(cust._id);
+      } catch (err) {
+        console.error("Could not parse customer from localStorage", err);
+      }
+    }
+  }, []);
+
   const navigateToHome = () => {
     window.location.href = "/home";
   };
@@ -109,10 +124,16 @@ export default function Alerts() {
   };
 
   const handleSubscribeToggle = async (key: SubscriptionKey) => {
+    // if we haven’t loaded a customerId yet, bail
+    if (!customerId) {
+      alert("You must be logged in to manage alerts.");
+      window.location.href = "/customer";
+      return;
+    }
     const sub = subscriptions[key];
     if (!sub.subscribed) {
       const payload = {
-        userId: "user123",
+        userId: customerId,
         type: key,
         options: {
           categories: sub.categories,
@@ -139,7 +160,9 @@ export default function Alerts() {
     } else {
       try {
         const res = await fetch(
-          `/api/alerts/unsubscribe?type=${key}&userId=user123`,
+          `/api/alerts/unsubscribe?type=${encodeURIComponent(
+            key
+          )}&userId=${encodeURIComponent(customerId)}`,
           { method: "DELETE" }
         );
         const data = await res.json();
