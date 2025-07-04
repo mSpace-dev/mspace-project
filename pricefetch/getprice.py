@@ -56,7 +56,7 @@ if pdf_link:
                 print(text)
                 
                 # Save extracted text to file for further processing
-                text_filename = f"price_data_{datetime.now().strftime('%Y%m%d')}.txt"
+                text_filename = "./pricefetch/price_data.txt"
                 with open(text_filename, 'w', encoding='utf-8') as text_file:
                     text_file.write(text)
                 print(f"✅ Text extracted and saved to: {text_filename}")

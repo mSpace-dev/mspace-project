@@ -8,12 +8,12 @@ import os
 from dotenv import load_dotenv
 
 # Load environment variables
-load_dotenv('../.env')
+load_dotenv('pricefetch\.env')
 
 class PriceDataParser:
     def __init__(self, mongodb_uri: str = None, db_name: str = "Agrilink"):
         self.mongodb_uri = mongodb_uri or os.getenv('MONGODB_URI', 'mongodb://localhost:27017/')
-        self.db_name = db_name or os.getenv('DB_NAME', 'agrilink')
+        self.db_name = db_name or os.getenv('DB_NAME', 'Agrilink')
         self.client = None
         self.db = None
         
@@ -542,7 +542,7 @@ def main():
     
     # Read the price data file
     try:
-        with open('e:/mspace project/pricefetch/price_data_20250702.txt', 'r', encoding='utf-8') as f:
+        with open('e:/mspace project/pricefetch/price_data.txt', 'r', encoding='utf-8') as f:
             text_content = f.read()
         
         print("🔍 Parsing price data...")
