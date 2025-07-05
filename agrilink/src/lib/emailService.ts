@@ -293,3 +293,96 @@ export async function sendWeeklyDigest(): Promise<number> {
   const template = emailTemplates.weeklyDigest(marketData);
   return await sendBulkNotification(template, { weeklyDigest: true });
 }
+
+export const createCustomEmailTemplate = (subject: string, message: string): EmailTemplate => ({
+  subject,
+  text: message,
+  html: `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <div style="text-align: center; margin-bottom: 30px;">
+        <h1 style="color: #16a34a; margin-bottom: 10px;">AgriLink 🌾</h1>
+        <p style="color: #666; font-size: 16px;">Message from AgriLink Team</p>
+      </div>
+      
+      <div style="background: #f8fffe; border-left: 4px solid #16a34a; padding: 20px; margin: 20px 0;">
+        <div style="color: #333; line-height: 1.6; white-space: pre-wrap;">${message}</div>
+      </div>
+      
+      <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; text-align: center;">
+        <p style="color: #666; font-size: 14px; margin-bottom: 10px;">
+          Thank you for being a part of the AgriLink community!
+        </p>
+        <p style="color: #666; font-size: 12px;">
+          If you no longer wish to receive these emails, you can 
+          <a href="{{unsubscribeUrl}}" style="color: #16a34a; text-decoration: none;">unsubscribe here</a>.
+        </p>
+      </div>
+    </div>
+  `
+});
+
+export async function sendBulkCustomEmail(subject: string, message: string, sentBy?: string): Promise<{ successCount: number; recipientEmails: string[] }> {
+  try {
+    await dbConnect();
+    
+    // Get all active subscribers
+    const subscribers = await EmailSubscription.find({ isActive: true }).select('email');
+    
+    if (subscribers.length === 0) {
+      console.log('No subscribers found for bulk notification');
+      return { successCount: 0, recipientEmails: [] };
+    }
+
+    const emails = subscribers.map((sub: any) => sub.email);
+    const template = createCustomEmailTemplate(subject, message);
+    const batchSize = 50; // Send in batches to avoid rate limits
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (let i = 0; i < emails.length; i += batchSize) {
+      const batch = emails.slice(i, i + batchSize);
+      const success = await sendEmail(batch, template);
+      if (success) {
+        successCount += batch.length;
+      } else {
+        errorCount += batch.length;
+      }
+      
+      // Small delay between batches
+      if (i + batchSize < emails.length) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+    }
+
+    // Save campaign history to database
+    try {
+      const EmailCampaign = (await import('@/lib/models/EmailCampaign')).default;
+      
+      const campaignStatus = errorCount === 0 ? 'sent' : 
+                           successCount === 0 ? 'failed' : 'partial';
+
+      await EmailCampaign.create({
+        subject,
+        message,
+        sentAt: new Date(),
+        sentToCount: successCount,
+        sentBy: sentBy || 'Admin',
+        recipientEmails: emails,
+        status: campaignStatus,
+        errorCount,
+        campaignType: 'manual'
+      });
+
+      console.log(`Campaign saved to database: ${successCount}/${emails.length} successful sends`);
+    } catch (saveError) {
+      console.error('Failed to save campaign to database:', saveError);
+      // Don't fail the email sending if database save fails
+    }
+
+    console.log(`Bulk custom email sent to ${successCount}/${emails.length} subscribers`);
+    return { successCount, recipientEmails: emails };
+  } catch (error) {
+    console.error('Failed to send bulk custom email:', error);
+    return { successCount: 0, recipientEmails: [] };
+  }
+}

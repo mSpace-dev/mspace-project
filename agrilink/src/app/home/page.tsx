@@ -199,9 +199,11 @@ export default function Home() {
               
               {/* Desktop Navigation */}
               <div className="hidden md:flex items-center space-x-8">
-                <a href="/prices" className="text-gray-700 hover:text-green-600 transition-colors">Prices</a>
-                <a href="/alerts" className="text-gray-700 hover:text-green-600 transition-colors">Alerts</a>
-                <a href="/demandforecast" className="text-gray-700 hover:text-green-600 transition-colors">Forecasts</a>
+                <a href="/about" className="text-gray-700 hover:text-green-600 transition-colors">About</a>
+                <a href="/products" className="text-gray-700 hover:text-green-600 transition-colors">Products</a>
+                <a href="/blog" className="text-gray-700 hover:text-green-600 transition-colors">Blog</a>
+                <a href="/partners" className="text-gray-700 hover:text-green-600 transition-colors">Our Partners</a>
+                <a href="/contact" className="text-gray-700 hover:text-green-600 transition-colors">Contact</a>
                 <a href="/login" className="btn-agrilink text-white px-4 py-2 rounded-lg">Log In</a>
               </div>
 
@@ -226,9 +228,11 @@ export default function Home() {
             {isMobileMenuOpen && (
               <div className="md:hidden border-t border-gray-200 py-4">
                 <div className="flex flex-col space-y-4">
-                  <a href="/prices" className="text-gray-700 hover:text-green-600 transition-colors">Prices</a>
-                  <a href="/alerts" className="text-gray-700 hover:text-green-600 transition-colors">Alerts</a>
-                  <a href="/demandforecast" className="text-gray-700 hover:text-green-600 transition-colors">Forecasts</a>
+                  <a href="/about" className="text-gray-700 hover:text-green-600 transition-colors">About</a>
+                  <a href="/products" className="text-gray-700 hover:text-green-600 transition-colors">Products</a>
+                  <a href="/blog" className="text-gray-700 hover:text-green-600 transition-colors">Blog</a>
+                  <a href="/partners" className="text-gray-700 hover:text-green-600 transition-colors">Our Partners</a>
+                  <a href="/contact" className="text-gray-700 hover:text-green-600 transition-colors">Contact</a>
                   <a href="/login" className="btn-agrilink text-white px-4 py-2 rounded-lg text-center">Log In</a>
                 </div>
               </div>
@@ -370,28 +374,13 @@ export default function Home() {
                   href="/customer"
                   className="btn-agrilink text-white font-semibold px-8 py-4 rounded-xl shadow-lg text-lg"
                 >
-                  Customer Portal
+                  Customer 
                 </a>
                 <a
                   href="/seller"
                   className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-xl shadow-lg text-lg transition-all duration-200 hover:-translate-y-1"
                 >
-                  Seller Portal
-                </a>
-              </div>
-
-              <div className="flex justify-center gap-4 flex-wrap">
-                <a
-                  href="/prices"
-                  className="bg-white border border-green-600 text-green-700 hover:bg-green-50 font-semibold px-6 py-3 rounded-xl shadow transition-all duration-200 hover:-translate-y-1"
-                >
-                  View Current Prices
-                </a>
-                <a
-                  href="/alerts"
-                  className="bg-white border border-green-600 text-green-700 hover:bg-green-50 font-semibold px-6 py-3 rounded-xl shadow transition-all duration-200 hover:-translate-y-1"
-                >
-                  Subscribe to Alerts
+                  Seller 
                 </a>
               </div>
             </div>
@@ -634,15 +623,6 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            
-            <div className="text-center mt-8">
-              <a
-                href="/alerts"
-                className="btn-agrilink text-white px-6 py-3 rounded-lg font-semibold inline-block"
-              >
-                View All Market Updates
-              </a>
-            </div>
           </div>
         </section>
 
@@ -726,12 +706,6 @@ export default function Home() {
               >
                 Get Started for Free
               </a>
-              <a
-                href="/prices"
-                className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-green-600 font-semibold px-8 py-4 rounded-xl text-lg transition-all duration-200"
-              >
-                View Live Prices
-              </a>
             </div>
           </div>
         </section>
@@ -806,12 +780,12 @@ export default function Home() {
                 </div>
               </div>
               <div>
-                <h4 className="font-semibold mb-4">Services</h4>
+                <h4 className="font-semibold mb-4">Company</h4>
                 <ul className="space-y-2 text-gray-400">
-                  <li><a href="/prices" className="hover:text-white">Price Monitoring</a></li>
-                  <li><a href="/alerts" className="hover:text-white">SMS Alerts</a></li>
-                  <li><a href="/demandforecast" className="hover:text-white">Demand Forecasting</a></li>
-                  <li><a href="/api" className="hover:text-white">API Access</a></li>
+                  <li><a href="/about" className="hover:text-white">About Us</a></li>
+                  <li><a href="/products" className="hover:text-white">Our Products</a></li>
+                  <li><a href="/blog" className="hover:text-white">Blog</a></li>
+                  <li><a href="/partners" className="hover:text-white">Our Partners</a></li>
                 </ul>
               </div>
               <div>
@@ -881,18 +855,6 @@ type ProductCategoryProps = {
 function ProductCategory({ icon, name, image }: ProductCategoryProps) {
   const [imageError, setImageError] = useState(false);
 
-  const handleCategoryClick = () => {
-    // Navigate to prices page with category filter
-    window.location.href = `/prices?category=${encodeURIComponent(name.toLowerCase())}`;
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      handleCategoryClick();
-    }
-  };
-
   // Ensure image path is correct for Next.js public folder
   const imagePath = image && image.startsWith('/')
     ? image
@@ -902,12 +864,8 @@ function ProductCategory({ icon, name, image }: ProductCategoryProps) {
 
   return (
     <div 
-      className="product-category-card group cursor-pointer" 
-      role="button" 
-      tabIndex={0} 
-      aria-label={`View ${name} products and prices`}
-      onClick={handleCategoryClick}
-      onKeyDown={handleKeyPress}
+      className="product-category-card group" 
+      aria-label={`${name} category display`}
     >
       {imagePath && !imageError ? (
         <div className="product-category-image h-32 relative">
@@ -931,12 +889,9 @@ function ProductCategory({ icon, name, image }: ProductCategoryProps) {
         </div>
       )}
       <div className="product-category-title p-4">
-        <h3 className="text-sm font-semibold text-gray-800 text-center transition-colors duration-300 group-hover:text-green-700">
+        <h3 className="text-sm font-semibold text-gray-800 text-center transition-colors duration-300">
           {name}
         </h3>
-        <p className="text-xs text-gray-500 text-center mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          Click to view prices
-        </p>
       </div>
     </div>
   );
