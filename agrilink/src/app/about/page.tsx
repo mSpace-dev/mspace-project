@@ -1,29 +1,33 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CustomerUserProfile from "../../components/CustomerUserProfile";
 
 export default function About() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  
-  // This would normally come from authentication context
-  // For demo purposes, you can change these values:
-  const isLoggedIn = true; // Change to false to show login button
-  const userRole = 'customer' as 'customer' | 'admin' | 'seller'; // Change to 'admin' or 'seller' to see different menus
-  
-  // Helper function to get user data based on role
-  const getUserData = () => {
-    switch (userRole) {
-      case 'admin':
-        return { name: 'Admin User', email: 'admin@agrilink.lk' };
-      case 'seller':
-        return { name: 'Seller User', email: 'seller@agrilink.lk' };
-      default:
-        return { name: 'Customer User', email: 'customer@agrilink.lk' };
-    }
-  };
-  
-  const userData = getUserData();
+  const [customer, setCustomer] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Check if user is logged in
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const token = localStorage.getItem('customerToken');
+        if (token) {
+          const userData = localStorage.getItem('customerData');
+          if (userData) {
+            setCustomer(JSON.parse(userData));
+          }
+        }
+      } catch (error) {
+        console.error('Auth check failed:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, []);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -51,12 +55,19 @@ export default function About() {
               <a href="/blog" className="text-gray-700 hover:text-green-600 transition-colors">Blog</a>
               <a href="/partners" className="text-gray-700 hover:text-green-600 transition-colors">Our Partners</a>
               <a href="/contact" className="text-gray-700 hover:text-green-600 transition-colors">Contact</a>
-              <CustomerUserProfile 
-                isLoggedIn={isLoggedIn} 
-                userRole={userRole} 
-                userName={userData.name}
-                userEmail={userData.email}
-              />
+              {customer ? (
+                <CustomerUserProfile 
+                  isLoggedIn={true} 
+                  userRole="customer"
+                  userName={customer.name || 'Customer'}
+                  userEmail={customer.email || ''}
+                />
+              ) : (
+                <CustomerUserProfile 
+                  isLoggedIn={false} 
+                  userRole="customer"
+                />
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -86,12 +97,19 @@ export default function About() {
                 <a href="/partners" className="text-gray-700 hover:text-green-600 transition-colors">Our Partners</a>
                 <a href="/contact" className="text-gray-700 hover:text-green-600 transition-colors">Contact</a>
                 <div className="pt-2">
-                  <CustomerUserProfile 
-                    isLoggedIn={isLoggedIn} 
-                    userRole={userRole} 
-                    userName={userData.name}
-                    userEmail={userData.email}
-                  />
+                  {customer ? (
+                    <CustomerUserProfile 
+                      isLoggedIn={true} 
+                      userRole="customer"
+                      userName={customer.name || 'Customer'}
+                      userEmail={customer.email || ''}
+                    />
+                  ) : (
+                    <CustomerUserProfile 
+                      isLoggedIn={false} 
+                      userRole="customer"
+                    />
+                  )}
                 </div>
               </div>
             </div>

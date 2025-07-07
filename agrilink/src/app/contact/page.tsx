@@ -1,12 +1,14 @@
 "use client";
 
 import Head from "next/head";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CustomerUserProfile from "../../components/CustomerUserProfile";
 import "../custom.css";
 
 export default function Contact() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [customer, setCustomer] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -18,6 +20,27 @@ export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [submitMessage, setSubmitMessage] = useState('');
+
+  // Check if user is logged in
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const token = localStorage.getItem('customerToken');
+        if (token) {
+          const userData = localStorage.getItem('customerData');
+          if (userData) {
+            setCustomer(JSON.parse(userData));
+          }
+        }
+      } catch (error) {
+        console.error('Auth check failed:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, []);
 
   const navigateToHome = () => {
     window.location.href = '/home';
@@ -101,7 +124,19 @@ export default function Contact() {
                 <a href="/blog" className="text-gray-700 hover:text-green-600 transition-colors">Blog</a>
                 <a href="/partners" className="text-gray-700 hover:text-green-600 transition-colors">Our Partners</a>
                 <a href="/contact" className="text-green-600 font-semibold">Contact</a>
-                <CustomerUserProfile isLoggedIn={true} userRole="customer" />
+                {customer ? (
+                  <CustomerUserProfile 
+                    isLoggedIn={true} 
+                    userRole="customer"
+                    userName={customer.name || 'Customer'}
+                    userEmail={customer.email || ''}
+                  />
+                ) : (
+                  <CustomerUserProfile 
+                    isLoggedIn={false} 
+                    userRole="customer"
+                  />
+                )}
               </div>
 
               {/* Mobile Menu Button */}
@@ -131,7 +166,19 @@ export default function Contact() {
                   <a href="/partners" className="text-gray-700 hover:text-green-600 transition-colors">Our Partners</a>
                   <a href="/contact" className="text-green-600 font-semibold">Contact</a>
                   <div className="pt-2">
-                    <CustomerUserProfile isLoggedIn={true} userRole="customer" />
+                    {customer ? (
+                      <CustomerUserProfile 
+                        isLoggedIn={true} 
+                        userRole="customer"
+                        userName={customer.name || 'Customer'}
+                        userEmail={customer.email || ''}
+                      />
+                    ) : (
+                      <CustomerUserProfile 
+                        isLoggedIn={false} 
+                        userRole="customer"
+                      />
+                    )}
                   </div>
                 </div>
               </div>

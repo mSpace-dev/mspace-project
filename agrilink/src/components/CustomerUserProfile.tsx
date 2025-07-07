@@ -12,11 +12,11 @@ interface CustomerUserProfileProps {
 }
 
 export default function CustomerUserProfile({ 
-  userName = "John Doe", 
-  userEmail = "john.doe@example.com",
-  userAvatar,
-  isLoggedIn = true, // This would come from authentication context
-  userRole = 'customer' // Default to customer
+  userName, 
+  userEmail, 
+  userAvatar, 
+  isLoggedIn = false, 
+  userRole = 'customer' 
 }: CustomerUserProfileProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -37,6 +37,8 @@ export default function CustomerUserProfile({
 
   const handleSignOut = () => {
     // Clear customer data from localStorage
+    localStorage.removeItem('customerToken');
+    localStorage.removeItem('customerData');
     localStorage.removeItem('customer');
     localStorage.removeItem('admin');
     localStorage.removeItem('seller');
@@ -47,7 +49,7 @@ export default function CustomerUserProfile({
     
     // Redirect based on user role
     if (userRole === 'customer') {
-      window.location.href = "/customer";
+      window.location.href = "/home";
     } else if (userRole === 'admin') {
       window.location.href = "/login";
     } else if (userRole === 'seller') {
@@ -253,8 +255,11 @@ export default function CustomerUserProfile({
   // If user is not logged in, show login button
   if (!isLoggedIn) {
     return (
-      <a href="/login" className="btn-agrilink text-white px-4 py-2 rounded-lg">
-        Log In
+      <a 
+        href="/login" 
+        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors font-medium"
+      >
+        Login
       </a>
     );
   }
@@ -267,20 +272,20 @@ export default function CustomerUserProfile({
         className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 border border-gray-200"
         aria-expanded={isDropdownOpen}
         aria-haspopup="true"
-        title={`Profile: ${userName}`}
+        title={`Profile: ${userName || 'User'}`}
       >
         {/* Avatar */}
         <div className="relative">
           {userAvatar ? (
             <img
               src={userAvatar}
-              alt={userName}
+              alt={userName || 'User'}
               className="w-10 h-10 rounded-full object-cover border-2 border-green-200"
             />
           ) : (
             <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center border-2 border-green-200 shadow-md">
               <span className="text-white text-base font-bold">
-                {userName.charAt(0).toUpperCase()}
+                {userName ? userName.charAt(0).toUpperCase() : 'U'}
               </span>
             </div>
           )}
@@ -290,8 +295,8 @@ export default function CustomerUserProfile({
 
         {/* User Info - Only show on larger screens */}
         <div className="hidden lg:block text-left">
-          <p className="text-sm font-medium text-gray-900">{userName}</p>
-          <p className="text-xs text-gray-500">{userEmail}</p>
+          <p className="text-sm font-medium text-gray-900">{userName || 'User'}</p>
+          <p className="text-xs text-gray-500">{userEmail || ''}</p>
         </div>
 
         {/* Dropdown Arrow */}
@@ -316,19 +321,19 @@ export default function CustomerUserProfile({
               {userAvatar ? (
                 <img
                   src={userAvatar}
-                  alt={userName}
+                  alt={userName || 'User'}
                   className="w-10 h-10 rounded-full object-cover"
                 />
               ) : (
                 <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center">
                   <span className="text-white text-lg font-medium">
-                    {userName.charAt(0).toUpperCase()}
+                    {userName ? userName.charAt(0).toUpperCase() : 'U'}
                   </span>
                 </div>
               )}
               <div>
-                <p className="text-sm font-medium text-gray-900">{userName}</p>
-                <p className="text-xs text-gray-500">{userEmail}</p>
+                <p className="text-sm font-medium text-gray-900">{userName || 'User'}</p>
+                <p className="text-xs text-gray-500">{userEmail || ''}</p>
               </div>
             </div>
           </div>

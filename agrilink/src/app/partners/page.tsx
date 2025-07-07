@@ -1,10 +1,33 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CustomerUserProfile from "../../components/CustomerUserProfile";
 
 export default function Partners() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [customer, setCustomer] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Check if user is logged in
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const token = localStorage.getItem('customerToken');
+        if (token) {
+          const userData = localStorage.getItem('customerData');
+          if (userData) {
+            setCustomer(JSON.parse(userData));
+          }
+        }
+      } catch (error) {
+        console.error('Auth check failed:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, []);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -32,7 +55,19 @@ export default function Partners() {
               <a href="/blog" className="text-gray-700 hover:text-green-600 transition-colors">Blog</a>
               <a href="/partners" className="text-green-600 font-semibold">Our Partners</a>
               <a href="/contact" className="text-gray-700 hover:text-green-600 transition-colors">Contact</a>
-              <CustomerUserProfile isLoggedIn={true} userRole="customer" />
+              {customer ? (
+                <CustomerUserProfile 
+                  isLoggedIn={true} 
+                  userRole="customer"
+                  userName={customer.name || 'Customer'}
+                  userEmail={customer.email || ''}
+                />
+              ) : (
+                <CustomerUserProfile 
+                  isLoggedIn={false} 
+                  userRole="customer"
+                />
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -62,7 +97,19 @@ export default function Partners() {
                 <a href="/partners" className="text-green-600 font-semibold">Our Partners</a>
                 <a href="/contact" className="text-gray-700 hover:text-green-600 transition-colors">Contact</a>
                 <div className="pt-2">
-                  <CustomerUserProfile isLoggedIn={true} userRole="customer" />
+                  {customer ? (
+                    <CustomerUserProfile 
+                      isLoggedIn={true} 
+                      userRole="customer"
+                      userName={customer.name || 'Customer'}
+                      userEmail={customer.email || ''}
+                    />
+                  ) : (
+                    <CustomerUserProfile 
+                      isLoggedIn={false} 
+                      userRole="customer"
+                    />
+                  )}
                 </div>
               </div>
             </div>

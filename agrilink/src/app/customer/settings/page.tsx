@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CustomerUserProfile from "../../../components/CustomerUserProfile";
 
 export default function CustomerSettings() {
+  const [customer, setCustomer] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [settings, setSettings] = useState({
     // Notification Settings
     emailNotifications: true,
@@ -32,6 +34,29 @@ export default function CustomerSettings() {
   });
 
   const [isSaving, setIsSaving] = useState(false);
+
+  // Check if user is logged in
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        // Check if user is authenticated
+        const token = localStorage.getItem('customerToken');
+        if (token) {
+          // Decode or validate token and get user info
+          const userData = localStorage.getItem('customerData');
+          if (userData) {
+            setCustomer(JSON.parse(userData));
+          }
+        }
+      } catch (error) {
+        console.error('Auth check failed:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, []);
 
   const handleToggle = (setting: string) => {
     setSettings(prev => ({
@@ -80,6 +105,18 @@ export default function CustomerSettings() {
     }
   };
 
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Navigation */}
@@ -99,15 +136,18 @@ export default function CustomerSettings() {
               <a href="/prices" className="text-gray-700 hover:text-green-600 transition-colors">Prices</a>
               <a href="/contact" className="text-gray-700 hover:text-green-600 transition-colors">Contact</a>
               {customer ? (
-                          <CustomerUserProfile 
-                            isLoggedIn={true} 
-                            userRole="customer"
-                            userName={customer.name}
-                            userEmail={customer.email}
-                          />
-                        ) : (
-                          <a href="/login" className="text-gray-700 hover:text-green-600 transition-colors">Login</a>
-                        )}
+                <CustomerUserProfile 
+                  isLoggedIn={true} 
+                  userRole="customer"
+                  userName={customer.name || 'Customer'}
+                  userEmail={customer.email || ''}
+                />
+              ) : (
+                <CustomerUserProfile 
+                  isLoggedIn={false} 
+                  userRole="customer"
+                />
+              )}
             </div>
           </div>
         </div>
