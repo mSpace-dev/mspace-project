@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import CustomerUserProfile from "../../components/CustomerUserProfile";
 
 export default function Partners() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -31,7 +32,7 @@ export default function Partners() {
               <a href="/blog" className="text-gray-700 hover:text-green-600 transition-colors">Blog</a>
               <a href="/partners" className="text-green-600 font-semibold">Our Partners</a>
               <a href="/contact" className="text-gray-700 hover:text-green-600 transition-colors">Contact</a>
-              <a href="/login" className="btn-agrilink text-white px-4 py-2 rounded-lg">Log In</a>
+              <CustomerUserProfile isLoggedIn={true} userRole="customer" />
             </div>
 
             {/* Mobile Menu Button */}
@@ -60,7 +61,9 @@ export default function Partners() {
                 <a href="/blog" className="text-gray-700 hover:text-green-600 transition-colors">Blog</a>
                 <a href="/partners" className="text-green-600 font-semibold">Our Partners</a>
                 <a href="/contact" className="text-gray-700 hover:text-green-600 transition-colors">Contact</a>
-                <a href="/login" className="btn-agrilink text-white px-4 py-2 rounded-lg text-center">Log In</a>
+                <div className="pt-2">
+                  <CustomerUserProfile isLoggedIn={true} userRole="customer" />
+                </div>
               </div>
             </div>
           )}

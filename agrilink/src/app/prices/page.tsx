@@ -5,11 +5,8 @@ import {
   BarChart3, 
   PieChart as PieChartIcon, 
   Grid3X3, 
-  Calendar, 
-  MapPin, 
   TrendingUp, 
   TrendingDown, 
-  Filter,
   Wheat,
   Apple,
   Fish,
@@ -18,6 +15,7 @@ import {
 } from 'lucide-react';
 import { TableView, CommodityCardsView } from './components';
 import { CategoryChartsView, CommodityAnalysisView } from './chart-components';
+import CustomerUserProfile from '../../components/CustomerUserProfile';
 
 interface PriceData {
   id: string;
@@ -90,6 +88,7 @@ export default function Prices() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [customer, setCustomer] = useState<any>(null);
   const [filters, setFilters] = useState({
     category: '',
     marketType: '',
@@ -101,8 +100,15 @@ export default function Prices() {
   });
 
   const categories = ['VEGETABLES', 'RICE', 'FRUITS', 'FISH', 'OTHER'];
-  const locations = ['Pettah', 'Dambulla', 'Narahenpita'];
   const markets = ['Pettah', 'Dambulla', 'Pettah_retail', 'Dambulla_retail', 'Narahenpita_retail'];
+
+  useEffect(() => {
+    // Load customer data from localStorage
+    const customerData = localStorage.getItem('customer');
+    if (customerData) {
+      setCustomer(JSON.parse(customerData));
+    }
+  }, []);
 
   useEffect(() => {
     fetchAvailableDates();
@@ -266,7 +272,16 @@ export default function Prices() {
           <a href="/prices" className="text-gray-700 hover:text-green-600 transition-colors font-medium">Prices</a>
           <a href="/alerts" className="text-gray-700 hover:text-green-600 transition-colors">Alerts</a>
           <a href="/demandforecast" className="text-gray-700 hover:text-green-600 transition-colors">Forecasts</a>
-          <a href="/customer" className="btn-agrilink text-white px-4 py-2 rounded-lg">Log In</a>
+          {customer ? (
+            <CustomerUserProfile 
+              isLoggedIn={true} 
+              userRole="customer"
+              userName={customer.name}
+              userEmail={customer.email}
+            />
+          ) : (
+            <a href="/login" className="text-gray-700 hover:text-green-600 transition-colors">Login</a>
+          )}
         </div>
       </div>
     </div>
@@ -409,7 +424,7 @@ export default function Prices() {
                 filters={filters} 
                 setFilters={setFilters}
                 categories={categories}
-                locations={locations}
+                locations={['Pettah', 'Dambulla', 'Narahenpita']}
                 markets={markets}
                 formatPrice={formatPrice}
                 formatChange={formatChange}

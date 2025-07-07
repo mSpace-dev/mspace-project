@@ -111,12 +111,6 @@ export default function LoginPage() {
               <h1 className="text-2xl font-bold text-green-700 hover:text-green-600 transition-colors">AgriLink</h1>
               <span className="ml-2 text-sm text-gray-500">Login Portal</span>
             </div>
-            <a
-              href="/home"
-              className="text-green-600 hover:text-green-700 font-medium"
-            >
-              ← Back to Home
-            </a>
           </div>
         </div>
       </header>

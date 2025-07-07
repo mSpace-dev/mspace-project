@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import jwt, { SignOptions } from 'jsonwebtoken';
 
 // JWT configuration
 const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-in-production';
@@ -15,15 +15,11 @@ export interface JWTPayload {
  * Generate JWT token for admin authentication
  */
 export function generateToken(payload: JWTPayload): string {
-  return jwt.sign(
-    payload, 
-    JWT_SECRET as string, 
-    {
-      expiresIn: JWT_EXPIRES_IN,
-      issuer: 'agrilink-admin',
-      audience: 'agrilink-app',
-    }
-  );
+  return jwt.sign(payload, JWT_SECRET as string, {
+    expiresIn: JWT_EXPIRES_IN,
+    issuer: 'agrilink-admin',
+    audience: 'agrilink-app',
+  } as SignOptions);
 }
 
 /**
@@ -61,15 +57,11 @@ export function extractTokenFromHeader(authHeader: string | null): string | null
  * Create refresh token (longer expiration)
  */
 export function generateRefreshToken(payload: JWTPayload): string {
-  return jwt.sign(
-    payload, 
-    JWT_SECRET as string, 
-    {
-      expiresIn: '7d', // 7 days for refresh token
-      issuer: 'agrilink-admin',
-      audience: 'agrilink-refresh',
-    }
-  );
+  return jwt.sign(payload, JWT_SECRET as string, {
+    expiresIn: '7d', // 7 days for refresh token
+    issuer: 'agrilink-admin',
+    audience: 'agrilink-refresh',
+  } as SignOptions);
 }
 
 /**

@@ -75,7 +75,7 @@ export default function CampaignHistory() {
       } else {
         alert('Failed to delete campaign');
       }
-    } catch (err) {
+    } catch {
       alert('Error deleting campaign');
     }
   };
