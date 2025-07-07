@@ -1,9 +1,33 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import CustomerUserProfile from "../../components/CustomerUserProfile";
 
 export default function About() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [customer, setCustomer] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Check if user is logged in
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const token = localStorage.getItem('customerToken');
+        if (token) {
+          const userData = localStorage.getItem('customerData');
+          if (userData) {
+            setCustomer(JSON.parse(userData));
+          }
+        }
+      } catch (error) {
+        console.error('Auth check failed:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, []);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -31,7 +55,19 @@ export default function About() {
               <a href="/blog" className="text-gray-700 hover:text-green-600 transition-colors">Blog</a>
               <a href="/partners" className="text-gray-700 hover:text-green-600 transition-colors">Our Partners</a>
               <a href="/contact" className="text-gray-700 hover:text-green-600 transition-colors">Contact</a>
-              <a href="/login" className="btn-agrilink text-white px-4 py-2 rounded-lg">Log In</a>
+              {customer ? (
+                <CustomerUserProfile 
+                  isLoggedIn={true} 
+                  userRole="customer"
+                  userName={customer.name || 'Customer'}
+                  userEmail={customer.email || ''}
+                />
+              ) : (
+                <CustomerUserProfile 
+                  isLoggedIn={false} 
+                  userRole="customer"
+                />
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -60,7 +96,21 @@ export default function About() {
                 <a href="/blog" className="text-gray-700 hover:text-green-600 transition-colors">Blog</a>
                 <a href="/partners" className="text-gray-700 hover:text-green-600 transition-colors">Our Partners</a>
                 <a href="/contact" className="text-gray-700 hover:text-green-600 transition-colors">Contact</a>
-                <a href="/login" className="btn-agrilink text-white px-4 py-2 rounded-lg text-center">Log In</a>
+                <div className="pt-2">
+                  {customer ? (
+                    <CustomerUserProfile 
+                      isLoggedIn={true} 
+                      userRole="customer"
+                      userName={customer.name || 'Customer'}
+                      userEmail={customer.email || ''}
+                    />
+                  ) : (
+                    <CustomerUserProfile 
+                      isLoggedIn={false} 
+                      userRole="customer"
+                    />
+                  )}
+                </div>
               </div>
             </div>
           )}
@@ -114,7 +164,7 @@ export default function About() {
             <div className="md:order-2">
               <h2 className="text-3xl font-bold text-gray-900 mb-6">Our Vision</h2>
               <p className="text-lg text-gray-600 mb-4">
-                To become Sri Lanka's leading agricultural technology platform, fostering prosperity for all stakeholders in the agricultural value chain.
+                To become Sri Lanka&apos;s leading agricultural technology platform, fostering prosperity for all stakeholders in the agricultural value chain.
               </p>
               <p className="text-lg text-gray-600">
                 We envision a future where every farmer has access to the tools and information they need to thrive, creating a stronger, more resilient agricultural sector.
@@ -290,7 +340,7 @@ export default function About() {
             <div className="mt-16 bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-8 max-w-4xl mx-auto">
               <div className="text-4xl mb-4">🌾</div>
               <blockquote className="text-2xl font-bold text-gray-800 mb-4">
-                "Together, we're building the future of Sri Lankan agriculture through innovation and technology."
+                &quot;Together, we&apos;re building the future of Sri Lankan agriculture through innovation and technology.&quot;
               </blockquote>
               <cite className="text-lg text-green-600 font-semibold">— The AgriLink Team</cite>
             </div>
@@ -328,7 +378,7 @@ export default function About() {
             Join the AgriLink Community
           </h2>
           <p className="text-green-100 text-lg mb-8">
-            Be part of Sri Lanka's agricultural transformation. Connect with us today.
+            Be part of Sri Lanka&apos;s agricultural transformation. Connect with us today.
           </p>
           <div className="flex justify-center gap-4">
             <a

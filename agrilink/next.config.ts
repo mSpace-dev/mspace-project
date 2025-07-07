@@ -4,6 +4,17 @@ const nextConfig: NextConfig = {
   // Enable static optimization
   output: 'standalone',
   
+  // ESLint configuration
+  eslint: {
+    ignoreDuringBuilds: false,
+    dirs: ['src'],
+  },
+  
+  // TypeScript configuration
+  typescript: {
+    ignoreBuildErrors: false,
+  },
+  
   // Image optimization
   images: {
     domains: ['images.unsplash.com', 'localhost'],

@@ -3,6 +3,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import CustomerUserProfile from '../../components/CustomerUserProfile'
 
 const Summary = {
   increasing_demand_percentage: 0,
@@ -297,6 +298,54 @@ export default function AgriculturalDashboard() {
           <p style={{ color: "#4ade80", fontSize: "22px", fontWeight: "700", marginBottom: "30px" }}>
             Real-time crop demand analysis powered by AI insights
           </p>
+          
+          {/* User Profile and Navigation */}
+          <div style={{ 
+            display: "flex", 
+            justifyContent: "center", 
+            alignItems: "center", 
+            gap: "20px",
+            marginBottom: "20px" 
+          }}>
+            <a 
+              href="/prices" 
+              style={{ 
+                color: "#22c55e", 
+                textDecoration: "none", 
+                fontSize: "16px", 
+                fontWeight: "600",
+                padding: "8px 16px",
+                borderRadius: "8px",
+                border: "2px solid #22c55e",
+                background: "white"
+              }}
+            >
+              Prices
+            </a>
+            <a 
+              href="/alerts" 
+              style={{ 
+                color: "#22c55e", 
+                textDecoration: "none", 
+                fontSize: "16px", 
+                fontWeight: "600",
+                padding: "8px 16px",
+                borderRadius: "8px",
+                border: "2px solid #22c55e",
+                background: "white"
+              }}
+            >
+              Alerts
+            </a>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <CustomerUserProfile 
+                isLoggedIn={true} 
+                userRole="customer"
+                userName="Customer"
+                userEmail="customer@example.com"
+              />
+            </div>
+          </div>
           {/* Emphasized Last Updated & Refresh Section */}
           <div
             style={{
