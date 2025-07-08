@@ -45,7 +45,7 @@ const ChatbotPage: React.FC = () => {
       {/* Main Chat Area */}
       <main style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', background: 'transparent', minHeight: '100vh' }}>
         <div style={{ width: '100%', maxWidth: 600, margin: '48px auto 0 auto', background: '#fff', borderRadius: 18, boxShadow: '0 8px 32px rgba(34,197,94,0.10)', display: 'flex', flexDirection: 'column', minHeight: 540 }}>
-          <div className={styles.header} style={{ borderRadius: '18px 18px 0 0', background: 'linear-gradient(90deg, #22c55e 60%, #16a34a 100%)', color: '#fff', fontSize: 22, fontWeight: 700, padding: '20px 32px' }}>
+          <div className={styles.header}>
             Chatbot
           </div>
           <div className={styles.messages} style={{ minHeight: 320, background: '#f6fef9', borderRadius: 0, padding: '28px 24px 16px 24px' }}>

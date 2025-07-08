@@ -204,6 +204,7 @@ export default function Home() {
                 <a href="/blog" className="text-gray-700 hover:text-green-600 transition-colors">Blog</a>
                 <a href="/partners" className="text-gray-700 hover:text-green-600 transition-colors">Our Partners</a>
                 <a href="/contact" className="text-gray-700 hover:text-green-600 transition-colors">Contact</a>
+                <a href="/chatbot" className="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-lg shadow transition-all duration-200">Chat with AgriLink Bot</a>
                 <a href="/login" className="btn-agrilink text-white px-4 py-2 rounded-lg">Log In</a>
               </div>
 
@@ -233,6 +234,7 @@ export default function Home() {
                   <a href="/blog" className="text-gray-700 hover:text-green-600 transition-colors">Blog</a>
                   <a href="/partners" className="text-gray-700 hover:text-green-600 transition-colors">Our Partners</a>
                   <a href="/contact" className="text-gray-700 hover:text-green-600 transition-colors">Contact</a>
+                  <a href="/chatbot" className="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-lg shadow transition-all duration-200 text-center">Chat with AgriLink Bot</a>
                   <a href="/login" className="btn-agrilink text-white px-4 py-2 rounded-lg text-center">Log In</a>
                 </div>
               </div>
