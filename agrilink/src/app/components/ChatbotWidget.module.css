@@ -1,0 +1,126 @@
+.fab {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #22c55e;
+  color: #fff;
+  font-size: 2rem;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  cursor: pointer;
+  z-index: 1000;
+  transition: background 0.2s;
+}
+.fab:hover {
+  background: #16a34a;
+}
+.chatWindow {
+  margin: 60px auto 0 auto;
+  max-width: 420px;
+  min-height: 480px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(34,197,94,0.18), 0 1.5px 8px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 2px solid #22c55e;
+}
+.header {
+  background: linear-gradient(90deg, #22c55e 60%, #16a34a 100%);
+  color: #fff;
+  padding: 18px 22px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid #e0f2e9;
+}
+.closeBtn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+.messages {
+  flex: 1;
+  padding: 22px 18px 12px 18px;
+  overflow-y: auto;
+  background: #f6fef9;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 220px;
+}
+.userMsg {
+  align-self: flex-end;
+  background: #d1fadf;
+  color: #166534;
+  padding: 10px 16px;
+  border-radius: 18px 18px 0 18px;
+  max-width: 80%;
+  font-size: 1rem;
+  box-shadow: 0 1px 4px rgba(34,197,94,0.08);
+  word-break: break-word;
+}
+.botMsg {
+  align-self: flex-start;
+  background: #e0f2e9;
+  color: #14532d;
+  padding: 10px 16px;
+  border-radius: 18px 18px 18px 0;
+  max-width: 80%;
+  font-size: 1rem;
+  box-shadow: 0 1px 4px rgba(34,197,94,0.08);
+  word-break: break-word;
+}
+.inputRow {
+  display: flex;
+  border-top: 1px solid #e0f2e9;
+  background: #f6fef9;
+  padding: 14px 14px 14px 18px;
+  align-items: center;
+}
+.input {
+  flex: 1;
+  border: 2px solid #22c55e;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 1rem;
+  margin-right: 10px;
+  color: #111;
+  background: #fff;
+  outline: none;
+  transition: border 0.2s;
+}
+.input:focus {
+  border: 2px solid #16a34a;
+}
+.input::placeholder {
+  color: #7e7e7e;
+  opacity: 1;
+}
+.sendBtn {
+  background: linear-gradient(90deg, #22c55e 60%, #16a34a 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0 20px;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(34,197,94,0.10);
+}
+.sendBtn:disabled {
+  background: #bbf7d0;
+  color: #fff;
+  cursor: not-allowed;
+  box-shadow: none;
+}
