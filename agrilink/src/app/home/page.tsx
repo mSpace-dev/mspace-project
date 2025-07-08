@@ -3,7 +3,6 @@
 import Head from "next/head";
 import { useState, useEffect } from "react";
 import "../custom.css";
-import ChatbotWidget from "./ChatbotWidgetClient";
 
 export default function Home() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -827,7 +826,6 @@ export default function Home() {
           </button>
         )}
       </main>
-      <ChatbotWidget />
     </>
   );
 }
