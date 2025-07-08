@@ -31,6 +31,9 @@ export default function CustomerSettings() {
     twoFactorAuth: false,
     sessionTimeout: "30 minutes",
     autoLogout: true
+
+    //Profile setting 
+    
   });
 
   const [isSaving, setIsSaving] = useState(false);
