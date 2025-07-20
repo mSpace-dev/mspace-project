@@ -2,7 +2,7 @@
 
 AgriLink is a comprehensive digital platform designed to revolutionize agricultural commerce in Sri Lanka. It provides real-time market prices, AI-powered demand forecasting, and seamless connectivity between farmers, sellers, and consumers.
 
-## 📱 Screenshots
+
 
 ### 🏠 Home Page
 <img width="1919" height="907" alt="Image" src="https://github.com/user-attachments/assets/5d5e716d-fa70-428d-9b3b-79debb8ad466" />
@@ -347,4 +347,3 @@ For support and questions:
 
 **Made with ❤️ for Sri Lankan Agriculture** 🇱🇰
 
-![Footer](./screenshots/footer.png)
