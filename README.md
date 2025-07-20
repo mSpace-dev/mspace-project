@@ -1,33 +1,30 @@
 # 🌾 AgriLink - Smart Agricultural Marketplace Platform
 
-![AgriLink Banner](./screenshots/banner.png)
-
 AgriLink is a comprehensive digital platform designed to revolutionize agricultural commerce in Sri Lanka. It provides real-time market prices, AI-powered demand forecasting, and seamless connectivity between farmers, sellers, and consumers.
 
 ## 📱 Screenshots
 
 ### 🏠 Home Page
-![Home Page](./screenshots/home-page.png)
+<img width="1919" height="907" alt="Image" src="https://github.com/user-attachments/assets/5d5e716d-fa70-428d-9b3b-79debb8ad466" />
 *Modern landing page with hero carousel showcasing agricultural imagery and key features*
 
 ### 📊 Market Prices Dashboard
-![Prices Dashboard](./screenshots/prices-dashboard.png)
+<img width="1892" height="902" alt="Image" src="https://github.com/user-attachments/assets/e4400972-203a-48b0-9463-11694fe0633c" />
 *Real-time agricultural commodity prices with filtering by category, location, and market type*
 
 ### 🤖 AI Demand Forecasting
-![Demand Forecast](./screenshots/demand-forecast.png)
+<img width="1899" height="908" alt="Image" src="https://github.com/user-attachments/assets/edd3cc85-4e9c-4573-9d18-331239a5cc40" />
 *AI-powered agricultural market intelligence with crop demand analysis and price predictions*
 
 ### 👨‍💼 Admin Panel
-![Admin Dashboard](./screenshots/admin-dashboard.png)
+<img width="1905" height="902" alt="Image" src="https://github.com/user-attachments/assets/a1439916-072d-4f7c-98c3-28dbe176b7fa" />
 *Comprehensive admin interface for managing users, campaigns, and market data*
 
 ### 👤 Customer Profile
-![Customer Profile](./screenshots/customer-profile.png)
+<img width="1915" height="902" alt="Image" src="https://github.com/user-attachments/assets/5f339bee-04f8-4463-9ad3-4ed5a9518728" />
 *User profile management with subscription preferences and price alerts*
 
 ### 📧 Email Campaign Management
-![Email Campaign](./screenshots/email-campaigns.png)
 *Newsletter and email campaign management system for market updates*
 
 ### 📱 Mobile Experience
