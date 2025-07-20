@@ -1,19 +1,16 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-<<<<<<< Updated upstream
-=======
 import CustomerUserProfile from "../../components/CustomerUserProfile";
-import { checkAuthAndLogout, CustomerData, addAuthEventListener, AUTH_EVENTS } from "../../lib/clientAuth";
->>>>>>> Stashed changes
+import { checkAuthAndLogout, CustomerData } from "../../lib/clientAuth";
 
 export default function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [customer, setCustomer] = useState<CustomerData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
-<<<<<<< Updated upstream
-=======
   // Check if user is logged in and handle token expiration
   useEffect(() => {
     const checkAuth = () => {
@@ -28,37 +25,14 @@ export default function Navigation() {
       }
     };
 
-    // Initial auth check
     checkAuth();
     
     // Set up periodic token check (every 5 minutes)
     const interval = setInterval(checkAuth, 5 * 60 * 1000);
     
-    // Listen for authentication events from other tabs/components
-    const removeAuthListener = addAuthEventListener((eventType, data) => {
-      switch (eventType) {
-        case AUTH_EVENTS.LOGIN:
-          if (data?.customerData) {
-            setCustomer(data.customerData);
-          } else {
-            // Re-check auth state if data not provided
-            checkAuth();
-          }
-          break;
-        case AUTH_EVENTS.LOGOUT:
-        case AUTH_EVENTS.TOKEN_EXPIRED:
-          setCustomer(null);
-          break;
-      }
-    });
-    
-    return () => {
-      clearInterval(interval);
-      removeAuthListener();
-    };
+    return () => clearInterval(interval);
   }, []);
 
->>>>>>> Stashed changes
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
@@ -80,18 +54,33 @@ export default function Navigation() {
           
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <a href="/prices" className="text-gray-700 hover:text-green-600 transition-colors">
-              Prices
+            <a href="/about" className="text-gray-700 hover:text-green-600 transition-colors">
+              About
             </a>
-            <a href="/alerts" className="text-gray-700 hover:text-green-600 transition-colors">
-              Alerts
+            <a href="/products" className="text-gray-700 hover:text-green-600 transition-colors">
+              Products
             </a>
-            <a href="/demandforecast" className="text-gray-700 hover:text-green-600 transition-colors">
-              Forecasts
+            <a href="/our-team" className="text-gray-700 hover:text-green-600 transition-colors">
+              Our Team
             </a>
-            <a href="/login" className="btn-agrilink text-white px-4 py-2 rounded-lg">
-              Log In
+            <a href="/partners" className="text-gray-700 hover:text-green-600 transition-colors">
+              Partners
             </a>
+            <a href="/contact" className="text-gray-700 hover:text-green-600 transition-colors">
+              Contact
+            </a>
+            {customer ? (
+              <CustomerUserProfile 
+                isLoggedIn={true} 
+                userRole="customer"
+                userName={customer.name || 'Customer'}
+                userEmail={customer.email || ''}
+              />
+            ) : (
+              <a href="/login" className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors font-medium">
+                Login
+              </a>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -115,18 +104,35 @@ export default function Navigation() {
         {isMobileMenuOpen && (
           <div className="md:hidden border-t border-gray-200 py-4">
             <div className="flex flex-col space-y-4">
-              <a href="/prices" className="text-gray-700 hover:text-green-600 transition-colors">
-                Prices
+              <a href="/about" className="text-gray-700 hover:text-green-600 transition-colors">
+                About
               </a>
-              <a href="/alerts" className="text-gray-700 hover:text-green-600 transition-colors">
-                Alerts
+              <a href="/products" className="text-gray-700 hover:text-green-600 transition-colors">
+                Products
               </a>
-              <a href="/demandforecast" className="text-gray-700 hover:text-green-600 transition-colors">
-                Forecasts
+              <a href="/our-team" className="text-gray-700 hover:text-green-600 transition-colors">
+                Our Team
               </a>
-              <a href="/login" className="btn-agrilink text-white px-4 py-2 rounded-lg text-center">
-                Log In
+              <a href="/partners" className="text-gray-700 hover:text-green-600 transition-colors">
+                Partners
               </a>
+              <a href="/contact" className="text-gray-700 hover:text-green-600 transition-colors">
+                Contact
+              </a>
+              <div className="pt-2">
+                {customer ? (
+                  <CustomerUserProfile 
+                    isLoggedIn={true} 
+                    userRole="customer"
+                    userName={customer.name || 'Customer'}
+                    userEmail={customer.email || ''}
+                  />
+                ) : (
+                  <a href="/login" className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors font-medium text-center block">
+                    Login
+                  </a>
+                )}
+              </div>
             </div>
           </div>
         )}

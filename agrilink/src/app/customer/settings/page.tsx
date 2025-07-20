@@ -31,6 +31,9 @@ export default function CustomerSettings() {
     twoFactorAuth: false,
     sessionTimeout: "30 minutes",
     autoLogout: true
+
+    //Profile setting 
+    
   });
 
   const [isSaving, setIsSaving] = useState(false);
@@ -130,24 +133,18 @@ export default function CustomerSettings() {
               <span className="ml-2 text-sm text-gray-500">Sri Lanka</span>
             </div>
             
-            <div className="flex items-center space-x-6">
-              <a href="/home" className="text-gray-700 hover:text-green-600 transition-colors">Home</a>
+            <div className="flex items-center space-x-8">
               <a href="/about" className="text-gray-700 hover:text-green-600 transition-colors">About</a>
-              <a href="/prices" className="text-gray-700 hover:text-green-600 transition-colors">Prices</a>
+              <a href="/products" className="text-gray-700 hover:text-green-600 transition-colors">Products</a>
+              <a href="/our-team" className="text-gray-700 hover:text-green-600 transition-colors">Our Team</a>
+              <a href="/partners" className="text-gray-700 hover:text-green-600 transition-colors">Partners</a>
               <a href="/contact" className="text-gray-700 hover:text-green-600 transition-colors">Contact</a>
-              {customer ? (
-                <CustomerUserProfile 
-                  isLoggedIn={true} 
-                  userRole="customer"
-                  userName={customer.name || 'Customer'}
-                  userEmail={customer.email || ''}
-                />
-              ) : (
-                <CustomerUserProfile 
-                  isLoggedIn={false} 
-                  userRole="customer"
-                />
-              )}
+              <CustomerUserProfile 
+                isLoggedIn={!!customer} 
+                userRole="customer"
+                userName={customer?.name || "Customer"}
+                userEmail={customer?.email || ""}
+              />
             </div>
           </div>
         </div>

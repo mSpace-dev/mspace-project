@@ -2,11 +2,8 @@
 
 import Head from "next/head";
 import { useState, useEffect } from "react";
-<<<<<<< Updated upstream
-=======
 import CustomerUserProfile from "../../components/CustomerUserProfile";
-import { checkAuthAndLogout, CustomerData, addAuthEventListener, AUTH_EVENTS } from "../../lib/clientAuth";
->>>>>>> Stashed changes
+import { checkAuthAndLogout, CustomerData } from "../../lib/clientAuth";
 import "../custom.css";
 
 export default function Home() {
@@ -16,6 +13,8 @@ export default function Home() {
   const [isCarouselPaused, setIsCarouselPaused] = useState(false);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
+  const [customer, setCustomer] = useState<CustomerData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   
   // Newsletter subscription states
   const [email, setEmail] = useState('');
@@ -186,8 +185,6 @@ export default function Home() {
       return () => clearInterval(interval);
     }
   }, [isCarouselPaused]);
-<<<<<<< Updated upstream
-=======
 
   // Check if user is logged in and handle token expiration
   useEffect(() => {
@@ -203,36 +200,13 @@ export default function Home() {
       }
     };
 
-    // Initial auth check
     checkAuth();
     
     // Set up periodic token check (every 5 minutes)
     const interval = setInterval(checkAuth, 5 * 60 * 1000);
     
-    // Listen for authentication events from other tabs/components
-    const removeAuthListener = addAuthEventListener((eventType, data) => {
-      switch (eventType) {
-        case AUTH_EVENTS.LOGIN:
-          if (data?.customerData) {
-            setCustomer(data.customerData);
-          } else {
-            // Re-check auth state if data not provided
-            checkAuth();
-          }
-          break;
-        case AUTH_EVENTS.LOGOUT:
-        case AUTH_EVENTS.TOKEN_EXPIRED:
-          setCustomer(null);
-          break;
-      }
-    });
-    
-    return () => {
-      clearInterval(interval);
-      removeAuthListener();
-    };
+    return () => clearInterval(interval);
   }, []);
->>>>>>> Stashed changes
   return (
     <>
       <Head>
@@ -253,10 +227,21 @@ export default function Home() {
               <div className="hidden md:flex items-center space-x-8">
                 <a href="/about" className="text-gray-700 hover:text-green-600 transition-colors">About</a>
                 <a href="/products" className="text-gray-700 hover:text-green-600 transition-colors">Products</a>
-                <a href="/blog" className="text-gray-700 hover:text-green-600 transition-colors">Blog</a>
-                <a href="/partners" className="text-gray-700 hover:text-green-600 transition-colors">Our Partners</a>
+                <a href="/our-team" className="text-gray-700 hover:text-green-600 transition-colors">Our Team</a>
+                <a href="/partners" className="text-gray-700 hover:text-green-600 transition-colors">Partners</a>
                 <a href="/contact" className="text-gray-700 hover:text-green-600 transition-colors">Contact</a>
-                <a href="/login" className="btn-agrilink text-white px-4 py-2 rounded-lg">Log In</a>
+                {customer ? (
+                  <CustomerUserProfile 
+                    isLoggedIn={true} 
+                    userRole="customer"
+                    userName={customer.name || 'Customer'}
+                    userEmail={customer.email || ''}
+                  />
+                ) : (
+                  <a href="/login" className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors font-medium">
+                    Login
+                  </a>
+                )}
               </div>
 
               {/* Mobile Menu Button */}
@@ -282,10 +267,23 @@ export default function Home() {
                 <div className="flex flex-col space-y-4">
                   <a href="/about" className="text-gray-700 hover:text-green-600 transition-colors">About</a>
                   <a href="/products" className="text-gray-700 hover:text-green-600 transition-colors">Products</a>
-                  <a href="/blog" className="text-gray-700 hover:text-green-600 transition-colors">Blog</a>
-                  <a href="/partners" className="text-gray-700 hover:text-green-600 transition-colors">Our Partners</a>
+                  <a href="/our-team" className="text-gray-700 hover:text-green-600 transition-colors">Our Team</a>
+                  <a href="/partners" className="text-gray-700 hover:text-green-600 transition-colors">Partners</a>
                   <a href="/contact" className="text-gray-700 hover:text-green-600 transition-colors">Contact</a>
-                  <a href="/login" className="btn-agrilink text-white px-4 py-2 rounded-lg text-center">Log In</a>
+                  <div className="pt-2">
+                    {customer ? (
+                      <CustomerUserProfile 
+                        isLoggedIn={true} 
+                        userRole="customer"
+                        userName={customer.name || 'Customer'}
+                        userEmail={customer.email || ''}
+                      />
+                    ) : (
+                      <a href="/login" className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors font-medium text-center block">
+                        Login
+                      </a>
+                    )}
+                  </div>
                 </div>
               </div>
             )}
@@ -834,9 +832,9 @@ export default function Home() {
               <div>
                 <h4 className="font-semibold mb-4">Company</h4>
                 <ul className="space-y-2 text-gray-400">
-                  <li><a href="/about" className="hover:text-white">About Us</a></li>
+                  <li><a href="/about" className="hover:text-white">About</a></li>
                   <li><a href="/products" className="hover:text-white">Our Products</a></li>
-                  <li><a href="/blog" className="hover:text-white">Blog</a></li>
+                  <li><a href="/our-team" className="hover:text-white">Our Team</a></li>
                   <li><a href="/partners" className="hover:text-white">Our Partners</a></li>
                 </ul>
               </div>
@@ -850,7 +848,7 @@ export default function Home() {
                 </ul>
               </div>
               <div>
-                <h4 className="font-semibold mb-4">Company</h4>
+                <h4 className="font-semibold mb-4">Legal</h4>
                 <ul className="space-y-2 text-gray-400">
                   <li><a href="/about" className="hover:text-white">About Us</a></li>
                   <li><a href="/privacy" className="hover:text-white">Privacy Policy</a></li>

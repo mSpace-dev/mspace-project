@@ -2,31 +2,33 @@
 
 import { useState, useEffect } from 'react';
 import CustomerUserProfile from "../../components/CustomerUserProfile";
+import { checkAuthAndLogout, CustomerData } from "../../lib/clientAuth";
 
 export default function Partners() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [customer, setCustomer] = useState<any>(null);
+  const [customer, setCustomer] = useState<CustomerData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Check if user is logged in
+  // Check if user is logged in and handle token expiration
   useEffect(() => {
-    const checkAuth = async () => {
+    const checkAuth = () => {
       try {
-        const token = localStorage.getItem('customerToken');
-        if (token) {
-          const userData = localStorage.getItem('customerData');
-          if (userData) {
-            setCustomer(JSON.parse(userData));
-          }
-        }
+        const { isAuthenticated, customerData } = checkAuthAndLogout();
+        setCustomer(isAuthenticated ? customerData : null);
       } catch (error) {
         console.error('Auth check failed:', error);
+        setCustomer(null);
       } finally {
         setIsLoading(false);
       }
     };
 
     checkAuth();
+    
+    // Set up periodic token check (every 5 minutes)
+    const interval = setInterval(checkAuth, 5 * 60 * 1000);
+    
+    return () => clearInterval(interval);
   }, []);
 
   const toggleMobileMenu = () => {
@@ -52,8 +54,8 @@ export default function Partners() {
             <div className="hidden md:flex items-center space-x-8">
               <a href="/about" className="text-gray-700 hover:text-green-600 transition-colors">About</a>
               <a href="/products" className="text-gray-700 hover:text-green-600 transition-colors">Products</a>
-              <a href="/blog" className="text-gray-700 hover:text-green-600 transition-colors">Blog</a>
-              <a href="/partners" className="text-green-600 font-semibold">Our Partners</a>
+              <a href="/our-team" className="text-gray-700 hover:text-green-600 transition-colors">Our Team</a>
+              <a href="/partners" className="text-green-600 font-semibold">Partners</a>
               <a href="/contact" className="text-gray-700 hover:text-green-600 transition-colors">Contact</a>
               {customer ? (
                 <CustomerUserProfile 
@@ -63,10 +65,9 @@ export default function Partners() {
                   userEmail={customer.email || ''}
                 />
               ) : (
-                <CustomerUserProfile 
-                  isLoggedIn={false} 
-                  userRole="customer"
-                />
+                <a href="/login" className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors font-medium">
+                  Login
+                </a>
               )}
             </div>
 
@@ -93,8 +94,8 @@ export default function Partners() {
               <div className="flex flex-col space-y-4">
                 <a href="/about" className="text-gray-700 hover:text-green-600 transition-colors">About</a>
                 <a href="/products" className="text-gray-700 hover:text-green-600 transition-colors">Products</a>
-                <a href="/blog" className="text-gray-700 hover:text-green-600 transition-colors">Blog</a>
-                <a href="/partners" className="text-green-600 font-semibold">Our Partners</a>
+                <a href="/our-team" className="text-gray-700 hover:text-green-600 transition-colors">Our Team</a>
+                <a href="/partners" className="text-green-600 font-semibold">Partners</a>
                 <a href="/contact" className="text-gray-700 hover:text-green-600 transition-colors">Contact</a>
                 <div className="pt-2">
                   {customer ? (
@@ -105,10 +106,9 @@ export default function Partners() {
                       userEmail={customer.email || ''}
                     />
                   ) : (
-                    <CustomerUserProfile 
-                      isLoggedIn={false} 
-                      userRole="customer"
-                    />
+                    <a href="/login" className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors font-medium text-center block">
+                      Login
+                    </a>
                   )}
                 </div>
               </div>

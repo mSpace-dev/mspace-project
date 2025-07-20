@@ -3,11 +3,12 @@
 import Head from "next/head";
 import { useState, useEffect } from "react";
 import CustomerUserProfile from "../../components/CustomerUserProfile";
+import { checkAuthAndLogout, CustomerData } from "../../lib/clientAuth";
 import "../custom.css";
 
 export default function Contact() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [customer, setCustomer] = useState<any>(null);
+  const [customer, setCustomer] = useState<CustomerData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
     name: '',
@@ -121,8 +122,8 @@ export default function Contact() {
               <div className="hidden md:flex items-center space-x-8">
                 <a href="/about" className="text-gray-700 hover:text-green-600 transition-colors">About</a>
                 <a href="/products" className="text-gray-700 hover:text-green-600 transition-colors">Products</a>
-                <a href="/blog" className="text-gray-700 hover:text-green-600 transition-colors">Blog</a>
-                <a href="/partners" className="text-gray-700 hover:text-green-600 transition-colors">Our Partners</a>
+                <a href="/our-team" className="text-gray-700 hover:text-green-600 transition-colors">Our Team</a>
+                <a href="/partners" className="text-gray-700 hover:text-green-600 transition-colors">Partners</a>
                 <a href="/contact" className="text-green-600 font-semibold">Contact</a>
                 {customer ? (
                   <CustomerUserProfile 
@@ -132,10 +133,9 @@ export default function Contact() {
                     userEmail={customer.email || ''}
                   />
                 ) : (
-                  <CustomerUserProfile 
-                    isLoggedIn={false} 
-                    userRole="customer"
-                  />
+                  <a href="/login" className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors font-medium">
+                    Login
+                  </a>
                 )}
               </div>
 
@@ -162,8 +162,8 @@ export default function Contact() {
                 <div className="flex flex-col space-y-4">
                   <a href="/about" className="text-gray-700 hover:text-green-600 transition-colors">About</a>
                   <a href="/products" className="text-gray-700 hover:text-green-600 transition-colors">Products</a>
-                  <a href="/blog" className="text-gray-700 hover:text-green-600 transition-colors">Blog</a>
-                  <a href="/partners" className="text-gray-700 hover:text-green-600 transition-colors">Our Partners</a>
+                  <a href="/our-team" className="text-gray-700 hover:text-green-600 transition-colors">Our Team</a>
+                  <a href="/partners" className="text-gray-700 hover:text-green-600 transition-colors">Partners</a>
                   <a href="/contact" className="text-green-600 font-semibold">Contact</a>
                   <div className="pt-2">
                     {customer ? (
@@ -174,10 +174,9 @@ export default function Contact() {
                         userEmail={customer.email || ''}
                       />
                     ) : (
-                      <CustomerUserProfile 
-                        isLoggedIn={false} 
-                        userRole="customer"
-                      />
+                      <a href="/login" className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors font-medium text-center block">
+                        Login
+                      </a>
                     )}
                   </div>
                 </div>
@@ -517,7 +516,7 @@ export default function Contact() {
               <div>
                 <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
                 <ul className="space-y-2">
-                  <li><a href="/about" className="text-gray-300 hover:text-green-400 transition-colors">About Us</a></li>
+                  <li><a href="/" className="text-gray-300 hover:text-green-400 transition-colors">About Us</a></li>
                   <li><a href="/products" className="text-gray-300 hover:text-green-400 transition-colors">Products</a></li>
                   <li><a href="/partners" className="text-gray-300 hover:text-green-400 transition-colors">Partners</a></li>
                   <li><a href="/contact" className="text-gray-300 hover:text-green-400 transition-colors">Contact</a></li>

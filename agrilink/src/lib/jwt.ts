@@ -5,19 +5,26 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-i
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '24h';
 
 export interface JWTPayload {
-  adminId: string;
+  adminId?: string;
+  customerId?: string;
   email: string;
   role: string;
-  permissions: string[];
+  permissions?: string[];
+  name?: string;
+  phone?: string;
+  district?: string;
+  province?: string;
 }
 
 /**
- * Generate JWT token for admin authentication
+ * Generate JWT token for authentication
  */
 export function generateToken(payload: JWTPayload): string {
+  const issuer = payload.role === 'admin' ? 'agrilink-admin' : 'agrilink-customer';
+  
   return jwt.sign(payload, JWT_SECRET as string, {
     expiresIn: JWT_EXPIRES_IN,
-    issuer: 'agrilink-admin',
+    issuer,
     audience: 'agrilink-app',
   } as SignOptions);
 }
@@ -28,13 +35,27 @@ export function generateToken(payload: JWTPayload): string {
 export function verifyToken(token: string): JWTPayload | null {
   try {
     const decoded = jwt.verify(token, JWT_SECRET as string, {
-      issuer: 'agrilink-admin',
       audience: 'agrilink-app',
     }) as JWTPayload;
     return decoded;
   } catch (error) {
     console.error('JWT verification failed:', error);
     return null;
+  }
+}
+
+/**
+ * Check if token is expired
+ */
+export function isTokenExpired(token: string): boolean {
+  try {
+    const decoded = jwt.decode(token) as any;
+    if (!decoded || !decoded.exp) return true;
+    
+    const currentTime = Math.floor(Date.now() / 1000);
+    return decoded.exp < currentTime;
+  } catch (error) {
+    return true;
   }
 }
 

@@ -12,23 +12,6 @@ export interface CustomerData {
   province?: string;
 }
 
-// Custom event types for authentication state changes
-export const AUTH_EVENTS = {
-  LOGIN: 'agrilink:auth:login',
-  LOGOUT: 'agrilink:auth:logout',
-  TOKEN_EXPIRED: 'agrilink:auth:tokenExpired'
-} as const;
-
-/**
- * Dispatch authentication event to notify all components
- */
-function dispatchAuthEvent(eventType: string, data?: any) {
-  if (typeof window !== 'undefined') {
-    const event = new CustomEvent(eventType, { detail: data });
-    window.dispatchEvent(event);
-  }
-}
-
 /**
  * Check if token is expired (client-side)
  * This decodes the JWT without verifying the signature
@@ -101,9 +84,6 @@ export function logoutUser(redirectTo: string = '/login'): void {
     localStorage.removeItem('customerToken');
     localStorage.removeItem('customerData');
     
-    // Dispatch logout event to notify all components
-    dispatchAuthEvent(AUTH_EVENTS.LOGOUT);
-    
     // Redirect to login page
     if (typeof window !== 'undefined') {
       window.location.href = redirectTo;
@@ -120,9 +100,6 @@ export function setCustomerAuth(token: string, customerData: CustomerData): void
   try {
     localStorage.setItem('customerToken', token);
     localStorage.setItem('customerData', JSON.stringify(customerData));
-    
-    // Dispatch login event to notify all components
-    dispatchAuthEvent(AUTH_EVENTS.LOGIN, { customerData });
   } catch (error) {
     console.error('Error setting customer auth:', error);
   }
@@ -140,35 +117,10 @@ export function checkAuthAndLogout(): { isAuthenticated: boolean; customerData: 
   }
   
   if (isTokenExpiredClient(token)) {
-    // Token is expired, logout user and dispatch event
-    localStorage.removeItem('customerToken');
-    localStorage.removeItem('customerData');
-    dispatchAuthEvent(AUTH_EVENTS.TOKEN_EXPIRED);
+    // Token is expired, logout user
+    logoutUser();
     return { isAuthenticated: false, customerData: null };
   }
   
   return { isAuthenticated: true, customerData };
-}
-
-/**
- * Add event listener for authentication events
- */
-export function addAuthEventListener(callback: (eventType: string, data?: any) => void) {
-  if (typeof window === 'undefined') return () => {};
-
-  const handleAuthEvent = (event: CustomEvent) => {
-    callback(event.type, event.detail);
-  };
-
-  // Add listeners for all auth events
-  Object.values(AUTH_EVENTS).forEach(eventType => {
-    window.addEventListener(eventType, handleAuthEvent as EventListener);
-  });
-
-  // Return cleanup function
-  return () => {
-    Object.values(AUTH_EVENTS).forEach(eventType => {
-      window.removeEventListener(eventType, handleAuthEvent as EventListener);
-    });
-  };
 }

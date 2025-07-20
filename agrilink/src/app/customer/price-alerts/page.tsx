@@ -161,7 +161,11 @@ export default function CustomerPriceAlerts() {
             </div>
             
             <div className="flex items-center space-x-8">
-              <a href="/home" className="text-gray-700 hover:text-green-600 transition-colors">Home</a>
+              <a href="/about" className="text-gray-700 hover:text-green-600 transition-colors">About</a>
+              <a href="/products" className="text-gray-700 hover:text-green-600 transition-colors">Products</a>
+              <a href="/our-team" className="text-gray-700 hover:text-green-600 transition-colors">Our Team</a>
+              <a href="/partners" className="text-gray-700 hover:text-green-600 transition-colors">Partners</a>
+              <a href="/contact" className="text-gray-700 hover:text-green-600 transition-colors">Contact</a>
               <CustomerUserProfile 
                         isLoggedIn={!!customer} 
                         userRole="customer"

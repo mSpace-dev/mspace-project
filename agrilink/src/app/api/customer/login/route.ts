@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { dbConnect } from '@/lib/dbConnect';
 import Customer from '@/lib/models/Customer';
+import { generateToken } from '@/lib/jwt';
 
 export async function POST(req: NextRequest) {
   try {
@@ -47,10 +48,22 @@ export async function POST(req: NextRequest) {
       createdAt: customer.createdAt,
     };
 
+    // Generate JWT token
+    const token = generateToken({
+      customerId: customer._id.toString(),
+      email: customer.email,
+      role: 'customer',
+      name: customer.name,
+      phone: customer.phone,
+      district: customer.district,
+      province: customer.province,
+    });
+
     return NextResponse.json(
       { 
         message: 'Login successful', 
-        customer: customerResponse 
+        customer: customerResponse,
+        token: token
       },
       { status: 200 }
     );

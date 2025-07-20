@@ -298,20 +298,20 @@ export default function Alerts() {
               <span className="ml-2 text-sm text-gray-500">Sri Lanka</span>
             </div>
             <div className="hidden md:flex items-center space-x-8">
-              <a href="/prices" className="text-gray-700 hover:text-green-600">
-                Prices
+              <a href="/about" className="text-gray-700 hover:text-green-600">
+                About
               </a>
-              <a
-                href="/alerts"
-                className="text-gray-700 hover:text-green-600 font-medium"
-              >
-                Alerts
+              <a href="/products" className="text-gray-700 hover:text-green-600">
+                Products
               </a>
-              <a
-                href="/demandforecast"
-                className="text-gray-700 hover:text-green-600"
-              >
-                Forecasts
+              <a href="/our-team" className="text-gray-700 hover:text-green-600">
+                Our Team
+              </a>
+              <a href="/partners" className="text-gray-700 hover:text-green-600">
+                Partners
+              </a>
+              <a href="/contact" className="text-gray-700 hover:text-green-600">
+                Contact
               </a>
               <CustomerUserProfile 
                 isLoggedIn={true} 
