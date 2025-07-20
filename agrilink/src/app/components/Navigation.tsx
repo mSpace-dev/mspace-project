@@ -2,11 +2,63 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+<<<<<<< Updated upstream
+=======
+import CustomerUserProfile from "../../components/CustomerUserProfile";
+import { checkAuthAndLogout, CustomerData, addAuthEventListener, AUTH_EVENTS } from "../../lib/clientAuth";
+>>>>>>> Stashed changes
 
 export default function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const router = useRouter();
 
+<<<<<<< Updated upstream
+=======
+  // Check if user is logged in and handle token expiration
+  useEffect(() => {
+    const checkAuth = () => {
+      try {
+        const { isAuthenticated, customerData } = checkAuthAndLogout();
+        setCustomer(isAuthenticated ? customerData : null);
+      } catch (error) {
+        console.error('Auth check failed:', error);
+        setCustomer(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    // Initial auth check
+    checkAuth();
+    
+    // Set up periodic token check (every 5 minutes)
+    const interval = setInterval(checkAuth, 5 * 60 * 1000);
+    
+    // Listen for authentication events from other tabs/components
+    const removeAuthListener = addAuthEventListener((eventType, data) => {
+      switch (eventType) {
+        case AUTH_EVENTS.LOGIN:
+          if (data?.customerData) {
+            setCustomer(data.customerData);
+          } else {
+            // Re-check auth state if data not provided
+            checkAuth();
+          }
+          break;
+        case AUTH_EVENTS.LOGOUT:
+        case AUTH_EVENTS.TOKEN_EXPIRED:
+          setCustomer(null);
+          break;
+      }
+    });
+    
+    return () => {
+      clearInterval(interval);
+      removeAuthListener();
+    };
+  }, []);
+
+>>>>>>> Stashed changes
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
