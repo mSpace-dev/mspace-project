@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import CustomerUserProfile from "../../components/CustomerUserProfile";
+import CustomerUserProfile from "../components/CustomerUserProfile";
 import { checkAuthAndLogout, CustomerData } from "../../lib/clientAuth";
 
 export default function Products() {

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import CustomerUserProfile from '../../../components/CustomerUserProfile';
+import CustomerUserProfile from '../../components/CustomerUserProfile';
 
 interface Customer {
   _id: string;

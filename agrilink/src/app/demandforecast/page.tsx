@@ -3,7 +3,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import CustomerUserProfile from '../../components/CustomerUserProfile'
+import CustomerUserProfile from '../components/CustomerUserProfile'
 
 const Summary = {
   increasing_demand_percentage: 0,

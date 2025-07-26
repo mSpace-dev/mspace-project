@@ -1,80 +1,236 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import { dbConnect } from '../../../lib/dbConnect';
+import Price from '../../../lib/models/Price';
+import Product from '../../../lib/models/Product';
+import ChatConversation from '../../../lib/models/ChatConversation';
 
-// Mock chatbot responses
-const getBotResponse = (message: string): string => {
+// Initialize Gemini AI
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+
+// Extract entities from user message
+const extractEntities = (message: string) => {
   const lowerMessage = message.toLowerCase();
   
-  if (lowerMessage.includes('price') && lowerMessage.includes('rice')) {
-    return 'Current rice prices in Colombo: Nadu Rs.85.50/kg, Samba Rs.92.00/kg. Prices increased by 2.5% today.';
+  // Common Sri Lankan crops
+  const crops = ['rice', 'coconut', 'potato', 'onion', 'tomato', 'carrot', 'cabbage', 'beans', 'pumpkin', 'brinjal', 'okra', 'mango', 'banana', 'papaya', 'pineapple', 'avocado', 'spices', 'cinnamon', 'pepper', 'cardamom', 'cloves'];
+  
+  // Sri Lankan locations
+  const locations = ['colombo', 'kandy', 'galle', 'jaffna', 'anuradhapura', 'polonnaruwa', 'kurunegala', 'ratnapura', 'badulla', 'hambantota', 'matara', 'kalutara', 'gampaha', 'kegalle', 'monaragala', 'puttalam', 'trincomalee', 'batticaloa', 'ampara', 'vavuniya', 'kilinochchi', 'mannar', 'mullaitivu'];
+  
+  const entities = {
+    product: crops.find(crop => lowerMessage.includes(crop)) || null,
+    location: locations.find(loc => lowerMessage.includes(loc)) || null,
+    action: null as string | null,
+  };
+  
+  // Determine intent/action
+  if (lowerMessage.includes('price') || lowerMessage.includes('cost') || lowerMessage.includes('rate')) {
+    entities.action = 'price_inquiry';
+  } else if (lowerMessage.includes('forecast') || lowerMessage.includes('predict') || lowerMessage.includes('future')) {
+    entities.action = 'forecast';
+  } else if (lowerMessage.includes('market') || lowerMessage.includes('where') || lowerMessage.includes('buy') || lowerMessage.includes('sell')) {
+    entities.action = 'market_info';
+  } else if (lowerMessage.includes('alert') || lowerMessage.includes('notify') || lowerMessage.includes('notification')) {
+    entities.action = 'alert_setup';
+  } else if (lowerMessage.includes('weather')) {
+    entities.action = 'weather';
+  } else {
+    entities.action = 'general';
   }
   
-  if (lowerMessage.includes('price') && lowerMessage.includes('coconut')) {
-    return 'Current coconut prices: King Coconut Rs.45.00/piece, Regular Coconut Rs.38.00/piece. Prices stable today.';
-  }
-  
-  if (lowerMessage.includes('weather')) {
-    return 'Weather forecast for this week: Partly cloudy with occasional showers. Good conditions for most crops. Harvest timing recommendations available.';
-  }
-  
-  if (lowerMessage.includes('market') || lowerMessage.includes('where')) {
-    return 'Best markets near you: Pettah (Colombo), Gampaha Central, Kandy Central. Check our app for real-time availability.';
-  }
-  
-  if (lowerMessage.includes('forecast') || lowerMessage.includes('predict')) {
-    return 'Price forecasts show rice prices likely to increase 3-5% next week due to seasonal demand. Coconut prices expected to remain stable.';
-  }
-  
-  if (lowerMessage.includes('alert') || lowerMessage.includes('notify')) {
-    return 'To set price alerts, reply with: ALERT [CROP] [PRICE] [ABOVE/BELOW]. Example: ALERT RICE 90 ABOVE';
-  }
-  
-  if (lowerMessage.includes('help')) {
-    return 'AgriLink Bot Commands:\n• Price [crop] - Get current prices\n• Forecast [crop] - Get price predictions\n• Market [location] - Find nearby markets\n• Alert [crop] [price] [above/below] - Set price alerts\n• Weather - Get weather updates';
-  }
-  
-  return 'Hello! I can help with crop prices, forecasts, markets, and alerts. Type "help" for commands or ask about specific crops.';
+  return entities;
 };
 
-// POST /api/chatbot - Process chatbot message
-export async function POST(request: NextRequest) {
+// Get current price data from database
+const getCurrentPrices = async (product?: string, location?: string) => {
   try {
-    const body = await request.json();
-    const { message, userPhone, userId } = body;
+    await dbConnect();
+    
+    const query: any = {
+      date: {
+        $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) // Last 7 days
+      },
+      verified: true
+    };
+    
+    if (product) {
+      query.$or = [
+        { productName: new RegExp(product, 'i') },
+        { variety: new RegExp(product, 'i') }
+      ];
+    }
+    
+    if (location) {
+      query.$or = [
+        ...(query.$or || []),
+        { 'location.district': new RegExp(location, 'i') },
+        { 'location.province': new RegExp(location, 'i') },
+        { market: new RegExp(location, 'i') }
+      ];
+    }
+    
+    const prices = await Price.find(query)
+      .sort({ date: -1 })
+      .limit(10)
+      .lean();
+    
+    return prices;
+  } catch (error) {
+    console.error('Error fetching prices:', error);
+    return [];
+  }
+};
 
-    if (!message) {
+// Get product availability from sellers
+const getProductAvailability = async (product?: string, location?: string) => {
+  try {
+    await dbConnect();
+    
+    const query: any = {
+      status: 'available',
+      isActive: true,
+      availableQuantity: { $gt: 0 }
+    };
+    
+    if (product) {
+      query.$or = [
+        { name: new RegExp(product, 'i') },
+        { variety: new RegExp(product, 'i') }
+      ];
+    }
+    
+    if (location) {
+      query.$or = [
+        ...(query.$or || []),
+        { 'location.district': new RegExp(location, 'i') },
+        { 'location.province': new RegExp(location, 'i') }
+      ];
+    }
+    
+    const products = await Product.find(query)
+      .populate('sellerId', 'name phone')
+      .sort({ pricePerKg: 1 })
+      .limit(5)
+      .lean();
+    
+    return products;
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    return [];
+  }
+};
+
+// Generate AI response using Gemini with context
+const generateAIResponse = async (userMessage: string, entities: any, priceData: any[], productData: any[]) => {
+  try {
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    
+    // Build context from database data
+    let context = "You are an AI assistant for AgriLink, a Sri Lankan agricultural price platform. ";
+    context += "You help farmers, sellers, and consumers with current crop prices, market information, and agricultural insights. ";
+    context += "Always provide accurate, helpful information in a friendly tone. ";
+    context += "Use Sri Lankan Rupees (Rs.) for prices and mention specific locations when available.\n\n";
+    
+    // Add current price data to context
+    if (priceData.length > 0) {
+      context += "CURRENT PRICE DATA:\n";
+      priceData.forEach((price: any) => {
+        context += `- ${price.productName}${price.variety ? ` (${price.variety})` : ''}: Rs.${price.pricePerKg}/${price.unit} at ${price.market}, ${price.location.district} (${new Date(price.date).toLocaleDateString()})\n`;
+      });
+      context += "\n";
+    }
+    
+    // Add product availability data to context
+    if (productData.length > 0) {
+      context += "AVAILABLE PRODUCTS:\n";
+      productData.forEach((product: any) => {
+        context += `- ${product.name}${product.variety ? ` (${product.variety})` : ''}: Rs.${product.pricePerKg}/${product.unit}, ${product.availableQuantity}${product.unit} available in ${product.location.district}\n`;
+      });
+      context += "\n";
+    }
+    
+    context += `USER MESSAGE: ${userMessage}\n\n`;
+    context += "Please provide a helpful response based on the available data. If asking about prices, use the current price data. ";
+    context += "If asking about availability, mention the available products. ";
+    context += "If no specific data is available, provide general guidance and suggest how they can get more information through AgriLink.";
+    
+    const result = await model.generateContent(context);
+    const response = await result.response;
+    return response.text();
+  } catch (error) {
+    console.error('Error generating AI response:', error);
+    return "I'm having trouble processing your request right now. Please try asking about specific crop prices or market information, and I'll do my best to help you.";
+  }
+};
+
+// POST /api/chatbot - Process chatbot message with database integration
+export async function POST(request: NextRequest) {
+  const startTime = Date.now();
+  
+  try {
+    await dbConnect();
+    
+    const body = await request.json();
+    const { message, userPhone, userId, sessionId } = body;
+
+    if (!message || message.trim().length === 0) {
       return NextResponse.json(
         { success: false, error: 'Message is required' },
         { status: 400 }
       );
     }
 
-    // Generate bot response
-    const botResponse = getBotResponse(message);
-
-    // Log conversation (in production, save to database)
-    const conversation = {
-      id: `conv_${Date.now()}`,
-      userId: userId || 'anonymous',
-      userPhone: userPhone || null,
+    // Extract entities from user message
+    const entities = extractEntities(message);
+    
+    // Get relevant data from database
+    const [priceData, productData] = await Promise.all([
+      getCurrentPrices(entities.product, entities.location),
+      getProductAvailability(entities.product, entities.location)
+    ]);
+    
+    // Generate AI response with context
+    const botResponse = await generateAIResponse(message, entities, priceData, productData);
+    
+    // Calculate response time
+    const responseTime = Date.now() - startTime;
+    
+    // Save conversation to database
+    const conversation = new ChatConversation({
+      userId: userId || undefined,
+      userPhone: userPhone || undefined,
       userMessage: message,
       botResponse,
-      timestamp: new Date().toISOString()
-    };
+      intent: entities.action,
+      entities: {
+        product: entities.product,
+        location: entities.location,
+        action: entities.action,
+      },
+      sessionId: sessionId || `session_${Date.now()}`,
+      timestamp: new Date(),
+      responseTime,
+    });
+    
+    await conversation.save();
 
-    console.log('Chatbot conversation:', conversation);
-
-    // If user has phone number, send SMS response
+    // If user has phone number, log for SMS service integration
     if (userPhone) {
-      // Here you would call your SMS service
-      console.log(`Sending SMS response to ${userPhone}: ${botResponse}`);
+      console.log(`SMS notification queued for ${userPhone}: ${botResponse.slice(0, 100)}...`);
     }
 
     return NextResponse.json({
       success: true,
       data: {
         response: botResponse,
-        conversationId: conversation.id,
-        timestamp: conversation.timestamp
+        conversationId: conversation._id,
+        timestamp: conversation.timestamp,
+        entities,
+        dataFound: {
+          prices: priceData.length,
+          products: productData.length
+        }
       }
     });
   } catch (error) {
@@ -89,30 +245,28 @@ export async function POST(request: NextRequest) {
 // GET /api/chatbot - Get conversation history
 export async function GET(request: NextRequest) {
   try {
+    await dbConnect();
+    
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');
     const userPhone = searchParams.get('userPhone');
+    const sessionId = searchParams.get('sessionId');
+    const limit = parseInt(searchParams.get('limit') || '20');
 
-    if (!userId && !userPhone) {
-      return NextResponse.json(
-        { success: false, error: 'User ID or phone number is required' },
-        { status: 400 }
-      );
-    }
+    const query: any = {};
+    
+    if (userId) query.userId = userId;
+    if (userPhone) query.userPhone = userPhone;
+    if (sessionId) query.sessionId = sessionId;
 
-    // Mock conversation history
-    const conversationHistory = [
-      {
-        id: 'conv_1',
-        userMessage: 'What is the current rice price?',
-        botResponse: 'Current rice prices in Colombo: Nadu Rs.85.50/kg, Samba Rs.92.00/kg.',
-        timestamp: new Date(Date.now() - 60000).toISOString()
-      }
-    ];
+    const conversations = await ChatConversation.find(query)
+      .sort({ timestamp: -1 })
+      .limit(limit)
+      .lean();
 
     return NextResponse.json({
       success: true,
-      data: conversationHistory
+      data: conversations.reverse() // Reverse to show oldest first
     });
   } catch (error) {
     console.error('Error fetching conversation history:', error);

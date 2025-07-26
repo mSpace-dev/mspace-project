@@ -2,7 +2,7 @@
 
 import Head from "next/head";
 import { useState, useEffect } from "react";
-import CustomerUserProfile from "../../components/CustomerUserProfile";
+import CustomerUserProfile from "../components/CustomerUserProfile";
 import { checkAuthAndLogout, CustomerData } from "../../lib/clientAuth";
 import "../custom.css";
 
@@ -230,6 +230,9 @@ export default function Home() {
                 <a href="/our-team" className="text-gray-700 hover:text-green-600 transition-colors">Our Team</a>
                 <a href="/partners" className="text-gray-700 hover:text-green-600 transition-colors">Partners</a>
                 <a href="/contact" className="text-gray-700 hover:text-green-600 transition-colors">Contact</a>
+                <a href="/chatbot" className="flex items-center text-gray-700 hover:text-green-600 transition-colors">
+                  💬 Chat Assistant
+                </a>
                 {customer ? (
                   <CustomerUserProfile 
                     isLoggedIn={true} 
@@ -270,6 +273,9 @@ export default function Home() {
                   <a href="/our-team" className="text-gray-700 hover:text-green-600 transition-colors">Our Team</a>
                   <a href="/partners" className="text-gray-700 hover:text-green-600 transition-colors">Partners</a>
                   <a href="/contact" className="text-gray-700 hover:text-green-600 transition-colors">Contact</a>
+                  <a href="/chatbot" className="flex items-center text-gray-700 hover:text-green-600 transition-colors">
+                    💬 Chat Assistant
+                  </a>
                   <div className="pt-2">
                     {customer ? (
                       <CustomerUserProfile 
