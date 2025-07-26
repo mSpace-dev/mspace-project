@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { setCustomerAuth } from '../../lib/clientAuth';
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
@@ -83,11 +84,31 @@ export default function LoginPage() {
 
       if (customerResponse.ok) {
         const customerData = await customerResponse.json();
-        setSuccess(customerData.message);
-        localStorage.setItem('customer', JSON.stringify(customerData.customer));
-        setTimeout(() => {
-          router.push('/customer/dashboard');
-        }, 1000);
+        
+        // Check if the response includes a JWT token
+        if (customerData.token && customerData.customer) {
+          // Use new JWT-based authentication
+          setCustomerAuth(customerData.token, {
+            customerId: customerData.customer._id || customerData.customer.customerId,
+            name: customerData.customer.name,
+            email: customerData.customer.email,
+            phone: customerData.customer.phone,
+            district: customerData.customer.district,
+            province: customerData.customer.province
+          });
+          
+          setSuccess(customerData.message);
+          setTimeout(() => {
+            router.push('/home');
+          }, 1000);
+        } else {
+          // Fallback to old system if no token
+          localStorage.setItem('customer', JSON.stringify(customerData.customer));
+          setSuccess(customerData.message);
+          setTimeout(() => {
+            router.push('/customer/dashboard');
+          }, 1000);
+        }
         return;
       }
 

@@ -161,9 +161,7 @@ export default function CustomerDashboard() {
                 className="text-green-600 hover:text-green-800 transition-colors"
                 title="Refresh profile"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
+                
               </button>
             </div>
             <div className="space-y-3">
@@ -230,41 +228,7 @@ export default function CustomerDashboard() {
           </div>
         </div>
 
-        {/* Price Alerts Summary */}
-        <div className="mt-8 bg-white rounded-2xl shadow-lg p-6">
-          <h2 className="text-xl font-bold text-green-700 mb-4">Price Alerts</h2>
-          {customer.priceAlerts && customer.priceAlerts.length > 0 ? (
-            <div className="space-y-3">
-              {customer.priceAlerts.map((alert, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div>
-                    <p className="font-medium text-gray-900">{alert.crop}</p>
-                    <p className="text-sm text-gray-600">
-                      Min: Rs.{alert.minPrice} - Max: Rs.{alert.maxPrice}
-                    </p>
-                  </div>
-                  <div className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    alert.isActive 
-                      ? 'bg-green-100 text-green-800' 
-                      : 'bg-gray-100 text-gray-800'
-                  }`}>
-                    {alert.isActive ? 'Active' : 'Inactive'}
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-8 text-gray-500">
-              <p>No price alerts set up yet</p>
-              <a
-                href="/alerts"
-                className="text-green-600 hover:text-green-800 font-medium"
-              >
-                Set up your first price alert
-              </a>
-            </div>
-          )}
-        </div>
+        
 
         {/* Recent Activity */}
         <div className="mt-8 bg-white rounded-2xl shadow-lg p-6">
@@ -282,9 +246,6 @@ export default function CustomerDashboard() {
                 </p>
               </div>
               <div className="text-green-600">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
               </div>
             </div>
             {customer.updatedAt && (
@@ -300,9 +261,6 @@ export default function CustomerDashboard() {
                   </p>
                 </div>
                 <div className="text-blue-600">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
-                  </svg>
                 </div>
               </div>
             )}
