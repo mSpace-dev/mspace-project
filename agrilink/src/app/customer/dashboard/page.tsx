@@ -511,6 +511,24 @@ export default function CustomerDashboard() {
               >
                 Demand Forecasting
               </a>
+              <a
+                href="/shop"
+                className="block w-full bg-orange-600 hover:bg-orange-700 text-white text-center py-3 px-4 rounded-lg font-medium transition duration-200"
+              >
+                Shop Products
+              </a>
+              <a
+                href="/customer/cart"
+                className="block w-full bg-indigo-600 hover:bg-indigo-700 text-white text-center py-3 px-4 rounded-lg font-medium transition duration-200"
+              >
+                View Cart
+              </a>
+              <a
+                href="/customer/orders"
+                className="block w-full bg-teal-600 hover:bg-teal-700 text-white text-center py-3 px-4 rounded-lg font-medium transition duration-200"
+              >
+                My Orders
+              </a>
             </div>
           </div>
 
