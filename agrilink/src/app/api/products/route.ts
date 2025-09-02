@@ -69,8 +69,22 @@ export async function GET(req: NextRequest) {
 
     // Get available filters data
     const categories = await Product.distinct('category', { status: 'available', isActive: true });
-    const districts = await Product.distinct('location.district', { status: 'available', isActive: true });
-    const provinces = await Product.distinct('location.province', { status: 'available', isActive: true });
+    
+    // Get all Sri Lankan districts (predefined list to ensure all are available)
+    const allDistricts = [
+      'Colombo', 'Gampaha', 'Kalutara', 'Kandy', 'Matale', 'Nuwara Eliya',
+      'Galle', 'Matara', 'Hambantota', 'Jaffna', 'Kilinochchi', 'Mannar',
+      'Vavuniya', 'Mullaitivu', 'Batticaloa', 'Ampara', 'Trincomalee',
+      'Kurunegala', 'Puttalam', 'Anuradhapura', 'Polonnaruwa', 'Badulla',
+      'Moneragala', 'Ratnapura', 'Kegalle'
+    ];
+    
+    // Get all Sri Lankan provinces (predefined list)
+    const allProvinces = [
+      'Western', 'Central', 'Southern', 'Northern', 'Eastern', 
+      'North Western', 'North Central', 'Uva', 'Sabaragamuwa'
+    ];
+    
     const qualities = await Product.distinct('quality', { status: 'available', isActive: true });
 
     return NextResponse.json({
@@ -86,8 +100,8 @@ export async function GET(req: NextRequest) {
         },
         filters: {
           categories: categories.sort(),
-          districts: districts.sort(),
-          provinces: provinces.sort(),
+          districts: allDistricts.sort(),
+          provinces: allProvinces.sort(),
           qualities: qualities.sort()
         }
       }
