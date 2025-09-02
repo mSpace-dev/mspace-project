@@ -1,30 +1,55 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Navigation from "../../components/Navigation";
+import CustomerNavBar from "../../../components/CustomerNavBar";
+import { useCustomerAuth } from "../../../hooks/useCustomerAuth";
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { customer, isLoading: authLoading, isAuthenticated, redirectToLogin } = useCustomerAuth();
 
   useEffect(() => {
     const load = async () => {
       try {
-        const customer = JSON.parse(localStorage.getItem("customer") || "null");
-        if (!customer?._id) throw new Error("Please login to view orders");
-        const res = await fetch(`/api/orders?customerId=${customer._id}`);
+        // Wait for authentication to complete
+        if (authLoading) return;
+        
+        // Check if user is authenticated
+        if (!isAuthenticated || !customer) {
+          redirectToLogin();
+          return;
+        }
+
+        const customerId = customer._id || customer.customerId;
+        if (!customerId) {
+          throw new Error("Customer ID not found. Please login again.");
+        }
+
+        console.log('Fetching orders for customer:', customerId);
+        
+        const res = await fetch(`/api/orders?customerId=${customerId}`);
         const json = await res.json();
+        
+        console.log('Orders API response:', json);
+        
         if (!res.ok) throw new Error(json?.error || 'Failed to load orders');
         setOrders(json.orders || []);
-      } catch (e:any) { setError(e.message);} finally { setLoading(false);}        
+      } catch (e: any) { 
+        console.error('Error loading orders:', e);
+        setError(e.message);
+      } finally { 
+        setLoading(false);
+      }        
     };
+    
     load();
-  }, []);
+  }, [customer, isAuthenticated, authLoading, redirectToLogin]);
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navigation />
+      <CustomerNavBar customer={customer || undefined} />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <h1 className="text-3xl font-bold text-gray-900 mb-6">Your Orders</h1>
         {loading && <div className="py-10 text-gray-600">Loading…</div>}

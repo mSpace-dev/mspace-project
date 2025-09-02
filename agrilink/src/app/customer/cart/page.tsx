@@ -121,38 +121,6 @@ export default function CustomerCart() {
     return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
   };
 
-  const addSampleItems = async () => {
-    if (!customer) return;
-
-    try {
-      const response = await fetch('/api/customer/cart/test', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          customerId: customer._id
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to add sample items');
-      }
-
-      // Refresh cart data
-      const customerId = customer._id || customer.customerId;
-      if (customerId) {
-        fetchCartData(customerId);
-      }
-      setSuccessMessage('Sample items added to cart');
-      setTimeout(() => setSuccessMessage(null), 3000);
-    } catch (err) {
-      console.error('Error adding sample items:', err);
-      setError('Failed to add sample items');
-      setTimeout(() => setError(null), 3000);
-    }
-  };
-
   const getItemTypeIcon = (type: string) => {
     switch (type) {
       case 'product':
@@ -258,12 +226,6 @@ export default function CustomerCart() {
               >
                 Browse Products
               </a>
-              <button
-                onClick={addSampleItems}
-                className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-              >
-                Add Sample Items (For Testing)
-              </button>
             </div>
           </div>
         ) : (

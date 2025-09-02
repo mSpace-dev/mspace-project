@@ -22,9 +22,7 @@ export async function GET(req: NextRequest) {
 
     // Build filter query
     const filter: any = {
-      status: 'available',
-      isActive: true,
-      availableQuantity: { $gt: 0 }
+      isActive: true
     };
 
     if (category && category !== 'all') {
@@ -56,19 +54,65 @@ export async function GET(req: NextRequest) {
     sort[sortBy] = sortOrder === 'asc' ? 1 : -1;
 
     // Fetch products with seller information
-    const products = await Product.find(filter)
+    const allProducts = await Product.find(filter)
       .populate('sellerId', 'name businessName district province isVerified')
       .sort(sort)
-      .skip(skip)
-      .limit(limit)
       .lean();
 
-    // Get total count for pagination
-    const totalProducts = await Product.countDocuments(filter);
-    const totalPages = Math.ceil(totalProducts / limit);
+    // Group products by name and aggregate data
+    const productGroups = new Map();
+    
+    allProducts.forEach(product => {
+      const key = product.name;
+      if (!productGroups.has(key)) {
+        productGroups.set(key, {
+          _id: product._id, // Use first product's ID as representative
+          name: product.name,
+          category: product.category,
+          variety: product.variety,
+          description: product.description,
+          images: product.images,
+          totalAvailableQuantity: 0,
+          averagePrice: 0,
+          sellers: [],
+          unit: product.unit,
+          qualities: new Set(),
+          createdAt: product.createdAt,
+          updatedAt: product.updatedAt
+        });
+      }
+      
+      const group = productGroups.get(key);
+      group.totalAvailableQuantity += product.availableQuantity;
+      group.sellers.push({
+        _id: product._id,
+        sellerId: product.sellerId,
+        pricePerKg: product.pricePerKg,
+        availableQuantity: product.availableQuantity,
+        location: product.location,
+        harvestDate: product.harvestDate,
+        expiryDate: product.expiryDate,
+        quality: product.quality,
+        status: product.status
+      });
+      group.qualities.add(product.quality);
+    });
+
+    // Calculate average prices and convert to array
+    const groupedProducts = Array.from(productGroups.values()).map(group => {
+      const totalPrice = group.sellers.reduce((sum: number, seller: any) => sum + seller.pricePerKg, 0);
+      group.averagePrice = totalPrice / group.sellers.length;
+      group.qualities = Array.from(group.qualities);
+      return group;
+    });
+
+    // Apply pagination to grouped products
+    const paginatedProducts = groupedProducts.slice(skip, skip + limit);
+    const totalGroupedProducts = groupedProducts.length;
+    const totalPages = Math.ceil(totalGroupedProducts / limit);
 
     // Get available filters data
-    const categories = await Product.distinct('category', { status: 'available', isActive: true });
+    const categories = await Product.distinct('category', { isActive: true });
     
     // Get all Sri Lankan districts (predefined list to ensure all are available)
     const allDistricts = [
@@ -85,16 +129,16 @@ export async function GET(req: NextRequest) {
       'North Western', 'North Central', 'Uva', 'Sabaragamuwa'
     ];
     
-    const qualities = await Product.distinct('quality', { status: 'available', isActive: true });
+    const qualities = await Product.distinct('quality', { isActive: true });
 
     return NextResponse.json({
       success: true,
       data: {
-        products,
+        products: paginatedProducts,
         pagination: {
           currentPage: page,
           totalPages,
-          totalProducts,
+          totalProducts: totalGroupedProducts,
           hasNextPage: page < totalPages,
           hasPrevPage: page > 1
         },
