@@ -206,9 +206,15 @@ export default function Home() {
                       />
                     </div>
                   ) : (
-                    <a href="/login" className="bg-green-600/90 hover:bg-green-500 text-white px-6 py-3 rounded-lg transition-all duration-300 font-medium backdrop-blur-sm border border-green-500/30 hover:border-green-400/50 shadow-lg">
-                      Login
-                    </a>
+                    <div className="flex gap-4">
+                      <a href="/login" className="bg-green-600/90 hover:bg-green-500 text-white px-6 py-3 rounded-lg transition-all duration-300 font-medium backdrop-blur-sm border border-green-500/30 hover:border-green-400/50 shadow-lg">
+                        Login
+                      </a>
+                      <a href="/signup" className="bg-blue-600/90 hover:bg-blue-500 text-white px-6 py-3 rounded-lg transition-all duration-300 font-medium backdrop-blur-sm border border-blue-500/30 hover:border-blue-400/50 shadow-lg">
+                        Sign Up
+                      </a>
+                    </div>
+                    
                   )}
                 </div>
 
@@ -247,9 +253,14 @@ export default function Home() {
                           userEmail={customer.email || ''}
                         />
                       ) : (
-                        <a href="/login" className="bg-green-600/90 hover:bg-green-500 text-white px-6 py-3 rounded-lg transition-colors font-medium text-center block backdrop-blur-sm">
-                          Login
-                        </a>
+                        <div className="flex flex-col gap-2">
+                          <a href="/login" className="bg-green-600/90 hover:bg-green-500 text-white px-6 py-3 rounded-lg transition-colors font-medium text-center block backdrop-blur-sm">
+                            Login
+                          </a>
+                          <a href="/signup" className="bg-blue-600/90 hover:bg-blue-500 text-white px-6 py-3 rounded-lg transition-colors font-medium text-center block backdrop-blur-sm">
+                            Sign Up
+                          </a>
+                        </div>
                       )}
                     </div>
                   </div>
@@ -283,23 +294,7 @@ export default function Home() {
                   Connect farmers, markets, and consumers through intelligent technology and real-time data insights
                 </p>
 
-                {/* CTA Buttons */}
-                <div className="flex flex-col sm:flex-row justify-center gap-6 mt-12">
-                  <a
-                    href="/products"
-                    className="group relative overflow-hidden bg-green-600 hover:bg-green-500 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-300 backdrop-blur-sm border border-green-500/30 hover:border-green-400/50 shadow-2xl hover:shadow-green-500/25 hover:-translate-y-1"
-                  >
-                    <span className="relative z-10">Explore Products</span>
-                    <div className="absolute inset-0 bg-gradient-to-r from-green-400 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  </a>
-                  
-                  <a
-                    href="/about"
-                    className="group relative overflow-hidden bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-300 backdrop-blur-sm border border-white/30 hover:border-white/50 shadow-2xl hover:-translate-y-1"
-                  >
-                    <span className="relative z-10">Learn More</span>
-                  </a>
-                </div>
+                
 
                 {/* Scroll Indicator */}
                 <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
@@ -315,7 +310,7 @@ export default function Home() {
           </div>
 
           {/* Floating Statistics */}
-          <div className="absolute bottom-20 left-0 right-0 z-20">
+          <div className="absolute bottom-16 left-0 right-0 z-20">
             <div className="max-w-7xl mx-auto px-6">
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
                 <div className="backdrop-blur-md bg-white/10 border border-white/20 rounded-xl p-6 text-center hover:bg-white/20 transition-all duration-300">
@@ -323,7 +318,7 @@ export default function Home() {
                   <div className="text-green-300 text-sm font-medium">Farmers Connected</div>
                 </div>
                 <div className="backdrop-blur-md bg-white/10 border border-white/20 rounded-xl p-6 text-center hover:bg-white/20 transition-all duration-300">
-                  <div className="text-3xl font-bold text-white mb-2">50+</div>
+                  <div className="text-3xl font-bold text-white mb-2">24</div>
                   <div className="text-green-300 text-sm font-medium">Districts Covered</div>
                 </div>
                 <div className="backdrop-blur-md bg-white/10 border border-white/20 rounded-xl p-6 text-center hover:bg-white/20 transition-all duration-300">
