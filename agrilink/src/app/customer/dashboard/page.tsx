@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { ShoppingBag, DollarSign, Bell, TrendingUp, ShoppingCart, Package } from 'lucide-react';
 import CustomerNavBar from '../../../components/CustomerNavBar';
 import ImageUpload from '../../../components/ImageUpload';
 
@@ -495,38 +496,44 @@ export default function CustomerDashboard() {
             <div className="space-y-3">
               <a
                 href="/prices"
-                className="block w-full bg-green-600 hover:bg-green-700 text-white text-center py-3 px-4 rounded-lg font-medium transition duration-200"
+                className="flex items-center w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium transition duration-200"
               >
+                <DollarSign className="h-5 w-5 mr-2" />
                 View Current Prices
               </a>
               <a
                 href="/alerts"
-                className="block w-full bg-blue-600 hover:bg-blue-700 text-white text-center py-3 px-4 rounded-lg font-medium transition duration-200"
+                className="flex items-center w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-medium transition duration-200"
               >
+                <Bell className="h-5 w-5 mr-2" />
                 Manage Price Alerts
               </a>
               <a
                 href="/demandforecast"
-                className="block w-full bg-purple-600 hover:bg-purple-700 text-white text-center py-3 px-4 rounded-lg font-medium transition duration-200"
+                className="flex items-center w-full bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded-lg font-medium transition duration-200"
               >
+                <TrendingUp className="h-5 w-5 mr-2" />
                 Demand Forecasting
               </a>
               <a
-                href="/shop"
-                className="block w-full bg-orange-600 hover:bg-orange-700 text-white text-center py-3 px-4 rounded-lg font-medium transition duration-200"
+                href="/products"
+                className="flex items-center w-full bg-orange-600 hover:bg-orange-700 text-white py-3 px-4 rounded-lg font-medium transition duration-200"
               >
-                Shop Products
+                <ShoppingBag className="h-5 w-5 mr-2" />
+                Browse Products
               </a>
               <a
                 href="/customer/cart"
-                className="block w-full bg-indigo-600 hover:bg-indigo-700 text-white text-center py-3 px-4 rounded-lg font-medium transition duration-200"
+                className="flex items-center w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-4 rounded-lg font-medium transition duration-200"
               >
+                <ShoppingCart className="h-5 w-5 mr-2" />
                 View Cart
               </a>
               <a
                 href="/customer/orders"
-                className="block w-full bg-teal-600 hover:bg-teal-700 text-white text-center py-3 px-4 rounded-lg font-medium transition duration-200"
+                className="flex items-center w-full bg-teal-600 hover:bg-teal-700 text-white py-3 px-4 rounded-lg font-medium transition duration-200"
               >
+                <Package className="h-5 w-5 mr-2" />
                 My Orders
               </a>
             </div>

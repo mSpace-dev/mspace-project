@@ -2,9 +2,11 @@
 
 import Head from "next/head";
 import { useState, useEffect } from "react";
+import { useCustomerAuth } from "../../hooks/useCustomerAuth";
 import "../custom.css";
 
 export default function Home() {
+  const { customer, isLoading, isAuthenticated } = useCustomerAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
   
@@ -116,7 +118,7 @@ export default function Home() {
               <div class="text-4xl mb-4">📦</div>
               <p class="text-lg font-medium mb-2">No orders yet</p>
               <p class="text-sm">Start shopping to see your orders here!</p>
-              <a href="/shop" class="inline-block mt-4 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors">
+              <a href="/products" class="inline-block mt-4 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors">
                 Start Shopping
               </a>
             </div>
@@ -241,7 +243,7 @@ export default function Home() {
                   <a href="/products" className="text-white/90 hover:text-green-400 transition-all duration-300 font-medium backdrop-blur-sm px-3 py-2 rounded-lg hover:bg-white/10">
                     Products
                   </a>
-                  <a href="/shop" className="text-white/90 hover:text-green-400 transition-all duration-300 font-medium backdrop-blur-sm px-3 py-2 rounded-lg hover:bg-white/10">
+                  <a href="/products" className="text-white/90 hover:text-green-400 transition-all duration-300 font-medium backdrop-blur-sm px-3 py-2 rounded-lg hover:bg-white/10">
                     Shop
                   </a>
                   <a href="/our-team" className="text-white/90 hover:text-green-400 transition-all duration-300 font-medium backdrop-blur-sm px-3 py-2 rounded-lg hover:bg-white/10">
@@ -286,7 +288,7 @@ export default function Home() {
                   <div className="flex flex-col space-y-4 p-6">
                     <a href="/about" className="text-white/90 hover:text-green-400 transition-colors font-medium">About</a>
                     <a href="/products" className="text-white/90 hover:text-green-400 transition-colors font-medium">Products</a>
-                    <a href="/shop" className="text-white/90 hover:text-green-400 transition-colors font-medium">Shop</a>
+                    <a href="/products" className="text-white/90 hover:text-green-400 transition-colors font-medium">Shop</a>
                     <a href="/our-team" className="text-white/90 hover:text-green-400 transition-colors font-medium">Our Team</a>
                     <a href="/partners" className="text-white/90 hover:text-green-400 transition-colors font-medium">Partners</a>
                     <a href="/contact" className="text-white/90 hover:text-green-400 transition-colors font-medium">Contact</a>
@@ -479,7 +481,7 @@ export default function Home() {
                   all sourced from trusted farmers across Sri Lanka.
                 </p>
                 <a
-                  href="/shop?category=vegetables"
+                  href="/products?category=vegetables"
                   className="inline-flex items-center text-green-600 hover:text-green-700 font-semibold"
                 >
                   Browse Vegetables
@@ -497,7 +499,7 @@ export default function Home() {
                   traditional varieties, all picked at peak ripeness.
                 </p>
                 <a
-                  href="/shop?category=fruits"
+                  href="/products?category=fruits"
                   className="inline-flex items-center text-orange-600 hover:text-orange-700 font-semibold"
                 >
                   Browse Fruits
@@ -515,7 +517,7 @@ export default function Home() {
                   grown with care and delivered fresh to your doorstep.
                 </p>
                 <a
-                  href="/shop?category=grains"
+                  href="/products?category=grains"
                   className="inline-flex items-center text-yellow-600 hover:text-yellow-700 font-semibold"
                 >
                   Browse Grains
@@ -528,7 +530,7 @@ export default function Home() {
 
             <div className="text-center">
               <a
-                href="/shop"
+                href="/products"
                 className="inline-flex items-center bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1"
               >
                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
