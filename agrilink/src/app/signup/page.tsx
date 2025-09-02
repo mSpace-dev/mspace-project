@@ -21,15 +21,17 @@ export default function SignupPage() {
     }
     try {
       setIsLoading(true);
-  // Use NextAuth for Google sign in
-  const callbackUrl = `/auth/complete-profile/${selectedRole}`;
-  window.location.href = `/api/auth/signin/google?callbackUrl=${encodeURIComponent(callbackUrl)}`;
+      // Store the selected role in sessionStorage for the OAuth callback
+      sessionStorage.setItem('signup_role', selectedRole);
+      // Use NextAuth for Google sign in with role-specific callback
+      const callbackUrl = `/auth/complete-profile/${selectedRole}`;
+      window.location.href = `/api/auth/signin/google?callbackUrl=${encodeURIComponent(callbackUrl)}`;
     } catch (error) {
       console.error("Error initiating Google sign-up:", error);
+      alert("Failed to initiate Google sign-up. Please try again.");
     } finally {
       setIsLoading(false);
     }
-    setTimeout(() => setIsLoading(false), 2000);
   };
 
   const handleEmailSignup = () => {
@@ -38,8 +40,15 @@ export default function SignupPage() {
       return;
     }
     setIsLoading(true);
-    // Redirect to NextAuth credentials sign in page with role
-    router.push(`/auth/signup/${selectedRole}`);
+    
+    // Route sellers to dedicated seller signup page
+    if (selectedRole === 'seller') {
+      router.push('/seller/signup');
+    } else {
+      // Redirect to NextAuth credentials sign in page with role for customers
+      router.push(`/auth/signup/${selectedRole}`);
+    }
+    
     setIsLoading(false);
   };
 
@@ -61,6 +70,19 @@ export default function SignupPage() {
   return (
     <PublicRoute>
       <div className="h-screen bg-gray-950 relative overflow-hidden pt-16">
+        {/* Back to Home Button */}
+        <div className="absolute top-4 left-4 z-50">
+          <a
+            href="/home"
+            className="flex items-center gap-2 text-white/80 hover:text-white transition-colors duration-200 bg-black/20 hover:bg-black/40 backdrop-blur-sm px-3 py-2 rounded-lg"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            <span className="text-sm font-medium">Back to Home</span>
+          </a>
+        </div>
+        
         <div className="absolute inset-0 bg-black/80" />
         <div className="absolute inset-0">
           <div className="absolute top-10 left-10 w-64 h-64 bg-green-900/5 rounded-full blur-3xl animate-pulse" />
@@ -162,7 +184,7 @@ export default function SignupPage() {
                 <Button
                   onClick={handleGoogleSignUp}
                   disabled={isLoading || !selectedRole}
-                  className="w-full h-10 lg:h-12 bg-white hover:bg-gray-100 text-black font-semibold border-0 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-white/20 disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed rounded-lg text-sm lg:text-base"
+                  className="w-full h-10 lg:h-12 bg-white hover:bg-gray-50 text-gray-900 font-semibold border border-gray-300 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-white/20 disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed rounded-lg text-sm lg:text-base"
                 >
                   <div className="flex items-center justify-center gap-3">
                     <svg width="18" height="18" className="lg:w-5 lg:h-5" viewBox="0 0 24 24">
@@ -183,7 +205,7 @@ export default function SignupPage() {
                         d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                       />
                     </svg>
-                    <span>
+                    <span className="text-gray-900 font-medium">
                       {isLoading ? "Connecting..." : "Continue with Google"}
                     </span>
                   </div>

@@ -4,16 +4,12 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
 import LocationPicker from '@/components/LocationPicker';
-import ImageUpload from '@/components/ImageUpload';
 
 export default function CustomerPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [showMap, setShowMap] = useState(false);
-  const [profileImage, setProfileImage] = useState<File | null>(null);
-  const [profileImagePreview, setProfileImagePreview] = useState<string | null>(null);
-  const [agreeToTerms, setAgreeToTerms] = useState(false);
   const router = useRouter();
 
   const [formData, setFormData] = useState({
@@ -61,35 +57,6 @@ export default function CustomerPage() {
     }));
   };
 
-  const handleImageSelect = (file: File | null, previewUrl: string | null) => {
-    setProfileImage(file);
-    setProfileImagePreview(previewUrl);
-  };
-
-  const uploadImage = async (file: File): Promise<string | null> => {
-    try {
-      const formData = new FormData();
-      formData.append('image', file);
-      formData.append('folder', 'profiles');
-
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        return data.url;
-      } else {
-        console.error('Image upload failed');
-        return null;
-      }
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      return null;
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -109,29 +76,12 @@ export default function CustomerPage() {
     }
 
     try {
-      // Upload profile image if selected
-      let profileImageUrl = null;
-      if (profileImage) {
-        profileImageUrl = await uploadImage(profileImage);
-        if (!profileImageUrl) {
-          setError('Failed to upload profile image. Please try again.');
-          setLoading(false);
-          return;
-        }
-      }
-
-      // Prepare registration data
-      const registrationData = {
-        ...formData,
-        profileImage: profileImageUrl
-      };
-
       const response = await fetch('/api/customer/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(registrationData),
+        body: JSON.stringify(formData),
       });
 
       const data = await response.json();
@@ -196,20 +146,6 @@ export default function CustomerPage() {
   return (
     <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
       <div className="max-w-2xl w-full space-y-6 bg-gray-900 p-8 rounded-xl border border-gray-800">
-        {/* App Logo/Icon */}
-        <div className="text-center mb-6">
-          <button
-            type="button"
-            onClick={() => router.push('/home')}
-            className="inline-flex items-center gap-2 text-green-400 hover:text-green-300 transition-colors"
-          >
-            <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-            </svg>
-            <span className="text-xl font-bold">AgriLink</span>
-          </button>
-        </div>
-
         <div className="text-center">
           <h1 className="text-3xl font-bold text-white mb-2">
             Create Customer Account
@@ -319,24 +255,9 @@ export default function CustomerPage() {
               <button
                 type="button"
                 onClick={() => setShowMap(!showMap)}
-                className="flex items-center gap-2 text-sm bg-gray-700 hover:bg-gray-600 text-gray-300 border border-gray-600 px-4 py-2 rounded-lg transition-colors"
+                className="text-sm bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors"
               >
-                {showMap ? (
-                  <>
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                    Use Dropdown
-                  </>
-                ) : (
-                  <>
-                    <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    <span className="text-gray-400">Select Location</span>
-                  </>
-                )}
+                {showMap ? 'Use Dropdown' : 'Use Map'}
               </button>
             </div>
 
@@ -402,50 +323,10 @@ export default function CustomerPage() {
             )}
           </div>
 
-          {/* Profile Image Upload */}
-          <div className="border-t border-gray-700 pt-4">
-            <h3 className="text-lg font-medium text-white mb-4">Profile Image (Optional)</h3>
-            <ImageUpload
-              onImageSelect={handleImageSelect}
-              currentImage={profileImagePreview}
-              className="w-full"
-            />
-          </div>
-
-          {/* Terms and Conditions */}
-          <div className="flex items-start gap-3 pt-4">
-            <input
-              type="checkbox"
-              id="agreeToTerms"
-              checked={agreeToTerms}
-              onChange={(e) => setAgreeToTerms(e.target.checked)}
-              required
-              className="mt-1 w-4 h-4 text-green-600 bg-gray-800 border-gray-600 rounded focus:ring-green-500 focus:ring-2"
-            />
-            <label htmlFor="agreeToTerms" className="text-sm text-gray-300">
-              I agree to the{' '}
-              <a
-                href="/terms"
-                target="_blank"
-                className="text-green-400 hover:text-green-300 underline"
-              >
-                Terms and Conditions
-              </a>
-              {' '}and{' '}
-              <a
-                href="/privacy"
-                target="_blank"
-                className="text-green-400 hover:text-green-300 underline"
-              >
-                Privacy Policy
-              </a>
-            </label>
-          </div>
-
           <Button
             type="submit"
-            disabled={loading || !agreeToTerms}
-            className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={loading}
+            className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-semibold"
           >
             {loading ? 'Creating Account...' : 'Create Account'}
           </Button>

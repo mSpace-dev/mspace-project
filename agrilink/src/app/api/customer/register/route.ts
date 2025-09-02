@@ -11,8 +11,8 @@ export async function POST(req: NextRequest) {
     await dbConnect();
     console.log('Database connection successful');
 
-    const { name, email, password, phone, district, province } = await req.json();
-    console.log('Received registration data:', { name, email, phone, district, province });
+    const { name, email, password, phone, district, province, latitude, longitude, address, profileImage } = await req.json();
+    console.log('Received registration data:', { name, email, phone, district, province, latitude, longitude, profileImage: profileImage ? 'provided' : 'not provided' });
 
     // Validate required fields
     if (!name || !email || !password || !phone || !district || !province) {
@@ -66,6 +66,10 @@ export async function POST(req: NextRequest) {
       phone: phone.trim(),
       district: district.trim(),
       province: province.trim(),
+      latitude: latitude ? parseFloat(latitude) : undefined,
+      longitude: longitude ? parseFloat(longitude) : undefined,
+      address: address ? address.trim() : undefined,
+      profileImage: profileImage || undefined,
       priceAlerts: [],
     });
 
@@ -81,6 +85,10 @@ export async function POST(req: NextRequest) {
       phone: savedCustomer.phone,
       district: savedCustomer.district,
       province: savedCustomer.province,
+      latitude: savedCustomer.latitude,
+      longitude: savedCustomer.longitude,
+      address: savedCustomer.address,
+      profileImage: savedCustomer.profileImage,
       priceAlerts: savedCustomer.priceAlerts,
       createdAt: savedCustomer.createdAt,
     };

@@ -7,11 +7,14 @@ export interface ISeller {
   password: string;
   phone: string;
   businessName: string;
-  businessType: 'farmer' | 'wholesaler' | 'retailer' | 'cooperative';
+  businessType: 'Individual Farmer' | 'Farm Cooperative' | 'Agricultural Company' | 'Organic Farm' | 'Livestock Farm' | 'Mixed Farm' | 'Other';
   district: string;
   province: string;
   address: string;
   licenseNumber?: string;
+  businessDescription?: string;
+  yearsOfExperience?: number;
+  profileImage?: string;
   isVerified: boolean;
   products: mongoose.Types.ObjectId[];
   createdAt?: Date;
@@ -48,7 +51,7 @@ const SellerSchema = new mongoose.Schema<ISeller>({
   },
   businessType: {
     type: String,
-    enum: ['farmer', 'wholesaler', 'retailer', 'cooperative'],
+    enum: ['Individual Farmer', 'Farm Cooperative', 'Agricultural Company', 'Organic Farm', 'Livestock Farm', 'Mixed Farm', 'Other'],
     required: [true, 'Please select a business type'],
   },
   district: {
@@ -70,6 +73,18 @@ const SellerSchema = new mongoose.Schema<ISeller>({
     type: String,
     trim: true,
   },
+  businessDescription: {
+    type: String,
+    trim: true,
+  },
+  yearsOfExperience: {
+    type: Number,
+    min: 0,
+  },
+  profileImage: {
+    type: String,
+    trim: true,
+  },
   isVerified: {
     type: Boolean,
     default: false,
@@ -82,8 +97,7 @@ const SellerSchema = new mongoose.Schema<ISeller>({
   timestamps: true,
 });
 
-// Create index for email
-SellerSchema.index({ email: 1 });
+// Create indexes for better performance
 SellerSchema.index({ district: 1, province: 1 });
 
 const Seller = mongoose.models.Seller || mongoose.model<ISeller>('Seller', SellerSchema);

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Button from '@/components/ui/Button';
 import PublicRoute from '@/components/auth/PublicRoute';
@@ -9,6 +9,23 @@ export default function EmailSignupPage() {
   const router = useRouter();
   const params = useParams();
   const role = params?.role as string;
+  
+  // Redirect sellers to dedicated seller signup page
+  useEffect(() => {
+    if (role === 'seller') {
+      router.replace('/seller/signup');
+      return;
+    }
+  }, [role, router]);
+
+  // Show loading while redirecting sellers
+  if (role === 'seller') {
+    return (
+      <div className="min-h-screen bg-gray-950 flex items-center justify-center">
+        <div className="text-white">Redirecting...</div>
+      </div>
+    );
+  }
   
   const [formData, setFormData] = useState({
     name: '',
@@ -66,8 +83,59 @@ export default function EmailSignupPage() {
       const data = await response.json();
 
       if (response.ok) {
-        // Redirect to login page with success message
-        router.push(`/login?message=Registration successful. Please login.&role=${role}`);
+        // Auto-login the user after successful registration
+        try {
+          const loginEndpoint = role === 'customer' ? '/api/customer/login' : '/api/seller/login';
+          
+          const loginResponse = await fetch(loginEndpoint, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              email: formData.email,
+              password: formData.password,
+            }),
+          });
+
+          const loginData = await loginResponse.json();
+
+          if (loginResponse.ok) {
+            // Store auth data based on role
+            if (role === 'customer') {
+              if (loginData.token && loginData.customer) {
+                // Use JWT-based authentication for customers
+                const { setCustomerAuth } = await import('../../../../lib/clientAuth');
+                setCustomerAuth(loginData.token, {
+                  customerId: loginData.customer._id || loginData.customer.customerId,
+                  name: loginData.customer.name,
+                  email: loginData.customer.email,
+                  phone: loginData.customer.phone,
+                  district: loginData.customer.district,
+                  province: loginData.customer.province
+                });
+                // Navigate to customer dashboard
+                router.push('/customer/dashboard');
+              } else {
+                // Fallback to old system
+                localStorage.setItem('customer', JSON.stringify(loginData.customer));
+                router.push('/customer/dashboard');
+              }
+            } else if (role === 'seller') {
+              // Store seller data
+              localStorage.setItem('seller', JSON.stringify(loginData.seller));
+              // Navigate to seller dashboard
+              router.push('/seller/dashboard');
+            }
+          } else {
+            // If auto-login fails, redirect to login page
+            router.push(`/login?message=Registration successful. Please login.&role=${role}`);
+          }
+        } catch (loginError) {
+          console.error('Auto-login error:', loginError);
+          // If auto-login fails, redirect to login page
+          router.push(`/login?message=Registration successful. Please login.&role=${role}`);
+        }
       } else {
         setError(data.error || 'Registration failed');
       }
@@ -181,7 +249,7 @@ export default function EmailSignupPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-1">
-                Phone Number
+               Contact Number
               </label>
               <input
                 type="tel"
@@ -190,7 +258,7 @@ export default function EmailSignupPage() {
                 onChange={handleInputChange}
                 required
                 className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                placeholder="+94771234567"
+                placeholder="Enter your phone number"
               />
             </div>
 

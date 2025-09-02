@@ -65,9 +65,6 @@ const AdminSchema = new mongoose.Schema<IAdmin>({
   timestamps: true,
 });
 
-// Create index for email
-AdminSchema.index({ email: 1 });
-
 const Admin = mongoose.models.Admin || mongoose.model<IAdmin>('Admin', AdminSchema);
 
 export default Admin;
