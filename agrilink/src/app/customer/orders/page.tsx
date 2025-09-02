@@ -56,18 +56,104 @@ export default function OrdersPage() {
         {error && <div className="mb-6 rounded border border-red-200 bg-red-50 p-4 text-red-700">{error}</div>}
         <div className="space-y-4">
           {orders.map((o:any)=>(
-            <a key={o._id} href={`/customer/orders/${o._id}`} className="block rounded border border-gray-200 bg-white p-4 hover:border-green-300">
-              <div className="flex items-center justify-between">
+            <a key={o._id} href={`/customer/orders/${o._id}`} className="block rounded-lg border border-gray-200 bg-white p-6 hover:border-green-300 hover:shadow-md transition-all">
+              <div className="flex items-start justify-between mb-4">
                 <div>
-                  <div className="text-sm text-gray-500">Order</div>
+                  <div className="text-sm text-gray-500">Order ID</div>
                   <div className="text-base font-semibold text-gray-900">{o._id}</div>
+                  <div className="text-sm text-gray-500 mt-1">
+                    {o.createdAt ? new Date(o.createdAt).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'short', 
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    }) : 'Date not available'}
+                  </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-sm text-gray-500">Total</div>
-                  <div className="text-base font-semibold text-gray-900">Rs. {o.totalAmount?.toFixed?.(2) || o.totalAmount}</div>
+                  <div className="text-sm text-gray-500">Total Amount</div>
+                  <div className="text-lg font-bold text-green-600">Rs. {o.totalAmount?.toFixed?.(2) || o.totalAmount}</div>
+                  <div className="text-sm text-gray-600 mt-1">
+                    <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+                      o.status === 'delivered' ? 'bg-green-100 text-green-800' :
+                      o.status === 'shipped' ? 'bg-blue-100 text-blue-800' :
+                      o.status === 'processing' ? 'bg-yellow-100 text-yellow-800' :
+                      o.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                      'bg-gray-100 text-gray-800'
+                    }`}>
+                      {o.status}
+                    </span>
+                  </div>
                 </div>
               </div>
-              <div className="mt-2 text-sm text-gray-600">Status: {o.status} • Payment: {o.paymentStatus}</div>
+              
+              {/* Product Details */}
+              <div className="border-t border-gray-100 pt-4">
+                <div className="text-sm font-medium text-gray-700 mb-2">Products:</div>
+                <div className="space-y-2">
+                  {o.items && o.items.length > 0 ? (
+                    <>
+                      {o.items.slice(0, 2).map((item: any, index: number) => (
+                        <div key={index} className="flex items-center justify-between text-sm">
+                          <div className="flex items-center space-x-3">
+                            {item.image && (
+                              <img 
+                                src={item.image} 
+                                alt={item.name}
+                                className="w-8 h-8 rounded object-cover"
+                              />
+                            )}
+                            <span className="text-gray-900 font-medium">{item.name}</span>
+                          </div>
+                          <div className="text-gray-600">
+                            Qty: {item.quantity} × Rs. {item.price?.toFixed?.(2) || item.price}
+                          </div>
+                        </div>
+                      ))}
+                      {o.items.length > 2 && (
+                        <div className="text-sm text-gray-500 italic">
+                          +{o.items.length - 2} more item{o.items.length - 2 > 1 ? 's' : ''}
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <div className="text-sm text-gray-500">No product details available</div>
+                  )}
+                </div>
+              </div>
+
+              {/* Seller and Payment Info */}
+              <div className="border-t border-gray-100 pt-4 mt-4 flex items-center justify-between">
+                <div>
+                  {o.supplier?.name ? (
+                    <div className="text-sm">
+                      <span className="text-gray-500">Seller: </span>
+                      <span className="text-gray-900 font-medium">{o.supplier.name}</span>
+                      {o.supplier.businessName && (
+                        <span className="text-gray-600"> ({o.supplier.businessName})</span>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="text-sm text-gray-500">Seller information not available</div>
+                  )}
+                </div>
+                <div className="text-right">
+                  <div className="text-sm">
+                    <span className="text-gray-500">Payment: </span>
+                    <span className={`font-medium ${
+                      o.paymentStatus === 'paid' ? 'text-green-600' :
+                      o.paymentStatus === 'failed' ? 'text-red-600' :
+                      'text-yellow-600'
+                    }`}>
+                      {o.paymentStatus}
+                    </span>
+                  </div>
+                  <div className="text-sm text-gray-500 capitalize">
+                    via {o.paymentMethod || 'N/A'}
+                  </div>
+                </div>
+              </div>
             </a>
           ))}
           {(!loading && !error && orders.length === 0) && (
