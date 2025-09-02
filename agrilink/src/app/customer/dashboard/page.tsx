@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import CustomerUserProfile from '../../../components/CustomerUserProfile';
+import CustomerNavBar from '../../../components/CustomerNavBar';
 import ImageUpload from '../../../components/ImageUpload';
 
 interface Customer {
@@ -213,10 +213,6 @@ export default function CustomerDashboard() {
     }
   };
 
-  const navigateToHome = () => {
-    router.push('/home');
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100 flex items-center justify-center">
@@ -255,32 +251,14 @@ export default function CustomerDashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div className="flex justify-between items-center py-4">
-      {/* Left - AgriLink logo */}
-      <div className="flex items-center cursor-pointer" onClick={navigateToHome}>
-        <h1 className="text-2xl font-bold text-green-700 hover:text-green-600 transition-colors">
-          AgriLink
-        </h1>
-        
-      </div>
-
-      {/* Right - Profile section */}
-      <div className="flex items-center space-x-3">
-        <span className="text-gray-700 hidden sm:inline">Welcome, {customer.name}</span>
-        <CustomerUserProfile 
-          isLoggedIn={true} 
-          userRole="customer"
-          userName={customer.name}
-          userEmail={customer.email}
-          userAvatar={customer.profileImage}
-        />
-      </div>
-    </div>
-  </div>
-</header>
+      {/* Navigation Bar */}
+      <CustomerNavBar 
+        customer={{
+          name: customer.name,
+          email: customer.email,
+          profileImage: customer.profileImage
+        }}
+      />
 
 
       {/* Main Content */}
@@ -535,49 +513,53 @@ export default function CustomerDashboard() {
               </a>
             </div>
           </div>
-        </div>
 
-        
-
-        {/* Recent Activity */}
-        <div className="mt-8 bg-white rounded-2xl shadow-lg p-6">
-          <h2 className="text-xl font-bold text-green-700 mb-4">Recent Activity</h2>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between py-3 border-b border-gray-100">
-              <div>
-                <p className="font-medium text-gray-900">Account Created</p>
-                <p className="text-sm text-gray-600">
-                  {new Date(customer.createdAt).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })}
-                </p>
-              </div>
-              <div className="text-green-600">
-              </div>
-            </div>
-            {customer.updatedAt && (
+          {/* Recent Activity */}
+          <div className="bg-white rounded-2xl shadow-lg p-6">
+            <h2 className="text-xl font-bold text-green-700 mb-4">Recent Activity</h2>
+            <div className="space-y-3">
               <div className="flex items-center justify-between py-3 border-b border-gray-100">
                 <div>
-                  <p className="font-medium text-gray-900">Profile Updated</p>
+                  <p className="font-medium text-gray-900">Account Created</p>
                   <p className="text-sm text-gray-600">
-                    {new Date(customer.updatedAt).toLocaleDateString('en-US', {
+                    {new Date(customer.createdAt).toLocaleDateString('en-US', {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric'
                     })}
                   </p>
                 </div>
-                <div className="text-blue-600">
+                <div className="text-green-600">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
                 </div>
               </div>
-            )}
-            {(!customer.priceAlerts || customer.priceAlerts.length === 0) && (
-              <div className="text-center py-8 text-gray-500">
-                <p>Set up price alerts to see more activity here</p>
-              </div>
-            )}
+              {customer.updatedAt && (
+                <div className="flex items-center justify-between py-3 border-b border-gray-100">
+                  <div>
+                    <p className="font-medium text-gray-900">Profile Updated</p>
+                    <p className="text-sm text-gray-600">
+                      {new Date(customer.updatedAt).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })}
+                    </p>
+                  </div>
+                  <div className="text-blue-600">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                  </div>
+                </div>
+              )}
+              {(!customer.priceAlerts || customer.priceAlerts.length === 0) && (
+                <div className="text-center py-8 text-gray-500">
+                  <p>Set up price alerts to see more activity here</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </main>

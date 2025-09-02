@@ -3,7 +3,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import CustomerUserProfile from '../../components/CustomerUserProfile'
+import CustomerNavBar from '../../components/CustomerNavBar'
+import { useCustomerAuth } from '../../hooks/useCustomerAuth'
 
 const Summary = {
   increasing_demand_percentage: 0,
@@ -54,11 +55,19 @@ type DashboardDataType = {
 }
 
 export default function AgriculturalDashboard() {
+  const { customer, isLoading: authLoading, isAuthenticated, redirectToLogin } = useCustomerAuth();
   const [dashboardData, setDashboardData] = useState<DashboardDataType | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const [lastUpdated, setLastUpdated] = useState<string | null>(null)
   const [selectedItem, setSelectedItem] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated) {
+      redirectToLogin();
+      return;
+    }
+  }, [authLoading, isAuthenticated, redirectToLogin]);
 
   const fetchDashboardData = async () => {
     setLoading(true)
@@ -274,12 +283,36 @@ export default function AgriculturalDashboard() {
     )
   }
 
+  if (authLoading) {
+    return (
+      <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #f0fdf4, #dcfce7)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ textAlign: "center" }}>
+          <div style={{ 
+            width: "48px", 
+            height: "48px", 
+            border: "3px solid #22c55e", 
+            borderTop: "3px solid transparent", 
+            borderRadius: "50%", 
+            animation: "spin 1s linear infinite",
+            margin: "0 auto 16px"
+          }}></div>
+          <p style={{ color: "#4ade80" }}>Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated || !customer) {
+    return null; // Will redirect to login
+  }
+
   const { items_analysis, summary } = dashboardData
   const aiInsights = generateAIInsight(summary, items_analysis)
 
   return (
-    <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #f0fdf4, #dcfce7)", padding: "20px" }}>
-      <div style={{ maxWidth: "1400px", margin: "0 auto" }}>
+    <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #f0fdf4, #dcfce7)" }}>
+      <CustomerNavBar customer={customer} />
+      <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "20px" }}>
         {/* Enhanced Header with Emphasized Refresh & Last Updated */}
         <div style={{ textAlign: "center", marginBottom: "60px" }}>
           <h1
@@ -298,54 +331,6 @@ export default function AgriculturalDashboard() {
           <p style={{ color: "#4ade80", fontSize: "22px", fontWeight: "700", marginBottom: "30px" }}>
             Real-time crop demand analysis powered by AI insights
           </p>
-          
-          {/* User Profile and Navigation */}
-          <div style={{ 
-            display: "flex", 
-            justifyContent: "center", 
-            alignItems: "center", 
-            gap: "20px",
-            marginBottom: "20px" 
-          }}>
-            <a 
-              href="/prices" 
-              style={{ 
-                color: "#22c55e", 
-                textDecoration: "none", 
-                fontSize: "16px", 
-                fontWeight: "600",
-                padding: "8px 16px",
-                borderRadius: "8px",
-                border: "2px solid #22c55e",
-                background: "white"
-              }}
-            >
-              Prices
-            </a>
-            <a 
-              href="/alerts" 
-              style={{ 
-                color: "#22c55e", 
-                textDecoration: "none", 
-                fontSize: "16px", 
-                fontWeight: "600",
-                padding: "8px 16px",
-                borderRadius: "8px",
-                border: "2px solid #22c55e",
-                background: "white"
-              }}
-            >
-              Alerts
-            </a>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <CustomerUserProfile 
-                isLoggedIn={true} 
-                userRole="customer"
-                userName="Customer"
-                userEmail="customer@example.com"
-              />
-            </div>
-          </div>
           {/* Emphasized Last Updated & Refresh Section */}
           <div
             style={{

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import CustomerUserProfile from "../../../components/CustomerUserProfile";
+import CustomerNavBar from "../../../components/CustomerNavBar";
+import { useCustomerAuth } from "../../../hooks/useCustomerAuth";
 
 interface CartItem {
   _id?: string;
@@ -18,24 +19,28 @@ interface CartItem {
 }
 
 export default function CustomerCart() {
+  const { customer, isLoading: authLoading, isAuthenticated, redirectToLogin } = useCustomerAuth();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [customer, setCustomer] = useState<any>(null);
 
   useEffect(() => {
-    // Get customer info from localStorage
-    const customerData = localStorage.getItem('customer');
-    if (customerData) {
-      const parsedCustomer = JSON.parse(customerData);
-      setCustomer(parsedCustomer);
-      fetchCartData(parsedCustomer._id);
-    } else {
-      setError("Please log in to view your cart");
-      setLoading(false);
+    if (!authLoading && !isAuthenticated) {
+      redirectToLogin();
+      return;
     }
-  }, []);
+    
+    if (customer) {
+      const customerId = customer._id || customer.customerId;
+      if (customerId) {
+        fetchCartData(customerId);
+      } else {
+        setError("Customer ID not found");
+        setLoading(false);
+      }
+    }
+  }, [customer, authLoading, isAuthenticated, redirectToLogin]);
 
   const fetchCartData = async (customerId: string) => {
     try {
@@ -135,7 +140,10 @@ export default function CustomerCart() {
       }
 
       // Refresh cart data
-      fetchCartData(customer._id);
+      const customerId = customer._id || customer.customerId;
+      if (customerId) {
+        fetchCartData(customerId);
+      }
       setSuccessMessage('Sample items added to cart');
       setTimeout(() => setSuccessMessage(null), 3000);
     } catch (err) {
@@ -170,46 +178,24 @@ export default function CustomerCart() {
     }
   };
 
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated || !customer) {
+    return null; // Will redirect to login
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Navigation */}
-      <nav className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center">
-              <a href="/home" className="text-2xl font-bold text-green-700 hover:text-green-600 transition-colors">
-                AgriLink
-              </a>
-              <span className="ml-2 text-sm text-gray-500">Sri Lanka</span>
-            </div>
-            
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
-              <a href="/about" className="text-gray-700 hover:text-green-600 transition-colors">About</a>
-              <a href="/products" className="text-gray-700 hover:text-green-600 transition-colors">Products</a>
-              <a href="/our-team" className="text-gray-700 hover:text-green-600 transition-colors">Our Team</a>
-              <a href="/partners" className="text-gray-700 hover:text-green-600 transition-colors">Partners</a>
-              <a href="/contact" className="text-gray-700 hover:text-green-600 transition-colors">Contact</a>
-              <CustomerUserProfile 
-                isLoggedIn={!!customer} 
-                userRole="customer"
-                userName={customer?.name || "Customer"}
-                userEmail={customer?.email || ""}
-              />
-            </div>
-
-            {/* Mobile Profile - Always Visible */}
-            <div className="md:hidden">
-              <CustomerUserProfile 
-                isLoggedIn={!!customer} 
-                userRole="customer"
-                userName={customer?.name || "Customer"}
-                userEmail={customer?.email || ""}
-              />
-            </div>
-          </div>
-        </div>
-      </nav>
+      <CustomerNavBar customer={customer} />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Success Message */}

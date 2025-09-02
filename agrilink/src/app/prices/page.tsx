@@ -15,7 +15,8 @@ import {
 } from 'lucide-react';
 import { TableView, CommodityCardsView } from './components';
 import { CategoryChartsView, CommodityAnalysisView } from './chart-components';
-import CustomerUserProfile from '../../components/CustomerUserProfile';
+import CustomerNavBar from '../../components/CustomerNavBar';
+import { useCustomerAuth } from '../../hooks/useCustomerAuth';
 
 interface PriceData {
   id: string;
@@ -79,6 +80,7 @@ const categoryIcons = {
 };
 
 export default function Prices() {
+  const { customer, isLoading: authLoading, isAuthenticated } = useCustomerAuth();
   const [currentView, setCurrentView] = useState<ViewType>('table');
   const [prices, setPrices] = useState<PriceData[]>([]);
   const [commodityData, setCommodityData] = useState<CommodityData[]>([]);
@@ -88,7 +90,6 @@ export default function Prices() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState('');
-  const [customer, setCustomer] = useState<any>(null);
   const [filters, setFilters] = useState({
     category: '',
     marketType: '',
@@ -101,14 +102,6 @@ export default function Prices() {
 
   const categories = ['VEGETABLES', 'RICE', 'FRUITS', 'FISH', 'OTHER'];
   const markets = ['Pettah', 'Dambulla', 'Pettah_retail', 'Dambulla_retail', 'Narahenpita_retail'];
-
-  useEffect(() => {
-    // Load customer data from localStorage
-    const customerData = localStorage.getItem('customer');
-    if (customerData) {
-      setCustomer(JSON.parse(customerData));
-    }
-  }, []);
 
   useEffect(() => {
     fetchAvailableDates();
@@ -258,36 +251,7 @@ export default function Prices() {
 
   return (
 <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100">
-  {/* Top Navigation */}
-  <nav className="bg-white shadow-sm sticky top-0 z-50">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="flex justify-between items-center py-4">
-        <div className="flex items-center cursor-pointer" onClick={() => window.location.href = '/home'}>
-          <h1 className="text-2xl font-bold text-green-700 hover:text-green-600 transition-colors">AgriLink</h1>
-          <span className="ml-2 text-sm text-gray-500">Sri Lanka</span>
-        </div>
-        
-        {/* Navigation Links */}
-        <div className="hidden md:flex items-center space-x-8">
-          <a href="/about" className="text-gray-700 hover:text-green-600 transition-colors">About</a>
-          <a href="/products" className="text-gray-700 hover:text-green-600 transition-colors">Products</a>
-          <a href="/our-team" className="text-gray-700 hover:text-green-600 transition-colors">Our Team</a>
-          <a href="/partners" className="text-gray-700 hover:text-green-600 transition-colors">Partners</a>
-          <a href="/contact" className="text-gray-700 hover:text-green-600 transition-colors">Contact</a>
-          {customer ? (
-            <CustomerUserProfile 
-              isLoggedIn={true} 
-              userRole="customer"
-              userName={customer.name}
-              userEmail={customer.email}
-            />
-          ) : (
-            <a href="/login" className="text-gray-700 hover:text-green-600 transition-colors">Login</a>
-          )}
-        </div>
-      </div>
-    </div>
-  </nav>
+  <CustomerNavBar customer={customer || undefined} />
   
   <div className="flex">
     {/* Sidebar */}
