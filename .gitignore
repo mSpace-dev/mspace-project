@@ -50,3 +50,4 @@ __pycache__/
 # Ignore pricefetch dependencies
 pricefetch/__pycache__/
 pricefetch/*.pyc
+
