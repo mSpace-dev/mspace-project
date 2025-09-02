@@ -522,13 +522,7 @@ export default function CustomerDashboard() {
                 <ShoppingBag className="h-5 w-5 mr-2" />
                 Browse Products
               </a>
-              <a
-                href="/customer/cart"
-                className="flex items-center w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-4 rounded-lg font-medium transition duration-200"
-              >
-                <ShoppingCart className="h-5 w-5 mr-2" />
-                View Cart
-              </a>
+              
               <a
                 href="/customer/orders"
                 className="flex items-center w-full bg-teal-600 hover:bg-teal-700 text-white py-3 px-4 rounded-lg font-medium transition duration-200"
