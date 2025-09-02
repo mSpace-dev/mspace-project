@@ -74,9 +74,17 @@ export default function CompleteProfilePage() {
       const data = await response.json();
 
       if (response.ok) {
-        // Redirect to the appropriate dashboard
-        const dashboardPath = role === 'customer' ? '/customer/dashboard' : '/seller/dashboard';
-        router.push(dashboardPath);
+        // Auto-login and redirect to the appropriate dashboard based on role
+        if (role === 'customer') {
+          // For customers, redirect to customer dashboard
+          router.push('/customer/dashboard');
+        } else if (role === 'seller') {
+          // For sellers, redirect to seller dashboard
+          router.push('/seller/dashboard');
+        } else {
+          // Fallback to login page
+          router.push('/login');
+        }
       } else {
         setError(data.error || 'Profile completion failed');
       }

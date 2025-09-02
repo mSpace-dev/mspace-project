@@ -36,6 +36,7 @@ export async function GET(req: NextRequest) {
           phone: customer.phone,
           district: customer.district,
           province: customer.province,
+          profileImage: customer.profileImage,
           priceAlerts: customer.priceAlerts || [],
           createdAt: customer.createdAt,
           updatedAt: customer.updatedAt,
@@ -82,7 +83,7 @@ export async function PUT(req: NextRequest) {
     delete updateData.timezone;
     
     // Only allow updating customer-relevant fields
-    const allowedFields = ['name', 'phone', 'district', 'province', 'priceAlerts'];
+    const allowedFields = ['name', 'phone', 'district', 'province', 'priceAlerts', 'profileImage'];
     const filteredUpdateData: any = {};
     
     Object.keys(updateData).forEach(key => {
@@ -116,6 +117,7 @@ export async function PUT(req: NextRequest) {
           phone: updatedCustomer.phone,
           district: updatedCustomer.district,
           province: updatedCustomer.province,
+          profileImage: updatedCustomer.profileImage,
           priceAlerts: updatedCustomer.priceAlerts || [],
           createdAt: updatedCustomer.createdAt,
           updatedAt: updatedCustomer.updatedAt,

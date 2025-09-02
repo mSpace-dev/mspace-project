@@ -17,7 +17,10 @@ export async function POST(req: NextRequest) {
       district,
       province,
       address,
-      licenseNumber
+      licenseNumber,
+      businessDescription,
+      yearsOfExperience,
+      profileImage
     } = await req.json();
 
     // Validate required fields
@@ -53,6 +56,9 @@ export async function POST(req: NextRequest) {
       province,
       address,
       licenseNumber,
+      businessDescription,
+      yearsOfExperience: yearsOfExperience ? parseInt(yearsOfExperience) : undefined,
+      profileImage,
       isVerified: false,
       products: [],
     });
@@ -71,6 +77,9 @@ export async function POST(req: NextRequest) {
       province: seller.province,
       address: seller.address,
       licenseNumber: seller.licenseNumber,
+      businessDescription: seller.businessDescription,
+      yearsOfExperience: seller.yearsOfExperience,
+      profileImage: seller.profileImage,
       isVerified: seller.isVerified,
       products: seller.products,
       createdAt: seller.createdAt,

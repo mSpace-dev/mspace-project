@@ -2,15 +2,11 @@
 
 import Head from "next/head";
 import { useState, useEffect } from "react";
-import CustomerUserProfile from "../../components/CustomerUserProfile";
-import { checkAuthAndLogout, CustomerData, addAuthEventListener, AUTH_EVENTS } from "../../lib/clientAuth";
 import "../custom.css";
 
 export default function Home() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [customer, setCustomer] = useState<CustomerData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   
   // Newsletter subscription states
   const [email, setEmail] = useState('');
@@ -76,7 +72,7 @@ export default function Home() {
     }
   };
 
-  // Auto-scroll management and auth check
+  // Auto-scroll management
   useEffect(() => {
     // Handle scroll for show/hide scroll-to-top button
     const handleScroll = () => {
@@ -84,47 +80,9 @@ export default function Home() {
     };
 
     window.addEventListener('scroll', handleScroll);
-
-    // Auth check function
-    const checkAuth = () => {
-      try {
-        const { isAuthenticated, customerData } = checkAuthAndLogout();
-        setCustomer(isAuthenticated ? customerData : null);
-      } catch (error) {
-        console.error('Auth check failed:', error);
-        setCustomer(null);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    // Initial auth check
-    checkAuth();
-    
-    // Set up periodic token check (every 5 minutes)
-    const interval = setInterval(checkAuth, 5 * 60 * 1000);
-    
-    // Listen for authentication events from other tabs/components
-    const removeAuthListener = addAuthEventListener((eventType, data) => {
-      switch (eventType) {
-        case AUTH_EVENTS.LOGIN:
-          if (data?.customerData) {
-            setCustomer(data.customerData);
-          } else {
-            checkAuth();
-          }
-          break;
-        case AUTH_EVENTS.LOGOUT:
-        case AUTH_EVENTS.TOKEN_EXPIRED:
-          setCustomer(null);
-          break;
-      }
-    });
     
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      clearInterval(interval);
-      removeAuthListener();
     };
   }, []);
 
@@ -295,26 +253,14 @@ export default function Home() {
                   <a href="/contact" className="text-white/90 hover:text-green-400 transition-all duration-300 font-medium backdrop-blur-sm px-3 py-2 rounded-lg hover:bg-white/10">
                     Contact
                   </a>
-                  {customer ? (
-                    <div className="backdrop-blur-sm bg-white/10 rounded-lg p-1">
-                      <CustomerUserProfile 
-                        isLoggedIn={true} 
-                        userRole="customer"
-                        userName={customer.name || 'Customer'}
-                        userEmail={customer.email || ''}
-                      />
-                    </div>
-                  ) : (
-                    <div className="flex gap-4">
-                      <a href="/login" className="bg-green-600/90 hover:bg-green-500 text-white px-6 py-3 rounded-lg transition-all duration-300 font-medium backdrop-blur-sm border border-green-500/30 hover:border-green-400/50 shadow-lg">
-                        Login
-                      </a>
-                      <a href="/signup" className="bg-blue-600/90 hover:bg-blue-500 text-white px-6 py-3 rounded-lg transition-all duration-300 font-medium backdrop-blur-sm border border-blue-500/30 hover:border-blue-400/50 shadow-lg">
-                        Sign Up
-                      </a>
-                    </div>
-                    
-                  )}
+                  <div className="flex gap-4">
+                    <a href="/login" className="bg-green-600/90 hover:bg-green-500 text-white px-6 py-3 rounded-lg transition-all duration-300 font-medium backdrop-blur-sm border border-green-500/30 hover:border-green-400/50 shadow-lg">
+                      Login
+                    </a>
+                    <a href="/signup" className="bg-blue-600/90 hover:bg-blue-500 text-white px-6 py-3 rounded-lg transition-all duration-300 font-medium backdrop-blur-sm border border-blue-500/30 hover:border-blue-400/50 shadow-lg">
+                      Sign Up
+                    </a>
+                  </div>
                 </div>
 
                 {/* Mobile Menu Button */}
@@ -345,23 +291,14 @@ export default function Home() {
                     <a href="/partners" className="text-white/90 hover:text-green-400 transition-colors font-medium">Partners</a>
                     <a href="/contact" className="text-white/90 hover:text-green-400 transition-colors font-medium">Contact</a>
                     <div className="pt-4 border-t border-white/20">
-                      {customer ? (
-                        <CustomerUserProfile 
-                          isLoggedIn={true} 
-                          userRole="customer"
-                          userName={customer.name || 'Customer'}
-                          userEmail={customer.email || ''}
-                        />
-                      ) : (
-                        <div className="flex flex-col gap-2">
-                          <a href="/login" className="bg-green-600/90 hover:bg-green-500 text-white px-6 py-3 rounded-lg transition-colors font-medium text-center block backdrop-blur-sm">
-                            Login
-                          </a>
-                          <a href="/signup" className="bg-blue-600/90 hover:bg-blue-500 text-white px-6 py-3 rounded-lg transition-colors font-medium text-center block backdrop-blur-sm">
-                            Sign Up
-                          </a>
-                        </div>
-                      )}
+                      <div className="flex flex-col gap-2">
+                        <a href="/login" className="bg-green-600/90 hover:bg-green-500 text-white px-6 py-3 rounded-lg transition-colors font-medium text-center block backdrop-blur-sm">
+                          Login
+                        </a>
+                        <a href="/signup" className="bg-blue-600/90 hover:bg-blue-500 text-white px-6 py-3 rounded-lg transition-colors font-medium text-center block backdrop-blur-sm">
+                          Sign Up
+                        </a>
+                      </div>
                     </div>
                   </div>
                 </div>

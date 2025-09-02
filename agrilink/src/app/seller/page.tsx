@@ -15,7 +15,7 @@ export default function SellerPage() {
     password: '',
     phone: '',
     businessName: '',
-    businessType: 'farmer',
+    businessType: 'Individual Farmer',
     district: '',
     province: '',
     address: '',
@@ -36,10 +36,13 @@ export default function SellerPage() {
   ];
 
   const businessTypes = [
-    { value: 'farmer', label: 'Farmer' },
-    { value: 'wholesaler', label: 'Wholesaler' },
-    { value: 'retailer', label: 'Retailer' },
-    { value: 'cooperative', label: 'Cooperative' },
+    { value: 'Individual Farmer', label: 'Individual Farmer' },
+    { value: 'Farm Cooperative', label: 'Farm Cooperative' },
+    { value: 'Agricultural Company', label: 'Agricultural Company' },
+    { value: 'Organic Farm', label: 'Organic Farm' },
+    { value: 'Livestock Farm', label: 'Livestock Farm' },
+    { value: 'Mixed Farm', label: 'Mixed Farm' },
+    { value: 'Other', label: 'Other' },
   ];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -99,7 +102,7 @@ export default function SellerPage() {
       password: '',
       phone: '',
       businessName: '',
-      businessType: 'farmer',
+      businessType: 'Individual Farmer',
       district: '',
       province: '',
       address: '',

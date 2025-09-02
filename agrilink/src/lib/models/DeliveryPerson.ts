@@ -115,7 +115,6 @@ const DeliveryPersonSchema = new mongoose.Schema({
 });
 
 // Indexes for better performance
-DeliveryPersonSchema.index({ 'personalInfo.email': 1 });
 DeliveryPersonSchema.index({ 'personalInfo.nicNumber': 1 });
 DeliveryPersonSchema.index({ status: 1 });
 DeliveryPersonSchema.index({ createdAt: -1 });
