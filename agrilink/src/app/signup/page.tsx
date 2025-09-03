@@ -253,7 +253,7 @@ export default function SignupPage() {
                 <p className="text-gray-400 text-sm lg:text-base">
                   Already have an account?{' '}
                   <a
-                    href="/login"
+                    href={selectedRole ? `/login?role=${selectedRole}` : "/login"}
                     className="text-green-400 hover:text-green-300 transition-colors duration-200 font-semibold underline underline-offset-2 decoration-green-400/50 hover:decoration-green-300"
                   >
                     Sign in
