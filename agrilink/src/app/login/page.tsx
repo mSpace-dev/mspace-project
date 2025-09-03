@@ -1,20 +1,30 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { setCustomerAuth } from '../../lib/clientAuth';
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [selectedRole, setSelectedRole] = useState<string>('');
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     rememberMe: false,
   });
+
+  useEffect(() => {
+    // Get role from URL parameters
+    const role = searchParams.get('role');
+    if (role) {
+      setSelectedRole(role);
+    }
+  }, [searchParams]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -30,6 +40,94 @@ export default function LoginPage() {
     window.location.href = '/api/auth/signin/google?callbackUrl=/home';
   };
 
+  const tryAdminLogin = async () => {
+    const adminResponse = await fetch('/api/admin/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+
+    if (adminResponse.ok) {
+      const adminData = await adminResponse.json();
+      setSuccess(adminData.message);
+      
+      // Store both admin data and tokens
+      localStorage.setItem('admin', JSON.stringify(adminData.admin));
+      localStorage.setItem('adminAccessToken', adminData.accessToken);
+      localStorage.setItem('adminRefreshToken', adminData.refreshToken);
+      
+      setTimeout(() => {
+        router.push('/admin');
+      }, 1000);
+      return true;
+    }
+    return false;
+  };
+
+  const trySellerLogin = async () => {
+    const sellerResponse = await fetch('/api/seller/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+
+    if (sellerResponse.ok) {
+      const sellerData = await sellerResponse.json();
+      setSuccess(sellerData.message);
+      localStorage.setItem('seller', JSON.stringify(sellerData.seller));
+      setTimeout(() => {
+        router.push('/seller/dashboard');
+      }, 1000);
+      return true;
+    }
+    return false;
+  };
+
+  const tryCustomerLogin = async () => {
+    const customerResponse = await fetch('/api/customer/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+
+    if (customerResponse.ok) {
+      const customerData = await customerResponse.json();
+      
+      // Check if the response includes a JWT token
+      if (customerData.token && customerData.customer) {
+        // Use new JWT-based authentication
+        setCustomerAuth(customerData.token, {
+          customerId: customerData.customer._id || customerData.customer.customerId,
+          name: customerData.customer.name,
+          email: customerData.customer.email,
+          phone: customerData.customer.phone,
+          district: customerData.customer.district,
+          province: customerData.customer.province
+        });
+        
+        setSuccess(customerData.message);
+        setTimeout(() => {
+          router.push('/customer/dashboard');
+        }, 1000);
+      } else {
+        // Fallback to old system if no token
+        localStorage.setItem('customer', JSON.stringify(customerData.customer));
+        setSuccess(customerData.message);
+        setTimeout(() => {
+          router.push('/customer/dashboard');
+        }, 1000);
+      }
+      return true;
+    }
+    return false;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -37,86 +135,31 @@ export default function LoginPage() {
     setSuccess('');
 
     try {
-      // Try admin login first
-      const adminResponse = await fetch('/api/admin/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (adminResponse.ok) {
-        const adminData = await adminResponse.json();
-        setSuccess(adminData.message);
-        
-        // Store both admin data and tokens
-        localStorage.setItem('admin', JSON.stringify(adminData.admin));
-        localStorage.setItem('adminAccessToken', adminData.accessToken);
-        localStorage.setItem('adminRefreshToken', adminData.refreshToken);
-        
-        setTimeout(() => {
-          router.push('/admin');
-        }, 1000);
-        return;
+      // If role is specified, try role-specific login first
+      if (selectedRole === 'customer') {
+        const success = await tryCustomerLogin();
+        if (success) return;
+      } else if (selectedRole === 'seller') {
+        const success = await trySellerLogin();
+        if (success) return;
+      } else if (selectedRole === 'admin') {
+        const success = await tryAdminLogin();
+        if (success) return;
       }
 
-      // Try seller login
-      const sellerResponse = await fetch('/api/seller/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      // If no role specified or role-specific login failed, try all in order
+      if (!selectedRole) {
+        // Try admin login first
+        const adminSuccess = await tryAdminLogin();
+        if (adminSuccess) return;
 
-      if (sellerResponse.ok) {
-        const sellerData = await sellerResponse.json();
-        setSuccess(sellerData.message);
-        localStorage.setItem('seller', JSON.stringify(sellerData.seller));
-        setTimeout(() => {
-          router.push('/seller/dashboard');
-        }, 1000);
-        return;
-      }
+        // Try seller login
+        const sellerSuccess = await trySellerLogin();
+        if (sellerSuccess) return;
 
-      // Try customer login
-      const customerResponse = await fetch('/api/customer/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (customerResponse.ok) {
-        const customerData = await customerResponse.json();
-        
-        // Check if the response includes a JWT token
-        if (customerData.token && customerData.customer) {
-          // Use new JWT-based authentication
-          setCustomerAuth(customerData.token, {
-            customerId: customerData.customer._id || customerData.customer.customerId,
-            name: customerData.customer.name,
-            email: customerData.customer.email,
-            phone: customerData.customer.phone,
-            district: customerData.customer.district,
-            province: customerData.customer.province
-          });
-          
-          setSuccess(customerData.message);
-          setTimeout(() => {
-            router.push('/customer/dashboard');
-          }, 1000);
-        } else {
-          // Fallback to old system if no token
-          localStorage.setItem('customer', JSON.stringify(customerData.customer));
-          setSuccess(customerData.message);
-          setTimeout(() => {
-            router.push('/customer/dashboard');
-          }, 1000);
-        }
-        return;
+        // Try customer login
+        const customerSuccess = await tryCustomerLogin();
+        if (customerSuccess) return;
       }
 
       // If all login attempts fail
@@ -159,7 +202,14 @@ export default function LoginPage() {
             <h2 className="text-3xl font-bold bg-gradient-to-r from-white via-green-100 to-green-200 bg-clip-text text-transparent mb-2">
               Welcome Back to AgriLink!
             </h2>
-            <p className="text-gray-400">Sign in to  your AgriLink account</p>
+            <p className="text-gray-400">Sign in to your AgriLink account</p>
+            {selectedRole && (
+              <div className="mt-3 inline-flex items-center px-3 py-1 bg-green-500/10 border border-green-500/20 rounded-full">
+                <span className="text-green-400 text-sm font-medium">
+                  Signing in as: {selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1)}
+                </span>
+              </div>
+            )}
           </div>
 
           {error && (

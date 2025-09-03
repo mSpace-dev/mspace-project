@@ -14,8 +14,9 @@ const PublicRoute: React.FC<PublicRouteProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Allow access to signup page even for authenticated users
-    if (pathname === '/signup') {
+    // Allow access to signup and registration pages even for authenticated users
+    const allowedPaths = ['/signup', '/auth/signup/customer', '/auth/signup/seller', '/seller/signup'];
+    if (allowedPaths.some(path => pathname.startsWith(path))) {
       setIsLoading(false);
       return;
     }
