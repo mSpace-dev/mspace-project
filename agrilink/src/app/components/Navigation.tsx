@@ -8,6 +8,7 @@ import { checkAuthAndLogout, CustomerData, addAuthEventListener, AUTH_EVENTS } f
 export default function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [customer, setCustomer] = useState<CustomerData | null>(null);
+  const [seller, setSeller] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [cartCount, setCartCount] = useState(0);
   const router = useRouter();
@@ -18,9 +19,18 @@ export default function Navigation() {
       try {
         const { isAuthenticated, customerData } = checkAuthAndLogout();
         setCustomer(isAuthenticated ? customerData : null);
+        
+        // Check for seller authentication
+        const sellerData = localStorage.getItem("seller");
+        if (sellerData) {
+          setSeller(JSON.parse(sellerData));
+        } else {
+          setSeller(null);
+        }
       } catch (error) {
         console.error('Auth check failed:', error);
         setCustomer(null);
+        setSeller(null);
       } finally {
         setIsLoading(false);
       }
@@ -91,45 +101,76 @@ export default function Navigation() {
           
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <a href="/about" className="text-gray-700 hover:text-green-600 transition-colors">
-              About
-            </a>
-            <a href="/products" className="text-gray-700 hover:text-green-600 transition-colors">
-              Products
-            </a>
-            <a href="/shop" className="text-gray-700 hover:text-green-600 transition-colors">
-              Shop
-            </a>
-            <a href="/our-team" className="text-gray-700 hover:text-green-600 transition-colors">
-              Our Team
-            </a>
-            <a href="/partners" className="text-gray-700 hover:text-green-600 transition-colors">
-              Partners
-            </a>
-            <a href="/contact" className="text-gray-700 hover:text-green-600 transition-colors">
-              Contact
-            </a>
-            <a href="/customer/cart" className="relative text-gray-700 hover:text-green-600 transition-colors">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5-5M17 21a2 2 0 100-4 2 2 0 000 4zM9 21a2 2 0 100-4 2 2 0 000 4z" />
-              </svg>
-              {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {cartCount}
-                </span>
-              )}
-            </a>
-            {customer ? (
-              <CustomerUserProfile 
-                isLoggedIn={true} 
-                userRole="customer"
-                userName={customer.name || 'Customer'}
-                userEmail={customer.email || ''}
-              />
+            {seller ? (
+              // Seller Navigation
+              <>
+                <a href="/seller/dashboard" className="text-gray-700 hover:text-green-600 transition-colors">
+                  Dashboard
+                </a>
+                <a href="/seller/available-orders" className="text-gray-700 hover:text-green-600 transition-colors">
+                  Available Orders
+                </a>
+                <a href="/seller/my-orders" className="text-gray-700 hover:text-green-600 transition-colors">
+                  My Orders
+                </a>
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm text-gray-600">Welcome, {seller.name}</span>
+                  <button
+                    onClick={() => {
+                      localStorage.removeItem("seller");
+                      setSeller(null);
+                      router.push("/");
+                    }}
+                    className="text-red-600 hover:text-red-700 text-sm"
+                  >
+                    Logout
+                  </button>
+                </div>
+              </>
             ) : (
-              <a href="/login" className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors font-medium">
-                Login
-              </a>
+              // Customer Navigation
+              <>
+                <a href="/about" className="text-gray-700 hover:text-green-600 transition-colors">
+                  About
+                </a>
+                <a href="/products" className="text-gray-700 hover:text-green-600 transition-colors">
+                  Products
+                </a>
+                <a href="/shop" className="text-gray-700 hover:text-green-600 transition-colors">
+                  Shop
+                </a>
+                <a href="/our-team" className="text-gray-700 hover:text-green-600 transition-colors">
+                  Our Team
+                </a>
+                <a href="/partners" className="text-gray-700 hover:text-green-600 transition-colors">
+                  Partners
+                </a>
+                <a href="/contact" className="text-gray-700 hover:text-green-600 transition-colors">
+                  Contact
+                </a>
+                <a href="/customer/cart" className="relative text-gray-700 hover:text-green-600 transition-colors">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5-5M17 21a2 2 0 100-4 2 2 0 000 4zM9 21a2 2 0 100-4 2 2 0 000 4z" />
+                  </svg>
+                  {cartCount > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      {cartCount}
+                    </span>
+                  )}
+                </a>
+                {customer ? (
+                  <CustomerUserProfile 
+                    isLoggedIn={true} 
+                    userRole="customer"
+                    userName={customer.name || 'Customer'}
+                    userEmail={customer.email || ''}
+                  />
+                ) : (
+                  <a href="/login" className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors font-medium">
+                    Login
+                  </a>
+                )}
+              </>
             )}
           </div>
 
@@ -154,49 +195,83 @@ export default function Navigation() {
         {isMobileMenuOpen && (
           <div className="md:hidden border-t border-gray-200 py-4">
             <div className="flex flex-col space-y-4">
-              <a href="/about" className="text-gray-700 hover:text-green-600 transition-colors">
-                About
-              </a>
-              <a href="/products" className="text-gray-700 hover:text-green-600 transition-colors">
-                Products
-              </a>
-              <a href="/shop" className="text-gray-700 hover:text-green-600 transition-colors">
-                Shop
-              </a>
-              <a href="/our-team" className="text-gray-700 hover:text-green-600 transition-colors">
-                Our Team
-              </a>
-              <a href="/partners" className="text-gray-700 hover:text-green-600 transition-colors">
-                Partners
-              </a>
-              <a href="/contact" className="text-gray-700 hover:text-green-600 transition-colors">
-                Contact
-              </a>
-              <a href="/customer/cart" className="relative text-gray-700 hover:text-green-600 transition-colors flex items-center">
-                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5-5M17 21a2 2 0 100-4 2 2 0 000 4zM9 21a2 2 0 100-4 2 2 0 000 4z" />
-                </svg>
-                Cart
-                {cartCount > 0 && (
-                  <span className="ml-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    {cartCount}
-                  </span>
-                )}
-              </a>
-              <div className="pt-2">
-                {customer ? (
-                  <CustomerUserProfile 
-                    isLoggedIn={true} 
-                    userRole="customer"
-                    userName={customer.name || 'Customer'}
-                    userEmail={customer.email || ''}
-                  />
-                ) : (
-                  <a href="/login" className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors font-medium text-center block">
-                    Login
+              {seller ? (
+                // Seller Mobile Navigation
+                <>
+                  <a href="/seller/dashboard" className="text-gray-700 hover:text-green-600 transition-colors">
+                    Dashboard
                   </a>
-                )}
-              </div>
+                  <a href="/seller/available-orders" className="text-gray-700 hover:text-green-600 transition-colors">
+                    Available Orders
+                  </a>
+                  <a href="/seller/my-orders" className="text-gray-700 hover:text-green-600 transition-colors">
+                    My Orders
+                  </a>
+                  <div className="pt-2 border-t border-gray-200">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-600">Welcome, {seller.name}</span>
+                      <button
+                        onClick={() => {
+                          localStorage.removeItem("seller");
+                          setSeller(null);
+                          router.push("/");
+                          setIsMobileMenuOpen(false);
+                        }}
+                        className="text-red-600 hover:text-red-700 text-sm px-3 py-1 border border-red-300 rounded"
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                // Customer Mobile Navigation
+                <>
+                  <a href="/about" className="text-gray-700 hover:text-green-600 transition-colors">
+                    About
+                  </a>
+                  <a href="/products" className="text-gray-700 hover:text-green-600 transition-colors">
+                    Products
+                  </a>
+                  <a href="/shop" className="text-gray-700 hover:text-green-600 transition-colors">
+                    Shop
+                  </a>
+                  <a href="/our-team" className="text-gray-700 hover:text-green-600 transition-colors">
+                    Our Team
+                  </a>
+                  <a href="/partners" className="text-gray-700 hover:text-green-600 transition-colors">
+                    Partners
+                  </a>
+                  <a href="/contact" className="text-gray-700 hover:text-green-600 transition-colors">
+                    Contact
+                  </a>
+                  <a href="/customer/cart" className="relative text-gray-700 hover:text-green-600 transition-colors flex items-center">
+                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5-5M17 21a2 2 0 100-4 2 2 0 000 4zM9 21a2 2 0 100-4 2 2 0 000 4z" />
+                    </svg>
+                    Cart
+                    {cartCount > 0 && (
+                      <span className="ml-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                        {cartCount}
+                      </span>
+                    )}
+                  </a>
+                  <div className="pt-2">
+                    {customer ? (
+                      <CustomerUserProfile 
+                        isLoggedIn={true} 
+                        userRole="customer"
+                        userName={customer.name || 'Customer'}
+                        userEmail={customer.email || ''}
+                      />
+                    ) : (
+                      <a href="/login" className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors font-medium text-center block">
+                        Login
+                      </a>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         )}

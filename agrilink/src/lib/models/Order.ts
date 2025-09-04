@@ -30,6 +30,7 @@ export interface IOrder extends Document {
     phone?: string;
     email?: string;
     claimedAt: Date;
+    estimatedDeliveryDate?: Date;
   };
   tracking?: Array<{
     status: string;
@@ -69,7 +70,8 @@ const OrderSchema = new Schema<IOrder>({
     businessName: { type: String },
     phone: { type: String },
     email: { type: String },
-    claimedAt: { type: Date }
+    claimedAt: { type: Date },
+    estimatedDeliveryDate: { type: Date }
   },
   tracking: [{
     status: { type: String, required: true },
