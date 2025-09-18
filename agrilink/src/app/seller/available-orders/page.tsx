@@ -42,6 +42,69 @@ export default function AvailableOrdersPage() {
   };
 
   const claimOrder = async (orderId: string) => {
+    // Create a better date input modal
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const minDate = tomorrow.toISOString().split('T')[0];
+    
+    // Create modal for date input
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+      background: rgba(0,0,0,0.5); display: flex; align-items: center; 
+      justify-content: center; z-index: 1000;
+    `;
+    
+    modal.innerHTML = `
+      <div style="background: white; padding: 30px; border-radius: 12px; max-width: 400px; width: 90%;">
+        <h3 style="margin: 0 0 20px 0; color: #333; font-size: 18px;">Set Estimated Delivery Date</h3>
+        <p style="margin: 0 0 15px 0; color: #666; font-size: 14px;">When do you expect to deliver this order?</p>
+        <input type="date" id="deliveryDate" min="${minDate}" 
+               style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; margin-bottom: 20px;" />
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button id="cancelBtn" style="padding: 10px 20px; border: 1px solid #ddd; background: white; border-radius: 6px; cursor: pointer;">Cancel</button>
+          <button id="confirmBtn" style="padding: 10px 20px; border: none; background: #16a34a; color: white; border-radius: 6px; cursor: pointer;">Claim Order</button>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    const dateInput = modal.querySelector('#deliveryDate') as HTMLInputElement;
+    const cancelBtn = modal.querySelector('#cancelBtn') as HTMLButtonElement;
+    const confirmBtn = modal.querySelector('#confirmBtn') as HTMLButtonElement;
+    
+    // Set default date to 3 days from now
+    const defaultDate = new Date(today);
+    defaultDate.setDate(defaultDate.getDate() + 3);
+    dateInput.value = defaultDate.toISOString().split('T')[0];
+    
+    return new Promise<void>((resolve) => {
+      const cleanup = () => {
+        document.body.removeChild(modal);
+        resolve();
+      };
+      
+      cancelBtn.onclick = cleanup;
+      modal.onclick = (e) => {
+        if (e.target === modal) cleanup();
+      };
+      
+      confirmBtn.onclick = async () => {
+        const estimatedDeliveryDate = dateInput.value;
+        if (!estimatedDeliveryDate) {
+          alert("Please select a delivery date");
+          return;
+        }
+        
+        cleanup();
+        await proceedWithClaim(orderId, estimatedDeliveryDate);
+      };
+    });
+  };
+  
+  const proceedWithClaim = async (orderId: string, estimatedDeliveryDate: string) => {
     try {
       const res = await fetch("/api/orders/claim", {
         method: "POST",
@@ -52,7 +115,8 @@ export default function AvailableOrdersPage() {
           sellerName: seller.name,
           businessName: seller.businessName,
           phone: seller.phone,
-          email: seller.email
+          email: seller.email,
+          estimatedDeliveryDate: estimatedDeliveryDate
         }),
       });
       const json = await res.json();
