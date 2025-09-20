@@ -98,7 +98,7 @@ export default function SendSMSPage() {
   };
 
   const insertTemplate = (template: string) => {
-    setMessage(template);
+  setMessage(template.replace(/'/g, "&apos;"));
   };
 
   // Dashboard color palette
@@ -237,7 +237,7 @@ export default function SendSMSPage() {
                 <div className="mt-4">
                   <h5 className="font-medium text-gray-700">Detailed Results:</h5>
                   <div className="mt-2 space-y-1">
-                    {result.results.slice(0, 5).map((r: any, index: number) => (
+                    {result.results.slice(0, 5).map((r, index: number) => (
                       <div key={index} className="text-sm text-gray-600">
                         {r.phone}: {r.status} {r.error && `(${r.error})`}
                       </div>
