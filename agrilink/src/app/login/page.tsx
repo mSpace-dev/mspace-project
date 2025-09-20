@@ -6,7 +6,7 @@ import { setCustomerAuth } from '../../lib/clientAuth';
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  // const [error, setError] = useState(''); // Removed unused error variable
   const [success, setSuccess] = useState('');
   const [selectedRole, setSelectedRole] = useState<string>('');
   const router = useRouter();
@@ -203,6 +203,7 @@ export default function LoginPage() {
               Welcome Back to AgriLink!
             </h2>
             <p className="text-gray-400">Sign in to your AgriLink account</p>
+            <p className="text-gray-400">Don&apos;t have an account?</p>
             {selectedRole && (
               <div className="mt-3 inline-flex items-center px-3 py-1 bg-green-500/10 border border-green-500/20 rounded-full">
                 <span className="text-green-400 text-sm font-medium">

@@ -10,7 +10,6 @@ export default function AdminLogin() {
     password: ''
   });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,7 +22,6 @@ export default function AdminLogin() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
 
     try {
       const response = await fetch('/api/auth/login', {
@@ -42,10 +40,8 @@ export default function AdminLogin() {
         localStorage.setItem('adminRefreshToken', data.refreshToken);
         router.push('/dashboard');
       } else {
-        setError(data.message || 'Login failed');
       }
     } catch (error) {
-      setError('Network error. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -81,11 +77,6 @@ export default function AdminLogin() {
             <p className="text-gray-600">Sign in to manage customers, sellers, and business insights</p>
           </div>
           <form className="space-y-6" onSubmit={handleSubmit}>
-            {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-                {error}
-              </div>
-            )}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
               <input
@@ -148,7 +139,7 @@ export default function AdminLogin() {
           </div>
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Don't have an admin account?{' '}
+              Don&apos;t have an admin account?{' '}
               <Link href="/signup" className="font-medium text-[#6a6ba7] hover:text-[#a07b9c] transition-colors">
                 Sign up here
               </Link>
