@@ -128,12 +128,12 @@ export async function POST(request: NextRequest) {
       totalRecipients: phoneNumbers.length
     });
 
-  } catch (error: any) {
-    const err = error as unknown as { message?: string };
+  } catch (error) {
+    const err = error as { message?: string };
     console.error('SMS sending error:', err);
     return NextResponse.json({
       error: 'Failed to send SMS',
-      details: err.message
+      details: err?.message || 'Unknown error'
     }, { status: 500 });
   }
 }
