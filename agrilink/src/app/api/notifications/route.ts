@@ -98,6 +98,85 @@ export async function POST(request: NextRequest) {
         targetPreferences = { forecastUpdates: true };
         break;
 
+      case 'order_claimed':
+        if (!data || !data.customerEmail || !data.sellerName || !data.estimatedDeliveryDate) {
+          return NextResponse.json(
+            { error: 'Order claimed notification requires customerEmail, sellerName, and estimatedDeliveryDate' },
+            { status: 400 }
+          );
+        }
+        template = {
+          subject: '✅ Your Order Has Been Claimed!',
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+              <div style="text-align: center; margin-bottom: 30px;">
+                <h1 style="color: #16a34a; margin-bottom: 10px;">✅ Great News!</h1>
+                <h2 style="color: #333; margin: 0;">Your Order Has Been Claimed</h2>
+              </div>
+              <div style="background: #f0fdf4; border-left: 4px solid #16a34a; padding: 20px; margin: 20px 0;">
+                <p style="color: #333; line-height: 1.6; margin: 0;">
+                  <strong>${data.sellerName}</strong> has accepted your order and will deliver it by 
+                  <strong>${new Date(data.estimatedDeliveryDate).toLocaleDateString()}</strong>.
+                </p>
+              </div>
+              <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <h3 style="color: #333; margin-top: 0;">Order Details:</h3>
+                <p style="color: #666; margin: 5px 0;"><strong>Order ID:</strong> #${data.orderId?.slice(-8) || 'N/A'}</p>
+                <p style="color: #666; margin: 5px 0;"><strong>Seller:</strong> ${data.sellerName}</p>
+                <p style="color: #666; margin: 5px 0;"><strong>Estimated Delivery:</strong> ${new Date(data.estimatedDeliveryDate).toLocaleDateString()}</p>
+              </div>
+              <div style="text-align: center; margin: 30px 0;">
+                <a href="${process.env.NEXT_PUBLIC_BASE_URL}/customer/orders" 
+                   style="background: #16a34a; color: white; padding: 12px 30px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: bold;">
+                  Track Your Order
+                </a>
+              </div>
+            </div>
+          `,
+          text: `Great News! Your Order Has Been Claimed\n\n${data.sellerName} has accepted your order and will deliver it by ${new Date(data.estimatedDeliveryDate).toLocaleDateString()}.\n\nOrder ID: #${data.orderId?.slice(-8) || 'N/A'}\nSeller: ${data.sellerName}\nEstimated Delivery: ${new Date(data.estimatedDeliveryDate).toLocaleDateString()}\n\nTrack your order: ${process.env.NEXT_PUBLIC_BASE_URL}/customer/orders`
+        };
+        // Send directly to customer email
+        break;
+
+      case 'order_status_update':
+        if (!data || !data.customerEmail || !data.status || !data.sellerName) {
+          return NextResponse.json(
+            { error: 'Order status update notification requires customerEmail, status, and sellerName' },
+            { status: 400 }
+          );
+        }
+        template = {
+          subject: `📦 Order Update: ${data.status.charAt(0).toUpperCase() + data.status.slice(1)}`,
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+              <div style="text-align: center; margin-bottom: 30px;">
+                <h1 style="color: #2563eb; margin-bottom: 10px;">📦 Order Status Update</h1>
+              </div>
+              <div style="background: #eff6ff; border-left: 4px solid #2563eb; padding: 20px; margin: 20px 0;">
+                <p style="color: #333; line-height: 1.6; margin: 0;">
+                  Your order has been updated to <strong>${data.status.charAt(0).toUpperCase() + data.status.slice(1)}</strong> by ${data.sellerName}.
+                </p>
+                ${data.note ? `<p style="color: #666; margin: 10px 0 0 0; font-style: italic;">"${data.note}"</p>` : ''}
+              </div>
+              <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <h3 style="color: #333; margin-top: 0;">Order Details:</h3>
+                <p style="color: #666; margin: 5px 0;"><strong>Order ID:</strong> #${data.orderId?.slice(-8) || 'N/A'}</p>
+                <p style="color: #666; margin: 5px 0;"><strong>Status:</strong> ${data.status.charAt(0).toUpperCase() + data.status.slice(1)}</p>
+                <p style="color: #666; margin: 5px 0;"><strong>Seller:</strong> ${data.sellerName}</p>
+              </div>
+              <div style="text-align: center; margin: 30px 0;">
+                <a href="${process.env.NEXT_PUBLIC_BASE_URL}/customer/orders" 
+                   style="background: #2563eb; color: white; padding: 12px 30px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: bold;">
+                  View Order Details
+                </a>
+              </div>
+            </div>
+          `,
+          text: `Order Status Update\n\nYour order has been updated to ${data.status.charAt(0).toUpperCase() + data.status.slice(1)} by ${data.sellerName}.\n\n${data.note ? `Note: "${data.note}"\n\n` : ''}Order ID: #${data.orderId?.slice(-8) || 'N/A'}\nStatus: ${data.status.charAt(0).toUpperCase() + data.status.slice(1)}\nSeller: ${data.sellerName}\n\nView order details: ${process.env.NEXT_PUBLIC_BASE_URL}/customer/orders`
+        };
+        // Send directly to customer email
+        break;
+
       default:
         return NextResponse.json(
           { error: 'Invalid notification type' },
@@ -105,7 +184,26 @@ export async function POST(request: NextRequest) {
         );
     }
 
-    // Send bulk notification
+    // Handle direct email notifications (order_claimed, order_status_update)
+    if (type === 'order_claimed' || type === 'order_status_update') {
+      const { sendEmail } = require('@/lib/emailService');
+      try {
+        await sendEmail(data.customerEmail, template.subject, template.html, template.text);
+        return NextResponse.json({
+          message: `Successfully sent ${type} notification to customer`,
+          sentCount: 1,
+          type
+        });
+      } catch (error) {
+        console.error(`Failed to send ${type} notification:`, error);
+        return NextResponse.json(
+          { error: 'Failed to send notification to customer' },
+          { status: 500 }
+        );
+      }
+    }
+
+    // Send bulk notification for other types
     const sentCount = await sendBulkNotification(template, preferences || targetPreferences);
 
     return NextResponse.json({

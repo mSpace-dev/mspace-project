@@ -365,6 +365,12 @@ export default function SellerDashboard() {
             >
               Analytics
             </button>
+            <a
+              href="/seller/available-orders"
+              className="py-4 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm"
+            >
+              Available Orders
+            </a>
             <button
               onClick={() => setActiveTab('profile')}
               className={`py-4 px-1 border-b-2 font-medium text-sm ${

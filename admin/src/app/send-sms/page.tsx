@@ -123,7 +123,9 @@ export default function SendSMSPage() {
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
+
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#6a6ba7] focus:border-transparent"
+
                   >
                     <option value="all">All Customers</option>
                     <option value="farmers">Farmers Only</option>
@@ -159,7 +161,9 @@ export default function SendSMSPage() {
                     key={index}
                     type="button"
                     onClick={() => insertTemplate(template)}
+
                     className={`text-left p-3 bg-white border border-gray-200 rounded-lg hover:${cardColors[3]} hover:border-[#a07b9c] transition-colors text-sm text-gray-800`}
+
                   >
                     {template}
                   </button>
@@ -174,7 +178,9 @@ export default function SendSMSPage() {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Enter your SMS message here..."
+
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#6a6ba7] focus:border-transparent"
+
                 rows={6}
                 maxLength={160}
                 required

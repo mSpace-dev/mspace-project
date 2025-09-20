@@ -382,7 +382,7 @@ export default function About() {
           </p>
           <div className="flex justify-center gap-4">
             <a
-              href="/customer"
+              href="/signup"
               className="bg-white text-green-600 hover:bg-gray-100 font-semibold px-8 py-4 rounded-xl text-lg transition-all duration-200"
             >
               Get Started

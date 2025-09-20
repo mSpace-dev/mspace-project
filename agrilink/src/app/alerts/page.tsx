@@ -1,25 +1,25 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import CustomerUserProfile from '../../components/CustomerUserProfile';
+import CustomerNavBar from '../../components/CustomerNavBar';
+import { useCustomerAuth } from '../../hooks/useCustomerAuth';
 
 export default function Alerts() {
+  const { customer, isLoading: authLoading, isAuthenticated, redirectToLogin } = useCustomerAuth();
   const [customerId, setCustomerId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<{ type: 'success' | 'error' | 'info', text: string } | null>(null);
 
   useEffect(() => {
-    const raw = localStorage.getItem("customer");
-    if (raw) {
-      try {
-        const cust = JSON.parse(raw);
-        // Atlas-style Mongo IDs live in _id
-        setCustomerId(cust._id);
-      } catch (err) {
-        console.error("Could not parse customer from localStorage", err);
-      }
+    if (!authLoading && !isAuthenticated) {
+      redirectToLogin();
+      return;
     }
-  }, []);
+    
+    if (customer) {
+      setCustomerId(customer._id || customer.customerId || null);
+    }
+  }, [customer, authLoading, isAuthenticated, redirectToLogin]);
 
   // Fetch existing subscriptions when customerId is available
   useEffect(() => {
@@ -57,10 +57,6 @@ export default function Alerts() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const navigateToHome = () => {
-    window.location.href = "/home";
   };
 
   type SubscriptionKey = "daily" | "priceChange" | "predicted";
@@ -283,46 +279,24 @@ export default function Alerts() {
     }, 5000);
   };
 
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated || !customer) {
+    return null; // Will redirect to login
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100">
-      <nav className="bg-white shadow sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div
-              className="flex items-center cursor-pointer"
-              onClick={navigateToHome}
-            >
-              <h1 className="text-2xl font-bold text-green-700 hover:text-green-600">
-                AgriLink
-              </h1>
-              <span className="ml-2 text-sm text-gray-500">Sri Lanka</span>
-            </div>
-            <div className="hidden md:flex items-center space-x-8">
-              <a href="/about" className="text-gray-700 hover:text-green-600">
-                About
-              </a>
-              <a href="/products" className="text-gray-700 hover:text-green-600">
-                Products
-              </a>
-              <a href="/our-team" className="text-gray-700 hover:text-green-600">
-                Our Team
-              </a>
-              <a href="/partners" className="text-gray-700 hover:text-green-600">
-                Partners
-              </a>
-              <a href="/contact" className="text-gray-700 hover:text-green-600">
-                Contact
-              </a>
-              <CustomerUserProfile 
-                isLoggedIn={true} 
-                userRole="customer"
-                userName="Customer"
-                userEmail="customer@example.com"
-              />
-            </div>
-          </div>
-        </div>
-      </nav>
+      <CustomerNavBar customer={customer} />
       <main className="container mx-auto px-6 py-16">
         <h1 className="text-4xl md:text-6xl font-bold text-green-700 mb-8 text-center">
           Price Alerts

@@ -2,15 +2,13 @@
 
 import Head from "next/head";
 import { useState, useEffect } from "react";
-import CustomerUserProfile from "../../components/CustomerUserProfile";
-import { checkAuthAndLogout, CustomerData, addAuthEventListener, AUTH_EVENTS } from "../../lib/clientAuth";
+import { useCustomerAuth } from "../../hooks/useCustomerAuth";
 import "../custom.css";
 
 export default function Home() {
+  const { customer, isLoading, isAuthenticated } = useCustomerAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [customer, setCustomer] = useState<CustomerData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   
   // Newsletter subscription states
   const [email, setEmail] = useState('');
@@ -76,7 +74,7 @@ export default function Home() {
     }
   };
 
-  // Auto-scroll management and auth check
+  // Auto-scroll management
   useEffect(() => {
     // Handle scroll for show/hide scroll-to-top button
     const handleScroll = () => {
@@ -84,49 +82,107 @@ export default function Home() {
     };
 
     window.addEventListener('scroll', handleScroll);
-
-    // Auth check function
-    const checkAuth = () => {
-      try {
-        const { isAuthenticated, customerData } = checkAuthAndLogout();
-        setCustomer(isAuthenticated ? customerData : null);
-      } catch (error) {
-        console.error('Auth check failed:', error);
-        setCustomer(null);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    // Initial auth check
-    checkAuth();
-    
-    // Set up periodic token check (every 5 minutes)
-    const interval = setInterval(checkAuth, 5 * 60 * 1000);
-    
-    // Listen for authentication events from other tabs/components
-    const removeAuthListener = addAuthEventListener((eventType, data) => {
-      switch (eventType) {
-        case AUTH_EVENTS.LOGIN:
-          if (data?.customerData) {
-            setCustomer(data.customerData);
-          } else {
-            checkAuth();
-          }
-          break;
-        case AUTH_EVENTS.LOGOUT:
-        case AUTH_EVENTS.TOKEN_EXPIRED:
-          setCustomer(null);
-          break;
-      }
-    });
     
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      clearInterval(interval);
-      removeAuthListener();
     };
   }, []);
+
+  // Load recent orders when customer is available
+  useEffect(() => {
+    const loadRecentOrders = async () => {
+      if (!customer?._id) return;
+      
+      try {
+        const res = await fetch(`/api/orders?customerId=${customer._id}`);
+        const json = await res.json();
+        
+        const container = document.getElementById('recent-orders-container');
+        if (!container) return;
+        
+        if (!res.ok) {
+          container.innerHTML = `
+            <div class="text-center py-8 text-red-500">
+              <div class="text-4xl mb-4">⚠️</div>
+              <p>Failed to load orders: ${json?.error || 'Unknown error'}</p>
+            </div>
+          `;
+          return;
+        }
+        
+        const orders = json.orders || [];
+        
+        if (orders.length === 0) {
+          container.innerHTML = `
+            <div class="text-center py-8 text-gray-500">
+              <div class="text-4xl mb-4">📦</div>
+              <p class="text-lg font-medium mb-2">No orders yet</p>
+              <p class="text-sm">Start shopping to see your orders here!</p>
+              <a href="/products" class="inline-block mt-4 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors">
+                Start Shopping
+              </a>
+            </div>
+          `;
+          return;
+        }
+        
+        // Show only the 3 most recent orders
+        const recentOrders = orders.slice(0, 3);
+        
+        container.innerHTML = `
+          <div class="space-y-4">
+            ${recentOrders.map((order: any) => `
+              <div class="border border-gray-200 rounded-lg p-4 hover:border-green-300 transition-colors">
+                <div class="flex items-center justify-between">
+                  <div class="flex-1">
+                    <div class="flex items-center gap-4">
+                      <div class="text-sm text-gray-500">Order #${order._id.slice(-8)}</div>
+                      <div class="text-sm font-medium px-2 py-1 rounded-full ${
+                        order.status === 'delivered' ? 'bg-green-100 text-green-800' :
+                        order.status === 'shipped' ? 'bg-blue-100 text-blue-800' :
+                        order.status === 'processing' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-gray-100 text-gray-800'
+                      }">
+                        ${order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                      </div>
+                    </div>
+                    <div class="mt-2 text-sm text-gray-600">
+                      ${order.items.length} item${order.items.length > 1 ? 's' : ''} • 
+                      ${new Date(order.createdAt).toLocaleDateString()}
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-lg font-semibold text-gray-900">Rs. ${order.totalAmount?.toFixed?.(2) || order.totalAmount}</div>
+                    <div class="text-sm text-gray-500">${order.paymentMethod === 'cod' ? 'Cash on Delivery' : 'Card Payment'}</div>
+                  </div>
+                  <div class="ml-4">
+                    <a href="/customer/orders/${order._id}" class="text-green-600 hover:text-green-700 font-medium text-sm">
+                      View Details →
+                    </a>
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+        
+      } catch (error) {
+        const container = document.getElementById('recent-orders-container');
+        if (container) {
+          container.innerHTML = `
+            <div class="text-center py-8 text-red-500">
+              <div class="text-4xl mb-4">⚠️</div>
+              <p>Failed to load orders. Please try again later.</p>
+            </div>
+          `;
+        }
+      }
+    };
+    
+    if (customer && !isLoading) {
+      loadRecentOrders();
+    }
+  }, [customer, isLoading]);
 
   return (
     <>
@@ -187,6 +243,9 @@ export default function Home() {
                   <a href="/products" className="text-white/90 hover:text-green-400 transition-all duration-300 font-medium backdrop-blur-sm px-3 py-2 rounded-lg hover:bg-white/10">
                     Products
                   </a>
+                  <a href="/products" className="text-white/90 hover:text-green-400 transition-all duration-300 font-medium backdrop-blur-sm px-3 py-2 rounded-lg hover:bg-white/10">
+                    Shop
+                  </a>
                   <a href="/our-team" className="text-white/90 hover:text-green-400 transition-all duration-300 font-medium backdrop-blur-sm px-3 py-2 rounded-lg hover:bg-white/10">
                     Our Team
                   </a>
@@ -196,20 +255,14 @@ export default function Home() {
                   <a href="/contact" className="text-white/90 hover:text-green-400 transition-all duration-300 font-medium backdrop-blur-sm px-3 py-2 rounded-lg hover:bg-white/10">
                     Contact
                   </a>
-                  {customer ? (
-                    <div className="backdrop-blur-sm bg-white/10 rounded-lg p-1">
-                      <CustomerUserProfile 
-                        isLoggedIn={true} 
-                        userRole="customer"
-                        userName={customer.name || 'Customer'}
-                        userEmail={customer.email || ''}
-                      />
-                    </div>
-                  ) : (
+                  <div className="flex gap-4">
                     <a href="/login" className="bg-green-600/90 hover:bg-green-500 text-white px-6 py-3 rounded-lg transition-all duration-300 font-medium backdrop-blur-sm border border-green-500/30 hover:border-green-400/50 shadow-lg">
                       Login
                     </a>
-                  )}
+                    <a href="/signup" className="bg-blue-600/90 hover:bg-blue-500 text-white px-6 py-3 rounded-lg transition-all duration-300 font-medium backdrop-blur-sm border border-blue-500/30 hover:border-blue-400/50 shadow-lg">
+                      Sign Up
+                    </a>
+                  </div>
                 </div>
 
                 {/* Mobile Menu Button */}
@@ -235,22 +288,19 @@ export default function Home() {
                   <div className="flex flex-col space-y-4 p-6">
                     <a href="/about" className="text-white/90 hover:text-green-400 transition-colors font-medium">About</a>
                     <a href="/products" className="text-white/90 hover:text-green-400 transition-colors font-medium">Products</a>
+                    <a href="/products" className="text-white/90 hover:text-green-400 transition-colors font-medium">Shop</a>
                     <a href="/our-team" className="text-white/90 hover:text-green-400 transition-colors font-medium">Our Team</a>
                     <a href="/partners" className="text-white/90 hover:text-green-400 transition-colors font-medium">Partners</a>
                     <a href="/contact" className="text-white/90 hover:text-green-400 transition-colors font-medium">Contact</a>
                     <div className="pt-4 border-t border-white/20">
-                      {customer ? (
-                        <CustomerUserProfile 
-                          isLoggedIn={true} 
-                          userRole="customer"
-                          userName={customer.name || 'Customer'}
-                          userEmail={customer.email || ''}
-                        />
-                      ) : (
+                      <div className="flex flex-col gap-2">
                         <a href="/login" className="bg-green-600/90 hover:bg-green-500 text-white px-6 py-3 rounded-lg transition-colors font-medium text-center block backdrop-blur-sm">
                           Login
                         </a>
-                      )}
+                        <a href="/signup" className="bg-blue-600/90 hover:bg-blue-500 text-white px-6 py-3 rounded-lg transition-colors font-medium text-center block backdrop-blur-sm">
+                          Sign Up
+                        </a>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -283,23 +333,7 @@ export default function Home() {
                   Connect farmers, markets, and consumers through intelligent technology and real-time data insights
                 </p>
 
-                {/* CTA Buttons */}
-                <div className="flex flex-col sm:flex-row justify-center gap-6 mt-12">
-                  <a
-                    href="/products"
-                    className="group relative overflow-hidden bg-green-600 hover:bg-green-500 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-300 backdrop-blur-sm border border-green-500/30 hover:border-green-400/50 shadow-2xl hover:shadow-green-500/25 hover:-translate-y-1"
-                  >
-                    <span className="relative z-10">Explore Products</span>
-                    <div className="absolute inset-0 bg-gradient-to-r from-green-400 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  </a>
-                  
-                  <a
-                    href="/about"
-                    className="group relative overflow-hidden bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-300 backdrop-blur-sm border border-white/30 hover:border-white/50 shadow-2xl hover:-translate-y-1"
-                  >
-                    <span className="relative z-10">Learn More</span>
-                  </a>
-                </div>
+                
 
                 {/* Scroll Indicator */}
                 <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
@@ -315,7 +349,7 @@ export default function Home() {
           </div>
 
           {/* Floating Statistics */}
-          <div className="absolute bottom-20 left-0 right-0 z-20">
+          <div className="absolute bottom-16 left-0 right-0 z-20">
             <div className="max-w-7xl mx-auto px-6">
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
                 <div className="backdrop-blur-md bg-white/10 border border-white/20 rounded-xl p-6 text-center hover:bg-white/20 transition-all duration-300">
@@ -323,7 +357,7 @@ export default function Home() {
                   <div className="text-green-300 text-sm font-medium">Farmers Connected</div>
                 </div>
                 <div className="backdrop-blur-md bg-white/10 border border-white/20 rounded-xl p-6 text-center hover:bg-white/20 transition-all duration-300">
-                  <div className="text-3xl font-bold text-white mb-2">50+</div>
+                  <div className="text-3xl font-bold text-white mb-2">24</div>
                   <div className="text-green-300 text-sm font-medium">Districts Covered</div>
                 </div>
                 <div className="backdrop-blur-md bg-white/10 border border-white/20 rounded-xl p-6 text-center hover:bg-white/20 transition-all duration-300">
@@ -424,6 +458,124 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        {/* Shop Section */}
+        <section className="py-20 bg-white">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-bold text-gray-900 mb-4">
+                Fresh Products from Local Farmers
+              </h2>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                Discover a wide variety of fresh agricultural products directly from Sri Lankan farmers. 
+                Support local agriculture while enjoying the best quality produce.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-8 mb-12">
+              <div className="bg-gradient-to-br from-green-50 to-green-100 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+                <div className="text-4xl mb-6">🥬</div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">Fresh Vegetables</h3>
+                <p className="text-gray-600 leading-relaxed mb-6">
+                  Get the freshest vegetables directly from local farms. From leafy greens to root vegetables, 
+                  all sourced from trusted farmers across Sri Lanka.
+                </p>
+                <a
+                  href="/products?category=vegetables"
+                  className="inline-flex items-center text-green-600 hover:text-green-700 font-semibold"
+                >
+                  Browse Vegetables
+                  <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </a>
+              </div>
+
+              <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+                <div className="text-4xl mb-6">🍎</div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">Seasonal Fruits</h3>
+                <p className="text-gray-600 leading-relaxed mb-6">
+                  Enjoy the best seasonal fruits from Sri Lankan orchards. From tropical favorites to 
+                  traditional varieties, all picked at peak ripeness.
+                </p>
+                <a
+                  href="/products?category=fruits"
+                  className="inline-flex items-center text-orange-600 hover:text-orange-700 font-semibold"
+                >
+                  Browse Fruits
+                  <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </a>
+              </div>
+
+              <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+                <div className="text-4xl mb-6">🌾</div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">Grains & Spices</h3>
+                <p className="text-gray-600 leading-relaxed mb-6">
+                  Premium quality rice, grains, and aromatic spices. Traditional Sri Lankan varieties 
+                  grown with care and delivered fresh to your doorstep.
+                </p>
+                <a
+                  href="/products?category=grains"
+                  className="inline-flex items-center text-yellow-600 hover:text-yellow-700 font-semibold"
+                >
+                  Browse Grains
+                  <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            <div className="text-center">
+              <a
+                href="/products"
+                className="inline-flex items-center bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1"
+              >
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5-5M17 21a2 2 0 100-4 2 2 0 000 4zM9 21a2 2 0 100-4 2 2 0 000 4z" />
+                </svg>
+                Explore All Products
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* View Orders Section - Only show for logged in customers */}
+        {customer && (
+          <section className="py-20 bg-gray-50">
+            <div className="max-w-7xl mx-auto px-6">
+              <div className="text-center mb-16">
+                <h2 className="text-4xl font-bold text-gray-900 mb-4">
+                  Your Recent Orders
+                </h2>
+                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                  Track your orders and manage your purchases. Stay updated with delivery status and order history.
+                </p>
+              </div>
+              
+              <div className="bg-white rounded-2xl shadow-lg p-8">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-2xl font-bold text-gray-900">Order History</h3>
+                  <a
+                    href="/customer/orders"
+                    className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1"
+                  >
+                    View All Orders
+                  </a>
+                </div>
+                
+                <div id="recent-orders-container">
+                  <div className="text-center py-8 text-gray-500">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto mb-4"></div>
+                    Loading your recent orders...
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* Statistics Section */}
         <section className="py-20 bg-white">
