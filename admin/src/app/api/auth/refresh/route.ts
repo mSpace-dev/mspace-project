@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectToDatabase, getDatabase } from '@/lib/database';
+import { ObjectId } from 'mongodb';
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-in-production-2025-agrilink-admin';
@@ -16,15 +17,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Verify refresh token
-    const decoded = jwt.verify(refreshToken, JWT_REFRESH_SECRET) as any;
+  // Verify refresh token
+  const decoded = jwt.verify(refreshToken, JWT_REFRESH_SECRET) as { adminId: string };
 
     // Connect to database
     const client = await connectToDatabase();
     const db = getDatabase(client);
 
     // Find admin by ID
-    const admin = await db.collection('admins').findOne({ _id: decoded.adminId });
+  const admin = await db.collection('admins').findOne({ _id: new ObjectId(decoded.adminId) });
 
     if (!admin) {
       return NextResponse.json(

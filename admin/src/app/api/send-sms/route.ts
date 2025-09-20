@@ -92,14 +92,15 @@ export async function POST(request: NextRequest) {
           payload
         });
 
-      } catch (error: any) {
-        console.error(`Failed to send SMS to ${phone}:`, error.response?.data || error.message);
+      } catch (error) {
+        const err = error as unknown as { response?: { data?: any }; message?: string; toString: () => string };
+        console.error(`Failed to send SMS to ${phone}:`, err.response?.data || err.message);
 
         results.push({
           phone,
           status: 'failed',
-          error: error.response?.data?.message || error.response?.data || error.message,
-          fullError: error.toString()
+          error: err.response?.data?.message || err.response?.data || err.message,
+          fullError: err.toString()
         });
 
         // Log failed SMS
@@ -107,10 +108,10 @@ export async function POST(request: NextRequest) {
           phone,
           message,
           status: 'failed',
-          error: error.message,
+          error: err.message,
           sentAt: new Date(),
           category: category || 'custom',
-          apiResponse: error.response?.data
+          apiResponse: err.response?.data
         });
       }
     }
@@ -128,10 +129,11 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error: any) {
-    console.error('SMS sending error:', error);
+    const err = error as unknown as { message?: string };
+    console.error('SMS sending error:', err);
     return NextResponse.json({
       error: 'Failed to send SMS',
-      details: error.message
+      details: err.message
     }, { status: 500 });
   }
 }
