@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
         });
 
       } catch (error) {
-        const err = error as unknown as { response?: { data?: any }; message?: string; toString: () => string };
+        const err = error as { response?: { data?: { message?: string } }; message?: string; toString: () => string };
         console.error(`Failed to send SMS to ${phone}:`, err.response?.data || err.message);
 
         results.push({
