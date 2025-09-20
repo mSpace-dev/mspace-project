@@ -1,5 +1,9 @@
 "use client";
 // SMS Modal component (outside main function)
+import ProtectedRoute from "@/components/ProtectedRoute";
+
+
+
 function SMSModal({ smsTarget, smsMessage, setSMSMessage, setShowSMSModal, setSMSTarget, setSMSResult, smsSending, setSMSSending, smsResult }: {
   smsTarget: User | null;
   smsMessage: string;
@@ -209,7 +213,8 @@ export default function UsersPage() {
   const [activeSheet, setActiveSheet] = useState<'customers' | 'sellers'>('customers');
 
   return (
-    <div className="min-h-screen p-8 bg-gray-50">
+    <ProtectedRoute>
+      <div className="min-h-screen p-8 bg-gray-50">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-3xl font-bold text-gray-900 mb-6">Users</h1>
         <div className="flex flex-wrap gap-4 mb-8 items-end">
@@ -285,5 +290,7 @@ export default function UsersPage() {
         </div>
       </div>
     </div>
+    </ProtectedRoute>
+    
   );
 }
