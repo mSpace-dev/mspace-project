@@ -4,6 +4,19 @@ import { connectToDatabase, getDatabase } from '@/lib/database';
 import { ObjectId } from 'mongodb';
 import jwt from 'jsonwebtoken';
 
+declare module 'next-auth' {
+  interface User {
+    accessToken?: string;
+    refreshToken?: string;
+    adminData?: Record<string, unknown>;
+  }
+  interface Session {
+    accessToken?: string;
+    refreshToken?: string;
+    adminData?: Record<string, unknown>;
+  }
+}
+
 const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-in-production';
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'your-refresh-secret-key-change-in-production';
 
@@ -15,7 +28,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   callbacks: {
-    async signIn({ user, account, profile }) {
+  async signIn({ user, profile }) {
       try {
         const client = await connectToDatabase();
         const db = getDatabase(client);
@@ -51,7 +64,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             googleId: profile?.sub
           };
 
-          const result = await db.collection('admins').insertOne(adminData);
+          await db.collection('admins').insertOne(adminData);
           admin = adminData;
         } else {
           // Update last login for existing admin
@@ -108,10 +121,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return token;
     },
     async session({ session, token }) {
-      session.accessToken = token.accessToken as string;
-      session.refreshToken = token.refreshToken as string;
-      session.adminData = token.adminData as any;
-      return session;
+  session.accessToken = token.accessToken as string;
+  session.refreshToken = token.refreshToken as string;
+  session.adminData = token.adminData as Record<string, unknown>;
+  return session;
     },
   },
   pages: {

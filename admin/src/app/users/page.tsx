@@ -115,17 +115,17 @@ export default function UsersPage() {
 
   useEffect(() => {
     filterUsers();
-  }, [users, selectedDistrict, selectedProvince, searchTerm]);
+  }, [users, selectedDistrict, selectedProvince, searchTerm]); // filterUsers is defined inline, so do not add to deps
 
   const fetchUsers = async () => {
     setIsLoading(true);
     try {
       const response = await fetch("/api/customers");
       const customerData = await response.json();
-      const customers: User[] = (customerData.users || []).map((u: any) => ({ ...u, role: "customer" }));
-      const sellerResponse = await fetch("/api/sellers");
-      const sellerData = await sellerResponse.json();
-      const sellers: User[] = (sellerData.users || []).map((u: any) => ({ ...u, role: "seller" }));
+  const customers: User[] = (customerData.users || []).map((u: User) => ({ ...u, role: "customer" }));
+  const sellerResponse = await fetch("/api/sellers");
+  const sellerData = await sellerResponse.json();
+  const sellers: User[] = (sellerData.users || []).map((u: User) => ({ ...u, role: "seller" }));
       const allUsers: User[] = [...customers, ...sellers];
       setUsers(allUsers);
     } catch (error) {
