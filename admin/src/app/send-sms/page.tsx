@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
+// import Image from 'next/image'; // Uncomment if you use images
 
 interface SMSLog {
   _id: string;
@@ -11,12 +12,23 @@ interface SMSLog {
   error?: string;
 }
 
+interface SMSResult {
+  success?: boolean;
+  message?: string;
+  error?: string;
+  results?: Array<{
+    phone: string;
+    status: string;
+    error?: string;
+  }>;
+}
+
 export default function SendSMSPage() {
   const [message, setMessage] = useState('');
   const [category, setCategory] = useState('all');
   const [customRecipients, setCustomRecipients] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<SMSResult | null>(null);
   const [logs, setLogs] = useState<SMSLog[]>([]);
   const [showLogs, setShowLogs] = useState(false);
 
@@ -39,22 +51,25 @@ export default function SendSMSPage() {
       const response = await fetch('/api/send-sms');
       const data = await response.json();
       setLogs(data.logs || []);
-    } catch (error) {
-      console.error('Failed to fetch logs:', error);
+    } catch (err) {
+      console.error('Failed to fetch logs:', err);
     }
   };
 
   const handleSendSMS = async (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
     setIsLoading(true);
     setResult(null);
 
     try {
-      const payload: any = {
+      const payload: {
+        message: string;
+        category: string | null;
+        recipients?: string[];
+      } = {
         message,
         category: category === 'custom' ? null : category
       };
-
       if (category === 'custom' && customRecipients) {
         payload.recipients = customRecipients.split(',').map((phone: string) => phone.trim());
       }
@@ -75,7 +90,7 @@ export default function SendSMSPage() {
         setCustomRecipients('');
         fetchLogs(); // Refresh logs
       }
-    } catch (error) {
+    } catch {
       setResult({ error: 'Failed to send SMS. Please try again.' });
     } finally {
       setIsLoading(false);
@@ -176,11 +191,9 @@ export default function SendSMSPage() {
               <h3 className="text-lg font-semibold text-gray-800 mb-4">✍️ Compose Message</h3>
               <textarea
                 value={message}
-                onChange={(e) => setMessage(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setMessage(e.target.value)}
                 placeholder="Enter your SMS message here..."
-
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#6a6ba7] focus:border-transparent"
-
                 rows={6}
                 maxLength={160}
                 required
