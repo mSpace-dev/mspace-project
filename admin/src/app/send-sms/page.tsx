@@ -86,17 +86,26 @@ export default function SendSMSPage() {
     setMessage(template);
   };
 
+  // Dashboard color palette
+  const cardColors = [
+    'bg-[#edd7c3]', // light beige
+    'bg-[#6a6ba7]', // muted blue
+    'bg-[#d3cfe0]', // pale lavender
+    'bg-[#a07b9c]', // muted mauve
+    'bg-[#d8b5bc]'  // soft pink
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-6">
+    <div className={`min-h-screen ${cardColors[2]} p-6`}>
       <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-xl shadow-lg p-8">
+        <div className={`rounded-xl shadow-lg p-8 ${cardColors[0]}`}> {/* Main card */}
           <div className="flex items-center justify-between mb-8">
             <h1 className="text-3xl font-bold text-gray-800 flex items-center">
               📱 Send SMS to Customers
             </h1>
             <button
               onClick={() => setShowLogs(!showLogs)}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className={`px-4 py-2 ${cardColors[1]} text-white rounded-lg hover:bg-[#a07b9c] transition-colors`}
             >
               {showLogs ? 'Hide Logs' : 'View Logs'}
             </button>
@@ -104,7 +113,7 @@ export default function SendSMSPage() {
 
           <form onSubmit={handleSendSMS} className="space-y-6">
             {/* Recipient Selection */}
-            <div className="bg-gray-50 p-6 rounded-lg">
+            <div className={`p-6 rounded-lg ${cardColors[4]}`}> {/* soft pink */}
               <h3 className="text-lg font-semibold text-gray-800 mb-4">📞 Select Recipients</h3>
               <div className="space-y-3">
                 <div>
@@ -114,7 +123,7 @@ export default function SendSMSPage() {
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#6a6ba7] focus:border-transparent"
                   >
                     <option value="all">All Customers</option>
                     <option value="farmers">Farmers Only</option>
@@ -133,7 +142,7 @@ export default function SendSMSPage() {
                       value={customRecipients}
                       onChange={(e) => setCustomRecipients(e.target.value)}
                       placeholder="0771234567, 0779876543, 0712345678"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#6a6ba7] focus:border-transparent"
                       rows={3}
                     />
                   </div>
@@ -142,7 +151,7 @@ export default function SendSMSPage() {
             </div>
 
             {/* Message Templates */}
-            <div className="bg-blue-50 p-6 rounded-lg">
+            <div className={`p-6 rounded-lg ${cardColors[2]}`}> {/* pale lavender */}
               <h3 className="text-lg font-semibold text-gray-800 mb-4">📝 Quick Templates</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {priceTemplates.map((template, index) => (
@@ -150,7 +159,7 @@ export default function SendSMSPage() {
                     key={index}
                     type="button"
                     onClick={() => insertTemplate(template)}
-                    className="text-left p-3 bg-white border border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors text-sm"
+                    className={`text-left p-3 bg-white border border-gray-200 rounded-lg hover:${cardColors[3]} hover:border-[#a07b9c] transition-colors text-sm text-gray-800`}
                   >
                     {template}
                   </button>
@@ -159,13 +168,13 @@ export default function SendSMSPage() {
             </div>
 
             {/* Message Composition */}
-            <div className="bg-gray-50 p-6 rounded-lg">
+            <div className={`p-6 rounded-lg ${cardColors[3]}`}> {/* muted mauve */}
               <h3 className="text-lg font-semibold text-gray-800 mb-4">✍️ Compose Message</h3>
               <textarea
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Enter your SMS message here..."
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#6a6ba7] focus:border-transparent"
                 rows={6}
                 maxLength={160}
                 required
@@ -180,7 +189,7 @@ export default function SendSMSPage() {
               <button
                 type="submit"
                 disabled={isLoading || !message.trim()}
-                className="px-8 py-4 bg-green-600 text-white text-lg font-semibold rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center space-x-2"
+                className={`px-8 py-4 ${cardColors[1]} text-white text-lg font-semibold rounded-lg hover:bg-[#a07b9c] disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center space-x-2`}
               >
                 {isLoading ? (
                   <>
@@ -198,7 +207,7 @@ export default function SendSMSPage() {
 
           {/* Result Display */}
           {result && (
-            <div className={`mt-6 p-6 rounded-lg ${result.success ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
+            <div className={`mt-6 p-6 rounded-lg ${result.success ? cardColors[4] + ' border border-green-200' : 'bg-red-50 border border-red-200'}`}>
               <h4 className={`text-lg font-semibold ${result.success ? 'text-green-800' : 'text-red-800'}`}>
                 {result.success ? '✅ SMS Sent Successfully!' : '❌ Error Sending SMS'}
               </h4>
@@ -227,7 +236,7 @@ export default function SendSMSPage() {
 
           {/* SMS Logs */}
           {showLogs && (
-            <div className="mt-8 bg-gray-50 p-6 rounded-lg">
+            <div className={`mt-8 p-6 rounded-lg ${cardColors[2]}`}> {/* pale lavender */}
               <h3 className="text-xl font-semibold text-gray-800 mb-4">📋 Recent SMS Logs</h3>
               {logs.length === 0 ? (
                 <p className="text-gray-500">No SMS logs found.</p>
@@ -237,9 +246,9 @@ export default function SendSMSPage() {
                     <div key={log._id} className="bg-white p-4 rounded-lg border">
                       <div className="flex justify-between items-start">
                         <div>
-                          <p className="font-medium text-gray-800">{log.phone}</p>
-                          <p className="text-sm text-gray-600 mt-1">{log.message}</p>
-                          <p className="text-xs text-gray-500 mt-2">
+                          <p className="font-medium text-gray-900">{log.phone}</p>
+                          <p className="text-sm text-gray-800 mt-1">{log.message}</p>
+                          <p className="text-xs text-gray-700 mt-2">
                             {new Date(log.sentAt).toLocaleString()}
                           </p>
                         </div>
@@ -252,7 +261,7 @@ export default function SendSMSPage() {
                             {log.status}
                           </span>
                           {log.category && (
-                            <p className="text-xs text-gray-500 mt-1">{log.category}</p>
+                            <p className="text-xs text-gray-700 mt-1">{log.category}</p>
                           )}
                           {log.error && (
                             <p className="text-xs text-red-600 mt-1">{log.error}</p>
