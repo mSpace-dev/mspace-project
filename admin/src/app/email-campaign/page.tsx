@@ -9,7 +9,7 @@ interface SubscriberStats {
 }
 
 export default function EmailCampaignPage() {
-  const [admin, setAdmin] = useState<any>(null);
+  const [admin, setAdmin] = useState<Record<string, unknown> | null>(null);
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -30,8 +30,7 @@ export default function EmailCampaignPage() {
     try {
       const parsedAdmin = JSON.parse(adminData);
       setAdmin(parsedAdmin);
-    } catch (error) {
-      console.error('Error parsing admin data:', error);
+    } catch {
       router.push('/login');
       return;
     }
@@ -46,8 +45,8 @@ export default function EmailCampaignPage() {
         const data = await response.json();
         setStats(data);
       }
-    } catch (error) {
-      console.error("Failed to fetch subscriber stats:", error);
+    } catch {
+      // Error fetching subscriber stats
     }
   };
 
@@ -94,7 +93,7 @@ export default function EmailCampaignPage() {
           message: result.error || "Failed to send email",
         });
       }
-    } catch (error) {
+    } catch {
       setNotification({
         type: "error",
         message: "Network error. Please try again.",
@@ -158,7 +157,7 @@ export default function EmailCampaignPage() {
                 </svg>
                 View History
               </button>
-              <span className="text-sm text-gray-600">Welcome, {admin.name}</span>
+              <span className="text-sm text-gray-600">Welcome, {typeof admin.name === "string" ? admin.name : "Admin"}</span>
               <button
                 onClick={handleLogout}
                 className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm"

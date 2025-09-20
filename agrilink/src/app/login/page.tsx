@@ -6,7 +6,7 @@ import { setCustomerAuth } from '../../lib/clientAuth';
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
-  // const [error, setError] = useState(''); // Removed unused error variable
+  const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [selectedRole, setSelectedRole] = useState<string>('');
   const router = useRouter();
@@ -343,3 +343,4 @@ export default function LoginPage() {
     </div>
   );
 }
+
