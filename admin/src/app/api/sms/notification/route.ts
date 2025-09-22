@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 
 // In-memory store for received notifications (replace with DB in production)
-type Notification = { receivedAt: string; data: String | object };
-let notifications: Notification[] = [];
+type Notification = { receivedAt: string; data: string | object };
+const notifications: Notification[] = [];
 
 // Handle POST requests from Mobitel mSpace (notification delivery)
 export async function POST(req: Request) {
