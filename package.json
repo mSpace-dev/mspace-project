@@ -1,7 +1,32 @@
 {
-  "dependencies": {
-    "@types/node": "^24.3.0",
-    "mongodb": "^6.19.0",
-    "next-auth": "^4.24.11"
+  "name": "agrilink-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "frontend/*",
+    "backend/services/*",
+    "backend/shared/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "cd frontend/apps/web && npm run dev",
+    "dev:admin": "cd frontend/apps/admin && npm run dev",
+    "dev:backend": "concurrently \"npm run dev:auth\" \"npm run dev:products\" \"npm run dev:orders\" \"npm run dev:notifications\"",
+    "dev:auth": "cd backend/services/auth-service && npm run dev",
+    "dev:products": "cd backend/services/product-service && npm run dev",
+    "dev:orders": "cd backend/services/order-service && npm run dev",
+    "dev:notifications": "cd backend/services/notification-service && npm run dev",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "cd frontend/apps/web && npm run build",
+    "build:backend": "npm run build:shared && npm run build:services",
+    "build:shared": "cd backend/shared/database && npm run build && cd ../types && npm run build && cd ../utils && npm run build",
+    "build:services": "cd backend/services/auth-service && npm run build && cd ../product-service && npm run build && cd ../order-service && npm run build && cd ../notification-service && npm run build",
+    "install:all": "npm install && npm run install:frontend && npm run install:backend",
+    "install:frontend": "cd frontend/apps/web && npm install && cd ../admin && npm install && cd ../../packages/ui && npm install && cd ../types && npm install && cd ../utils && npm install",
+    "install:backend": "cd backend/shared/database && npm install && cd ../types && npm install && cd ../utils && npm install && cd ../../services/auth-service && npm install && cd ../product-service && npm install && cd ../order-service && npm install && cd ../notification-service && npm install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0",
+    "typescript": "^5.0.0"
   }
 }
