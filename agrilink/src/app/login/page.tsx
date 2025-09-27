@@ -6,7 +6,6 @@ import { setCustomerAuth } from '../../lib/clientAuth';
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [selectedRole, setSelectedRole] = useState<string>('');
   const router = useRouter();
@@ -131,7 +130,6 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
     setSuccess('');
 
     try {
@@ -166,7 +164,6 @@ export default function LoginPage() {
       throw new Error('Invalid email or password. Please check your credentials.');
 
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'An error occurred');
     } finally {
       setLoading(false);
     }
@@ -203,6 +200,7 @@ export default function LoginPage() {
               Welcome Back to AgriLink!
             </h2>
             <p className="text-gray-400">Sign in to your AgriLink account</p>
+            <p className="text-gray-400">Don&apos;t have an account?</p>
             {selectedRole && (
               <div className="mt-3 inline-flex items-center px-3 py-1 bg-green-500/10 border border-green-500/20 rounded-full">
                 <span className="text-green-400 text-sm font-medium">
@@ -212,11 +210,6 @@ export default function LoginPage() {
             )}
           </div>
 
-          {error && (
-            <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg">
-              {error}
-            </div>
-          )}
 
           {success && (
             <div className="mb-4 p-3 bg-green-500/10 border border-green-500/20 text-green-400 rounded-lg">
@@ -328,7 +321,7 @@ export default function LoginPage() {
           {/* Signup Link */}
           <div className="mt-8 text-center">
             <p className="text-gray-400 text-sm">
-              Don't have an account?{' '}
+              Don&apos;t have an account?{' '}
               <a
                 href="/signup"
                 className="text-green-400 hover:text-green-300 transition-colors font-medium underline underline-offset-2 decoration-green-400/50 hover:decoration-green-300"
@@ -342,3 +335,4 @@ export default function LoginPage() {
     </div>
   );
 }
+

@@ -3,9 +3,8 @@ import { connectToDatabase, getDatabase } from '@/lib/database';
 import axios from 'axios';
 
 const MOBITEL_API_URL = process.env.MOBITEL_API_URL || 'https://api.mspace.lk/sms/send';
-const MOBITEL_API_KEY = process.env.MOBITEL_API_KEY || '7e82020d76d946ddef1fb0c0ead4d082';
 const MOBITEL_APP_ID = process.env.MOBITEL_APP_ID || 'APP_009085';
-const MOBITEL_PASSWORD = process.env.MOBITEL_PASSWORD || '7e82020d76d946ddef1fb0c0ead4d082';
+const MOBITEL_PASSWORD = process.env.MOBITEL_PASSWORD || 'password';
 const MOBITEL_SOURCE_ADDRESS = process.env.MOBITEL_SOURCE_ADDRESS || '77011';
 
 export async function POST(request: NextRequest) {
@@ -49,88 +48,28 @@ export async function POST(request: NextRequest) {
                               phone.startsWith('0') ? '94' + phone.substring(1) :
                               '94' + phone;
 
-        // Try different Mobitel API formats since the application is now approved
-        let response;
-        let success = false;
+        // Use the exact Mobitel API payload format from documentation
+        const payload = {
+          version: "1.0",
+          applicationId: MOBITEL_APP_ID,
+          password: MOBITEL_PASSWORD,
+          message: message,
+          destinationAddresses: [`tel:${formattedPhone}`],
+          sourceAddress: MOBITEL_SOURCE_ADDRESS,
+          deliveryStatusRequest: "1",
+          encoding: "245",
+          binaryHeader: "526574697265206170706c69636174696f6e20616e642072656c6561736520524b7320696620666f756e642065787069726564"
+        };
 
-        // Format 1: Standard Mobitel format with API key as password
-        try {
-          console.log('Trying Format 1: API key as password...');
-          const payload1 = {
-            version: "1.0",
-            applicationId: MOBITEL_APP_ID,
-            password: MOBITEL_API_KEY,
-            message: message,
-            destinationAddresses: [`tel:${formattedPhone}`],
-            sourceAddress: MOBITEL_SOURCE_ADDRESS,
-            deliveryStatusRequest: "1",
-            encoding: "245",
-            binaryHeader: "526574697265206170706c69636174696f6e20616e642072656c6561736520524b7320696620666f756e642065787069726564"
-          };
+        console.log('Mobitel API Payload:', JSON.stringify(payload, null, 2));
 
-          response = await axios.post(MOBITEL_API_URL, payload1, {
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            },
-            timeout: 30000
-          });
-          success = true;
-          console.log('Format 1 succeeded!');
-        } catch (error1) {
-          console.log('Format 1 failed, trying Format 2...');
-
-          // Format 2: With Authorization header
-          try {
-            console.log('Trying Format 2: Authorization header...');
-            const payload2 = {
-              version: "1.0",
-              applicationId: MOBITEL_APP_ID,
-              message: message,
-              destinationAddresses: [`tel:${formattedPhone}`],
-              sourceAddress: MOBITEL_SOURCE_ADDRESS,
-              deliveryStatusRequest: "1",
-              encoding: "245"
-            };
-
-            response = await axios.post(MOBITEL_API_URL, payload2, {
-              headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${MOBITEL_API_KEY}`
-              },
-              timeout: 30000
-            });
-            success = true;
-            console.log('Format 2 succeeded!');
-          } catch (error2) {
-            console.log('Format 2 failed, trying Format 3...');
-
-            // Format 3: API key in header with different format
-            try {
-              console.log('Trying Format 3: API key in header...');
-              const payload3 = {
-                to: formattedPhone,
-                message: message,
-                from: MOBITEL_SOURCE_ADDRESS
-              };
-
-              response = await axios.post(MOBITEL_API_URL, payload3, {
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Accept': 'application/json',
-                  'apikey': MOBITEL_API_KEY
-                },
-                timeout: 30000
-              });
-              success = true;
-              console.log('Format 3 succeeded!');
-            } catch (error3) {
-              console.log('All formats failed, throwing last error...');
-              throw error3;
-            }
-          }
-        }
+        const response = await axios.post(MOBITEL_API_URL, payload, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          timeout: 30000
+        });
 
         console.log('Mobitel API Response:', response.data);
 
@@ -150,17 +89,18 @@ export async function POST(request: NextRequest) {
           category: category || 'custom',
           apiResponse: response.data,
           formattedPhone,
-          payload: success ? (response.config.data ? JSON.parse(response.config.data) : null) : null
+          payload
         });
 
-      } catch (error: any) {
-        console.error(`Failed to send SMS to ${phone}:`, error.response?.data || error.message);
+      } catch (error) {
+        const err = error as { response?: { data?: { message?: string } }; message?: string; toString: () => string };
+        console.error(`Failed to send SMS to ${phone}:`, err.response?.data || err.message);
 
         results.push({
           phone,
           status: 'failed',
-          error: error.response?.data?.message || error.response?.data || error.message,
-          fullError: error.toString()
+          error: err.response?.data?.message || err.response?.data || err.message,
+          fullError: err.toString()
         });
 
         // Log failed SMS
@@ -168,10 +108,10 @@ export async function POST(request: NextRequest) {
           phone,
           message,
           status: 'failed',
-          error: error.message,
+          error: err.message,
           sentAt: new Date(),
           category: category || 'custom',
-          apiResponse: error.response?.data
+          apiResponse: err.response?.data
         });
       }
     }
@@ -188,11 +128,12 @@ export async function POST(request: NextRequest) {
       totalRecipients: phoneNumbers.length
     });
 
-  } catch (error: any) {
-    console.error('SMS sending error:', error);
+  } catch (error) {
+    const err = error as { message?: string };
+    console.error('SMS sending error:', err);
     return NextResponse.json({
       error: 'Failed to send SMS',
-      details: error.message
+      details: err?.message || 'Unknown error'
     }, { status: 500 });
   }
 }

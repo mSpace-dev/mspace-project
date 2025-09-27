@@ -1,205 +1,149 @@
-"use client";
-import Link from "next/link";
-import { useEffect, useState } from "react";
+'use client';
 
-interface DashboardStats {
-  totalCustomers: number;
-  totalSMS: number;
-  smsToday: number;
-  recentAlerts: number;
-}
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
-export default function Dashboard() {
-  const [stats, setStats] = useState<DashboardStats>({
-    totalCustomers: 0,
-    totalSMS: 0,
-    smsToday: 0,
-    recentAlerts: 0
+export default function AdminLogin() {
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
   });
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
-  useEffect(() => {
-    fetchDashboardStats();
-  }, []);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
 
-  const fetchDashboardStats = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
     try {
-      // Fetch customer count
-      const customerResponse = await fetch('/api/customers/count');
-      const customerData = await customerResponse.json();
-
-      // Fetch SMS stats
-      const smsResponse = await fetch('/api/send-sms/stats');
-      const smsData = await smsResponse.json();
-
-      setStats({
-        totalCustomers: customerData.count || 0,
-        totalSMS: smsData.totalSMS || 0,
-        smsToday: smsData.smsToday || 0,
-        recentAlerts: smsData.recentAlerts || 0
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
       });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem('admin', JSON.stringify(data.admin));
+        localStorage.setItem('adminAccessToken', data.accessToken);
+        localStorage.setItem('adminRefreshToken', data.refreshToken);
+        router.push('/dashboard');
+      } else {
+      }
     } catch (error) {
-      console.error('Failed to fetch dashboard stats:', error);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
-  const quickActions = [
-    {
-      title: "Send SMS",
-      description: "Send price updates to customers",
-      href: "/send-sms",
-      icon: "📱",
-      color: "bg-green-500 hover:bg-green-600"
-    },
-    {
-      title: "View Users",
-      description: "Manage customer database",
-      href: "/users",
-      icon: "👥",
-      color: "bg-blue-500 hover:bg-blue-600"
-    },
-    {
-      title: "Price Alerts",
-      description: "Monitor and send alerts",
-      href: "/alerts",
-      icon: "🚨",
-      color: "bg-orange-500 hover:bg-orange-600"
-    },
-    {
-      title: "Settings",
-      description: "Configure system settings",
-      href: "/settings",
-      icon: "⚙️",
-      color: "bg-purple-500 hover:bg-purple-600"
-    }
-  ];
+  const handleGoogleLogin = () => {
+    window.location.href = '/api/auth/google';
+  };
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
-          <p className="text-gray-600">Welcome to AgriLink Admin Panel</p>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#edd7c3] via-[#6a6ba7] to-[#d8b5bc] p-4">
+      <div className="flex w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden">
+        {/* Left side image/svg */}
+        <div className="hidden md:flex flex-col justify-center items-center w-1/2 bg-gradient-to-b from-[#edd7c3] via-[#d3cfe0] to-[#d8b5bc] p-8">
+          {/* Login illustration image */}
+          <img
+            src="enter-login-and-password-registration-page-on-screen-sign-in-to-your-account-creative-metaphor-login-page-mobile-app-with-user-page-flat-illu.jpg"
+            alt="Login Illustration"
+            className="w-full max-w-xs h-auto object-contain mb-4"
+          />
+          <h2 className="mt-8 text-2xl font-bold text-[#6a6ba7]">AgriLink Admin</h2>
+          <p className="mt-2 text-gray-700 text-center">Fast, easy management for customers, sellers, and business insights.</p>
         </div>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center">
-              <div className="p-3 rounded-full bg-blue-100">
-                <span className="text-2xl">👥</span>
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Total Customers</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {isLoading ? "..." : stats.totalCustomers.toLocaleString()}
-                </p>
-              </div>
+        {/* Login form */}
+        <div className="w-full md:w-1/2 p-8 flex flex-col justify-center">
+          <div className="mb-8 text-center">
+            <div className="mx-auto h-16 w-16 bg-gradient-to-r from-[#6a6ba7] to-[#a07b9c] rounded-full flex items-center justify-center mb-4">
+              <svg className="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
             </div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">Admin Login</h2>
+            <p className="text-gray-600">Sign in to manage customers, sellers, and business insights</p>
           </div>
-
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center">
-              <div className="p-3 rounded-full bg-green-100">
-                <span className="text-2xl">📱</span>
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Total SMS Sent</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {isLoading ? "..." : stats.totalSMS.toLocaleString()}
-                </p>
-              </div>
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#6a6ba7] focus:border-transparent text-gray-900 placeholder-gray-500"
+                placeholder="admin@agrilink.com"
+              />
             </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center">
-              <div className="p-3 rounded-full bg-yellow-100">
-                <span className="text-2xl">📅</span>
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">SMS Today</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {isLoading ? "..." : stats.smsToday}
-                </p>
-              </div>
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="current-password"
+                required
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#a07b9c] focus:border-transparent text-gray-900 placeholder-gray-500"
+                placeholder="Enter your password"
+              />
             </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center">
-              <div className="p-3 rounded-full bg-red-100">
-                <span className="text-2xl">🚨</span>
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Recent Alerts</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {isLoading ? "..." : stats.recentAlerts}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Quick Actions */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Quick Actions</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {quickActions.map((action) => (
-              <Link
-                key={action.href}
-                href={action.href}
-                className={`block p-6 rounded-lg shadow-lg text-white transition-transform hover:scale-105 ${action.color}`}
-              >
-                <div className="text-center">
-                  <div className="text-4xl mb-4">{action.icon}</div>
-                  <h3 className="text-xl font-bold mb-2">{action.title}</h3>
-                  <p className="text-sm opacity-90">{action.description}</p>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full flex justify-center py-3 px-4 rounded-lg text-white font-semibold bg-gradient-to-r from-[#6a6ba7] to-[#a07b9c] hover:from-[#a07b9c] hover:to-[#6a6ba7] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6a6ba7] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+            >
+              {loading ? (
+                <div className="flex items-center">
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Signing in...
                 </div>
-              </Link>
-            ))}
+              ) : (
+                'Sign In'
+              )}
+            </button>
+          </form>
+          <div className="mt-6">
+            <button
+              onClick={handleGoogleLogin}
+              className="w-full flex justify-center items-center px-4 py-3 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6a6ba7] transition-all duration-200"
+            >
+              <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+              </svg>
+              Continue with Google
+            </button>
           </div>
-        </div>
-
-        {/* Recent Activity */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Recent Activity</h2>
-          <div className="space-y-4">
-            <div className="flex items-center p-4 bg-gray-50 rounded-lg">
-              <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-4">
-                <span className="text-lg">📱</span>
-              </div>
-              <div className="flex-1">
-                <p className="font-medium text-gray-900">SMS Campaign Sent</p>
-                <p className="text-sm text-gray-600">Price update sent to 250 customers</p>
-              </div>
-              <div className="text-sm text-gray-500">2 hours ago</div>
-            </div>
-
-            <div className="flex items-center p-4 bg-gray-50 rounded-lg">
-              <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-                <span className="text-lg">👤</span>
-              </div>
-              <div className="flex-1">
-                <p className="font-medium text-gray-900">New Customer Registered</p>
-                <p className="text-sm text-gray-600">Customer from Colombo joined the platform</p>
-              </div>
-              <div className="text-sm text-gray-500">4 hours ago</div>
-            </div>
-
-            <div className="flex items-center p-4 bg-gray-50 rounded-lg">
-              <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center mr-4">
-                <span className="text-lg">🚨</span>
-              </div>
-              <div className="flex-1">
-                <p className="font-medium text-gray-900">Price Alert Triggered</p>
-                <p className="text-sm text-gray-600">Rice prices increased by 8%</p>
-              </div>
-              <div className="text-sm text-gray-500">1 day ago</div>
-            </div>
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-600">
+              Don&apos;t have an admin account?{' '}
+              <Link href="/signup" className="font-medium text-[#6a6ba7] hover:text-[#a07b9c] transition-colors">
+                Sign up here
+              </Link>
+            </p>
           </div>
         </div>
       </div>
