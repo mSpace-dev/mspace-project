@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@react-google-maps/api": "^2.20.7",
     "@types/bcryptjs": "^3.0.0",
     "@types/google.maps": "^3.58.1",
