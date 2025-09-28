@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ShoppingBag, DollarSign, Bell, TrendingUp, ShoppingCart, Package } from 'lucide-react';
 import CustomerNavBar from '../../../components/CustomerNavBar';
 import ImageUpload from '../../../components/ImageUpload';
+import ChatbotWidget from '../../../components/ChatbotWidget';
 
 interface Customer {
   _id: string;
@@ -582,6 +583,14 @@ export default function CustomerDashboard() {
           </div>
         </div>
       </main>
+
+      {/* Enhanced Chatbot Widget */}
+      <ChatbotWidget
+        userId={customer?._id}
+        userPhone={customer?.phone}
+        position="bottom-right"
+        apiEndpoint="/api/chatbot-enhanced"
+      />
     </div>
   );
 }

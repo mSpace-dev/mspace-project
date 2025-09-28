@@ -201,11 +201,20 @@
             <h2>🤖 Chatbot API</h2>
             
             <div class="test-form">
-                <h3>POST <span class="endpoint">/api/chatbot</span></h3>
+                <h3>POST <span class="endpoint">/api/chatbot</span> (Basic)</h3>
                 <textarea id="chatMessage" placeholder="Enter your message... Try: 'What is the current rice price?' or 'help'">What is the current rice price?</textarea>
                 <input type="text" id="chatUserPhone" placeholder="Phone (optional)" value="+94771234567" />
                 <button onclick="testChatbot()">Send Message</button>
                 <div id="chatbotResponse" class="response"></div>
+            </div>
+
+            <div class="test-form">
+                <h3>POST <span class="endpoint">/api/chatbot-enhanced</span> (Enhanced)</h3>
+                <textarea id="chatEnhancedMessage" placeholder="Try: 'What services does AgriLink offer?', 'Rice price in Colombo', 'Tell me about demand forecasting'">What services does AgriLink offer?</textarea>
+                <input type="text" id="chatEnhancedUserPhone" placeholder="Phone (optional)" value="+94771234567" />
+                <input type="text" id="chatEnhancedUserId" placeholder="User ID (optional)" value="user123" />
+                <button onclick="testEnhancedChatbot()">Send Enhanced Message</button>
+                <div id="chatbotEnhancedResponse" class="response"></div>
             </div>
         </div>
 
@@ -371,6 +380,21 @@
                 body: JSON.stringify(body)
             });
             displayResponse('chatbotResponse', response);
+        }
+
+        async function testEnhancedChatbot() {
+            const body = {
+                message: document.getElementById('chatEnhancedMessage').value,
+                userPhone: document.getElementById('chatEnhancedUserPhone').value || undefined,
+                userId: document.getElementById('chatEnhancedUserId').value || undefined,
+                sessionId: `session_${Date.now()}`
+            };
+            
+            const response = await makeRequest('/chatbot-enhanced', {
+                method: 'POST',
+                body: JSON.stringify(body)
+            });
+            displayResponse('chatbotEnhancedResponse', response);
         }
 
         async function testSendSMS() {
