@@ -9,7 +9,25 @@ export default function EmailSignupPage() {
   const router = useRouter();
   const params = useParams();
   const role = params?.role as string;
-  
+
+  // Move hooks to top level
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    phone: '',
+    district: '',
+    province: '',
+    // Seller specific fields
+    businessName: '',
+    businessType: '',
+    address: '',
+    licenseNumber: ''
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+
   // Redirect sellers to dedicated seller signup page
   useEffect(() => {
     if (role === 'seller') {
@@ -26,24 +44,6 @@ export default function EmailSignupPage() {
       </div>
     );
   }
-  
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    phone: '',
-    district: '',
-    province: '',
-    // Seller specific fields
-    businessName: '',
-    businessType: '',
-    address: '',
-    licenseNumber: ''
-  });
-  
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;

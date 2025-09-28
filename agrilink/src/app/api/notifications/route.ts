@@ -186,9 +186,11 @@ export async function POST(request: NextRequest) {
 
     // Handle direct email notifications (order_claimed, order_status_update)
     if (type === 'order_claimed' || type === 'order_status_update') {
-      const { sendEmail } = require('@/lib/emailService');
+  // Use dynamic import for sendEmail to avoid require()
+  const emailService = await import('@/lib/emailService');
+  const sendEmail = emailService.sendEmail;
       try {
-        await sendEmail(data.customerEmail, template.subject, template.html, template.text);
+        await sendEmail(data.customerEmail, template);
         return NextResponse.json({
           message: `Successfully sent ${type} notification to customer`,
           sentCount: 1,

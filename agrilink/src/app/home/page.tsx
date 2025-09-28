@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import Head from "next/head";
 import { useState, useEffect } from "react";
 import { useCustomerAuth } from "../../hooks/useCustomerAuth";
@@ -558,12 +560,12 @@ export default function Home() {
               <div className="bg-white rounded-2xl shadow-lg p-8">
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="text-2xl font-bold text-gray-900">Order History</h3>
-                  <a
+                  <Link
                     href="/customer/orders"
                     className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1"
                   >
                     View All Orders
-                  </a>
+                  </Link>
                 </div>
                 
                 <div id="recent-orders-container">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from 'next/link';
 import Navigation from "../../components/Navigation";
 
 export default function CheckoutPage() {
@@ -145,18 +146,18 @@ export default function CheckoutPage() {
             </p>
           </div>
           <div className="space-y-3">
-            <a
+            <Link
               href={`/customer/orders/${orderId}`}
               className="block w-full bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
             >
               View Order Details
-            </a>
-            <a
+            </Link>
+            <Link
               href="/customer/orders"
               className="block w-full bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-semibold transition-colors"
             >
               View All Orders
-            </a>
+            </Link>
           </div>
           <p className="text-xs text-gray-500 mt-4">
             Redirecting to order details in a few seconds...

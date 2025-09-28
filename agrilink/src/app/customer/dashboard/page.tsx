@@ -1,5 +1,7 @@
 'use client';
 
+"use client";
+import Link from "next/link";
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ShoppingBag, DollarSign, Bell, TrendingUp, ShoppingCart, Package } from 'lucide-react';
@@ -45,6 +47,7 @@ export default function CustomerDashboard() {
       // Check if customer is logged in - support both new and old systems
       let customerData = localStorage.getItem('customerData'); // New JWT system
       let parsedCustomer;
+      
       let customerId;
 
       if (customerData) {
@@ -495,42 +498,43 @@ export default function CustomerDashboard() {
           <div className="bg-white rounded-2xl shadow-lg p-6">
             <h2 className="text-xl font-bold text-green-700 mb-4">Quick Actions</h2>
             <div className="space-y-3">
-              <a
+            <div className="space-y-3">
+              <Link
                 href="/prices"
                 className="flex items-center w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium transition duration-200"
               >
                 <DollarSign className="h-5 w-5 mr-2" />
                 View Current Prices
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/alerts"
                 className="flex items-center w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-medium transition duration-200"
               >
                 <Bell className="h-5 w-5 mr-2" />
                 Manage Price Alerts
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/demandforecast"
                 className="flex items-center w-full bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded-lg font-medium transition duration-200"
               >
                 <TrendingUp className="h-5 w-5 mr-2" />
                 Demand Forecasting
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/products"
                 className="flex items-center w-full bg-orange-600 hover:bg-orange-700 text-white py-3 px-4 rounded-lg font-medium transition duration-200"
               >
                 <ShoppingBag className="h-5 w-5 mr-2" />
                 Browse Products
-              </a>
-              
-              <a
+              </Link>
+              <Link
                 href="/customer/orders"
                 className="flex items-center w-full bg-teal-600 hover:bg-teal-700 text-white py-3 px-4 rounded-lg font-medium transition duration-200"
               >
                 <Package className="h-5 w-5 mr-2" />
                 My Orders
-              </a>
+              </Link>
+            </div>
             </div>
           </div>
 

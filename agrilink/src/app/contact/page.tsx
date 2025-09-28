@@ -2,6 +2,7 @@
 
 import Head from "next/head";
 import { useState, useEffect } from "react";
+import Link from 'next/link';
 import CustomerUserProfile from "../../components/CustomerUserProfile";
 import { checkAuthAndLogout, CustomerData } from "../../lib/clientAuth";
 import "../custom.css";
@@ -133,9 +134,9 @@ export default function Contact() {
                     userEmail={customer.email || ''}
                   />
                 ) : (
-                  <a href="/login" className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors font-medium">
+                  <Link href="/login" className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors font-medium">
                     Login
-                  </a>
+                  </Link>
                 )}
               </div>
 
