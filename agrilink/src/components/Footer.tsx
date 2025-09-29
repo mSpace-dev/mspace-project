@@ -86,13 +86,13 @@ export default function Footer() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email address"
-                  className="flex-1 px-8 py-2 rounded-l-md text-gray-900 focus:outline-none"
+                  className="flex-1 px-8 py-2 rounded-l-md text-gray-900 focus:outline-none border border-green-500"
                   required
                 />
                 <button
                   type="submit"
                   disabled={isSubscribing}
-                  className="bg-white text-green-600 px-4 py-2 rounded-r-md font-semibold disabled:opacity-50"
+                  className="bg-white text-green-600 px-4 py-2 rounded-r-md font-semibold disabled:opacity-50 "
                 >{isSubscribing ? '...' : 'Subscribe'}</button>
               </div>
               {subscriptionMessage && (

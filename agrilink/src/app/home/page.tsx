@@ -318,7 +318,7 @@ export default function Home() {
             </div>
 
             <div className="grid md:grid-cols-2 gap-8">
-              <div className="bg-white p-8 rounded-2xl shadow-lg">
+              <div className="bg-white p-8 rounded-2xl shadow-lg border border-green-400">
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">For Farmers</h3>
                 <ul className="space-y-3 text-gray-600">
                   <li className="flex items-center">
@@ -340,7 +340,7 @@ export default function Home() {
                 </ul>
               </div>
 
-              <div className="bg-white p-8 rounded-2xl shadow-lg">
+              <div className="bg-white p-8 rounded-2xl shadow-lg border border-green-400">
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">For Consumers</h3>
                 <ul className="space-y-3 text-gray-600">
                   <li className="flex items-center">
@@ -425,14 +425,14 @@ export default function Home() {
         </section>
 
         {/* Statistics Section */}
-        <section className="py-6 bg-white">
+        <section className="py-6 ">
           <div className="max-w-7xl mx-auto px-6">
             <div className="text-center mb-8">
               <h2 className="text-4xl font-bold text-gray-900 mb-4">Our Impact</h2>
               <p className="text-xl text-gray-600">AgriLink is transforming agriculture across Sri Lanka</p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 ">
               <StatCard icon="👨‍🌾" number="10,000+" label="Active Farmers" />
               <StatCard icon="🏪" number="2,500+" label="Registered Sellers" />
               <StatCard icon="📊" number="100,000+" label="Daily Price Updates" />
