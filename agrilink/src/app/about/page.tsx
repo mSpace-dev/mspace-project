@@ -374,36 +374,7 @@ export default function Products() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="bg-gradient-to-r from-green-600 to-blue-600 py-16">
-        <div className="max-w-4xl mx-auto text-center px-6">
-          <h2 className="text-3xl font-bold text-white mb-6">
-            Ready to Transform Your Farming Experience?
-          </h2>
-          <p className="text-green-100 text-lg mb-8">
-            Join thousands of Sri Lankan farmers who are already using AgriLink to make better market decisions.
-          </p>
-          <div className="flex justify-center gap-4 flex-wrap">
-            <a
-              href="/home"
-              className="bg-white text-green-600 hover:bg-gray-100 font-semibold px-8 py-4 rounded-xl text-lg transition-all duration-200"
-            >
-              Get Started Free
-            </a>
-            <a
-              href="/about"
-              className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-green-600 font-semibold px-8 py-4 rounded-xl text-lg transition-all duration-200"
-            >
-              Learn More
-            </a>
-          </div>
-          <div className="mt-8 text-center">
-            <p className="text-green-100 text-sm">
-              🌾 Supporting Sri Lankan agriculture since 2024 • 100% Free • Available in 3 languages
-            </p>
-          </div>
-        </div>
-      </section>
+      
     </div>
   );
 }
