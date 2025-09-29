@@ -28,6 +28,14 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: 'Order not found' }, { status: 404 });
     }
 
+    // Block updates if order is already cancelled by consumer or already completed (delivered)
+    if (order.status === 'cancelled') {
+      return NextResponse.json({ error: 'Order has been cancelled by the consumer and cannot be modified' }, { status: 403 });
+    }
+    if (order.status === 'delivered') {
+      return NextResponse.json({ error: 'Order already completed and cannot be modified' }, { status: 403 });
+    }
+
     // Verify that this seller owns the order
     if (!order.supplier || order.supplier.id.toString() !== sellerId) {
       return NextResponse.json({ 
@@ -37,6 +45,10 @@ export async function PUT(req: NextRequest) {
 
     // Update order status
     order.status = status;
+    // If order marked delivered by seller, ensure paymentStatus is updated to 'paid'
+    if (status === 'delivered' && order.paymentStatus && order.paymentStatus === 'unpaid') {
+      order.paymentStatus = 'paid';
+    }
     
     // Add tracking entry
     if (!order.tracking) order.tracking = [];
@@ -46,7 +58,7 @@ export async function PUT(req: NextRequest) {
       at: new Date()
     });
 
-    await order.save();
+  await order.save();
 
     // Send notification to customer for important status changes
     if (status === 'shipped' || status === 'delivered') {
