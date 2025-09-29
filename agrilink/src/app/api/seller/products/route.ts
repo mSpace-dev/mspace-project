@@ -127,9 +127,32 @@ export async function PUT(req: NextRequest) {
       );
     }
 
+    // Fetch existing product to safely merge nested objects (like location)
+    const existingProduct = await Product.findById(productId);
+    if (!existingProduct) {
+      return NextResponse.json(
+        { error: 'Product not found' },
+        { status: 404 }
+      );
+    }
+
+    const updatePayload: any = { ...productData, updatedAt: new Date() };
+
+    // If location is provided partially, merge with existing to avoid dropping required subfields
+    if (Object.prototype.hasOwnProperty.call(productData, 'location')) {
+      const incomingLoc = productData.location;
+      if (incomingLoc && typeof incomingLoc === 'object' && Object.keys(incomingLoc).length > 0) {
+        const existingLocation = existingProduct.location ? (existingProduct.location.toObject ? existingProduct.location.toObject() : existingProduct.location) : {};
+        updatePayload.location = { ...existingLocation, ...incomingLoc };
+      } else {
+        // If incoming location is empty (e.g. {}), do not set location on updatePayload — preserve existing
+        delete updatePayload.location;
+      }
+    }
+
     const product = await Product.findByIdAndUpdate(
       productId,
-      { ...productData, updatedAt: new Date() },
+      updatePayload,
       { new: true, runValidators: true }
     );
 
