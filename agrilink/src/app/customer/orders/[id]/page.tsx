@@ -78,8 +78,8 @@ export default function OrderDetailPage() {
                           });
                           const json = await res.json();
                           if (!res.ok) throw new Error(json?.error || 'Failed to cancel order');
-                          // Redirect back to orders list
-                          router.push('/customer/orders');
+                          // Redirect back to orders list and indicate cancelled order
+                          router.push(`/customer/orders?canceled=true&orderId=${order._id}`);
                         } catch (e:any) {
                           await alert(e.message || 'Cancel failed');
                         }
@@ -95,8 +95,8 @@ export default function OrderDetailPage() {
             <section className="rounded border border-gray-200 bg-white p-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-3">Items</h2>
               <div className="space-y-3">
-                {order.items.map((i:any)=>(
-                  <div key={i._id} className="flex items-center justify-between text-sm">
+                {order.items.map((i:any, idx:number)=>(
+                  <div key={i._id ?? i.productId ?? `item-${idx}`} className="flex items-center justify-between text-sm">
                     <div className="flex items-center gap-3">
                       <div className="w-16 h-12 bg-gray-100 rounded overflow-hidden flex items-center justify-center overflow-hidden">
                         {i.image ? (
@@ -123,7 +123,7 @@ export default function OrderDetailPage() {
               <h2 className="text-lg font-semibold text-gray-900 mb-3">Tracking</h2>
               <ol className="space-y-2">
                 {(order.tracking||[]).map((t:any, idx:number)=> (
-                  <li key={idx} className="text-sm text-gray-700">{new Date(t.at).toLocaleString()} — {t.status}{t.note?`: ${t.note}`:''}</li>
+                  <li key={t.at ? new Date(t.at).getTime() : `track-${idx}`} className="text-sm text-gray-700">{new Date(t.at).toLocaleString()} — {t.status}{t.note?`: ${t.note}`:''}</li>
                 ))}
               </ol>
             </section>

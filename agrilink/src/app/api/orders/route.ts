@@ -264,13 +264,13 @@ export async function POST(req: NextRequest) {
         orderData.shippingAddress = shippingAddress;
       }
 
-      // Add seller information if provided
+      // Add seller information if provided (do NOT mark as claimed here).
+      // A supplier "claim" should be performed via the dedicated claim API which sets `claimedAt`.
       if (sellerId && sellerName) {
         orderData.supplier = {
           id: sellerId,
           name: sellerName,
-          businessName: sellerName,
-          claimedAt: new Date()
+          businessName: sellerName
         };
       }
 
@@ -476,9 +476,9 @@ export async function PUT(req: NextRequest) {
     if (!order) return NextResponse.json({ error: 'Order not found' }, { status: 404 });
 
     if (status) {
-      // Prevent cancellation if a supplier has already claimed the order
+      // Prevent cancellation if a supplier has explicitly claimed the order (claimedAt set)
       if (status === 'cancelled') {
-        if (order.supplier && Object.keys(order.supplier || {}).length > 0) {
+        if (order.supplier?.claimedAt) {
           return NextResponse.json({ error: 'Order cannot be cancelled because a supplier has already claimed it' }, { status: 400 });
         }
         // Only allow cancelling a pending order
@@ -518,8 +518,8 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: 'Only pending orders can be deleted' }, { status: 400 });
     }
 
-    // Prevent deletion if supplier claimed it
-    if (order.supplier && Object.keys(order.supplier || {}).length > 0) {
+    // Prevent deletion if supplier has explicitly claimed the order
+    if (order.supplier?.claimedAt) {
       return NextResponse.json({ error: 'Order cannot be deleted because a supplier has already claimed it' }, { status: 400 });
     }
 
