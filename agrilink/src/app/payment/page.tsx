@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { 
   CreditCard, 
@@ -38,7 +38,7 @@ interface ProductInfo {
   total: number;
 }
 
-export default function PaymentPage() {
+function PaymentPageInner() {
   const { customer, isLoading: authLoading, isAuthenticated, redirectToLogin } = useCustomerAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -758,5 +758,13 @@ export default function PaymentPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function PaymentPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-gray-50 text-green-600">Loading...</div>}>
+      <PaymentPageInner />
+    </Suspense>
   );
 }
