@@ -3,10 +3,8 @@ const OFFLINE_URL = '/offline.html';
 
 const PRECACHE_ASSETS = [
   '/',
-  '/index.html',
-  '/favicon.ico',
-  '/icon-192.png',
-  '/icon-512.png',
+  '/icon-192.svg',
+  '/icon-512.svg',
   '/manifest.webmanifest',
   OFFLINE_URL,
 ];

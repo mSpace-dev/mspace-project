@@ -30,9 +30,9 @@ export default function RootLayout({
       <head>
         <link rel="manifest" href="/manifest.webmanifest" />
         <meta name="theme-color" content="#16a34a" />
-        {/* Mobile home screen icons (placeholders) */}
-        <link rel="icon" href="/icon-192.png" sizes="192x192" />
-        <link rel="apple-touch-icon" href="/icon-512.png" />
+  {/* Mobile home screen icons (placeholders) */}
+  <link rel="icon" href="/icon-192.svg" sizes="192x192" />
+  <link rel="apple-touch-icon" href="/icon-512.svg" />
       </head>
       <body
         className="antialiased"
