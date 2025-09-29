@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -11,7 +12,7 @@ const errorMessages = {
   Default: 'An unexpected error occurred.',
 };
 
-export default function AuthError() {
+function AuthErrorContent() {
   const searchParams = useSearchParams();
   const [error, setError] = useState<string>('');
 
@@ -53,5 +54,13 @@ export default function AuthError() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AuthError() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AuthErrorContent />
+    </Suspense>
   );
 }
