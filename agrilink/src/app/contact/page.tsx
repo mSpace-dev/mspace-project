@@ -301,7 +301,7 @@ export default function Contact() {
                       name="contactType"
                       value={formData.contactType}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors text-black"
                       required
                     >
                       <option value="general">General Inquiry</option>
@@ -323,7 +323,7 @@ export default function Contact() {
                         name="name"
                         value={formData.name}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors text-black"
                         required
                       />
                     </div>
@@ -338,7 +338,7 @@ export default function Contact() {
                         name="email"
                         value={formData.email}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors text-black"
                         required
                       />
                     </div>
@@ -355,7 +355,7 @@ export default function Contact() {
                         name="phone"
                         value={formData.phone}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors text-black"
                       />
                     </div>
 
@@ -369,7 +369,7 @@ export default function Contact() {
                         name="subject"
                         value={formData.subject}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors text-black"
                         required
                       />
                     </div>
@@ -385,7 +385,7 @@ export default function Contact() {
                       value={formData.message}
                       onChange={handleInputChange}
                       rows={6}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors resize-none"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors resize-none text-black"
                       placeholder="Tell us how we can help you..."
                       required
                     ></textarea>
@@ -460,22 +460,22 @@ export default function Contact() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-              <div className="bg-gray-50 rounded-xl p-6">
+              <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer">
                 <h3 className="text-lg font-semibold text-gray-900 mb-3">How accurate are the price predictions?</h3>
                 <p className="text-gray-600">Our AI models achieve 85-90% accuracy for short-term price predictions and 75-80% for medium-term forecasts, using multiple data sources and machine learning algorithms.</p>
               </div>
 
-              <div className="bg-gray-50 rounded-xl p-6">
+              <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer">
                 <h3 className="text-lg font-semibold text-gray-900 mb-3">Which crops are supported?</h3>
                 <p className="text-gray-600">We currently support 50+ major crops including rice, vegetables, fruits, and spices commonly grown in Sri Lanka, with regular additions based on demand.</p>
               </div>
 
-              <div className="bg-gray-50 rounded-xl p-6">
+              <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer">
                 <h3 className="text-lg font-semibold text-gray-900 mb-3">How often is data updated?</h3>
                 <p className="text-gray-600">Market prices are updated daily, weather data is refreshed every 6 hours, and demand forecasts are recalculated weekly to ensure accuracy.</p>
               </div>
 
-              <div className="bg-gray-50 rounded-xl p-6">
+              <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer">
                 <h3 className="text-lg font-semibold text-gray-900 mb-3">Is there a mobile app?</h3>
                 <p className="text-gray-600">Our web platform is fully mobile-responsive. Native mobile apps for iOS and Android are currently in development and will be available soon.</p>
               </div>
