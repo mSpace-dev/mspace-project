@@ -16,6 +16,9 @@ export async function POST(req: NextRequest) {
     order.paymentMethod = method;
     order.paymentStatus = 'paid';
     order.status = 'paid';
+    if (!order.tracking) {
+      order.tracking = [];
+    }
     order.tracking.push({ status: 'paid', note: 'Payment confirmed', at: new Date() });
     await order.save();
 
