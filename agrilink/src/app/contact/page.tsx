@@ -517,7 +517,7 @@ export default function Contact() {
               <div>
                 <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
                 <ul className="space-y-2">
-                  <li><a href="/" className="text-gray-300 hover:text-green-400 transition-colors">About Us</a></li>
+                  <li><Link href="/" className="text-gray-300 hover:text-green-400 transition-colors">About Us</Link></li>
                   <li><a href="/products" className="text-gray-300 hover:text-green-400 transition-colors">Products</a></li>
                   <li><a href="/partners" className="text-gray-300 hover:text-green-400 transition-colors">Partners</a></li>
                   <li><a href="/contact" className="text-gray-300 hover:text-green-400 transition-colors">Contact</a></li>
