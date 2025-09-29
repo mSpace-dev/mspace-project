@@ -475,7 +475,19 @@ export async function PUT(req: NextRequest) {
     const order = await Order.findById(orderId);
     if (!order) return NextResponse.json({ error: 'Order not found' }, { status: 404 });
 
-    if (status) order.status = status;
+    if (status) {
+      // Prevent cancellation if a supplier has already claimed the order
+      if (status === 'cancelled') {
+        if (order.supplier && Object.keys(order.supplier || {}).length > 0) {
+          return NextResponse.json({ error: 'Order cannot be cancelled because a supplier has already claimed it' }, { status: 400 });
+        }
+        // Only allow cancelling a pending order
+        if (order.status !== 'pending') {
+          return NextResponse.json({ error: 'Only pending orders can be cancelled' }, { status: 400 });
+        }
+      }
+      order.status = status;
+    }
     if (paymentStatus) order.paymentStatus = paymentStatus;
     if (trackingNote) {
       if (!order.tracking) order.tracking = [];
@@ -486,6 +498,50 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ message: 'Order updated', order }, { status: 200 });
   } catch (error) {
     console.error('Orders PUT error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
+
+// DELETE /api/orders?orderId=... - delete a pending order and rollback inventory
+export async function DELETE(req: NextRequest) {
+  try {
+    await dbConnect();
+    const url = new URL(req.url);
+    const orderId = url.searchParams.get('orderId');
+    if (!orderId) return NextResponse.json({ error: 'Order ID is required' }, { status: 400 });
+
+    const order = await Order.findById(orderId);
+    if (!order) return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+
+    // Only pending orders can be deleted
+    if (order.status !== 'pending') {
+      return NextResponse.json({ error: 'Only pending orders can be deleted' }, { status: 400 });
+    }
+
+    // Prevent deletion if supplier claimed it
+    if (order.supplier && Object.keys(order.supplier || {}).length > 0) {
+      return NextResponse.json({ error: 'Order cannot be deleted because a supplier has already claimed it' }, { status: 400 });
+    }
+
+    // Rollback inventory for each item that has a productId
+    for (const item of order.items || []) {
+      try {
+        if (item.productId) {
+          // item.productId may be ObjectId or string - ensure string
+          const pid = String(item.productId);
+          await rollbackProductInventory(pid, item.quantity || 0);
+        }
+      } catch (err) {
+        console.error('Failed to rollback inventory for item', item, err);
+        // continue trying other items
+      }
+    }
+
+    await Order.deleteOne({ _id: order._id });
+
+    return NextResponse.json({ message: 'Order deleted' }, { status: 200 });
+  } catch (error) {
+    console.error('Orders DELETE error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

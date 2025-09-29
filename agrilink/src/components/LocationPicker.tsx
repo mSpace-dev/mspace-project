@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, useRef } from 'react';
+import { useModal } from './ModalProvider';
 import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 
 interface LocationPickerProps {
@@ -28,6 +29,7 @@ export default function LocationPicker({ onLocationSelect, initialLocation, clas
   const [address, setAddress] = useState('');
   const [isLoadingAddress, setIsLoadingAddress] = useState(false);
   const mapRef = useRef<google.maps.Map | null>(null);
+  const { alert } = useModal();
 
   const { isLoaded, loadError } = useJsApiLoader({
     id: 'google-map-script',
@@ -117,9 +119,9 @@ export default function LocationPicker({ onLocationSelect, initialLocation, clas
             mapRef.current.setZoom(15);
           }
         },
-        (error) => {
+        async (error) => {
           console.error('Error getting current location:', error);
-          alert('Unable to get your current location. Please select a location on the map.');
+          await alert('Unable to get your current location. Please select a location on the map.');
         }
       );
     } else {

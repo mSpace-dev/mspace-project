@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
 import Separator from '@/components/ui/Separator';
 import PublicRoute from '@/components/auth/PublicRoute';
+import { useModal } from '../../components/ModalProvider';
 
 
 type UserRole = "customer" | "seller" | "";
@@ -13,6 +14,7 @@ export default function SignupPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedRole, setSelectedRole] = useState<UserRole>("");
   const router = useRouter();
+  const { alert } = useModal();
 
   const handleGoogleSignUp = async () => {
     if (!selectedRole) {

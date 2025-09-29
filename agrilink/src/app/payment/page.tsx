@@ -87,22 +87,6 @@ export default function PaymentPage() {
       processingFee: 2.9
     },
     {
-      id: 'payhere',
-      name: 'PayHere',
-      type: 'digital',
-      icon: <DollarSign className="h-6 w-6" />,
-      description: 'Sri Lankan online payment gateway',
-      processingFee: 3.5
-    },
-    {
-      id: 'bank-transfer',
-      name: 'Bank Transfer',
-      type: 'bank',
-      icon: <Shield className="h-6 w-6" />,
-      description: 'Direct bank transfer (Manual verification required)',
-      processingFee: 0
-    },
-    {
       id: 'cod',
       name: 'Cash on Delivery',
       type: 'cod',

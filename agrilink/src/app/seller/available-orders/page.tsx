@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Navigation from "../../components/Navigation";
+import { useRouter } from 'next/navigation';
 
 export default function AvailableOrdersPage() {
   const [orders, setOrders] = useState<any[]>([]);
@@ -25,6 +26,15 @@ export default function AvailableOrdersPage() {
     };
     checkAuth();
   }, []);
+
+  // Redirect sellers to their My Orders page — Available Orders removed.
+  const router = useRouter();
+  useEffect(() => {
+    const sellerData = localStorage.getItem('seller');
+    if (sellerData) {
+      router.push('/seller/my-orders');
+    }
+  }, [router]);
 
   const fetchAvailableOrders = async () => {
     try {

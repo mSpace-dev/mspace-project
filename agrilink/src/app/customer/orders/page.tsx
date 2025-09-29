@@ -54,9 +54,9 @@ export default function OrdersPage() {
         <h1 className="text-3xl font-bold text-gray-900 mb-6">Your Orders</h1>
         {loading && <div className="py-10 text-gray-600">Loading…</div>}
         {error && <div className="mb-6 rounded border border-red-200 bg-red-50 p-4 text-red-700">{error}</div>}
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {orders.map((o:any)=>(
-            <a key={o._id} href={`/customer/orders/${o._id}`} className="block rounded-lg border border-gray-200 bg-white p-6 hover:border-green-300 hover:shadow-md transition-all">
+            <a key={o._id} href={`/customer/orders/${o._id}`} className="rounded-lg border border-gray-200 bg-white p-6 hover:border-green-300 hover:shadow-md transition-all flex flex-col h-full">
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <div className="text-sm text-gray-500">Order ID</div>
