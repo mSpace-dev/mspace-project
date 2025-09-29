@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from "react";
 import Navigation from "../../components/Navigation";
+import { useModal } from '../../../components/ModalProvider';
 
 export default function MyOrdersPage() {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { confirm, alert } = useModal();
 
   useEffect(() => {
     const checkAuth = () => {
@@ -134,10 +136,39 @@ export default function MyOrdersPage() {
                 </div>
                 <div className="text-right">
                   <div className="text-lg font-semibold text-gray-900">Rs. {order.totalAmount.toFixed(2)}</div>
+                  {order.deliveryFee != null && (
+                    <div className="text-sm text-gray-600 mt-1">Delivery fee: <span className="font-medium">Rs. {(order.deliveryFee?.toFixed?.(2) || order.deliveryFee)}</span></div>
+                  )}
                   <div className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
                     <span className="mr-1">{getStatusIcon(order.status)}</span>
                     {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                   </div>
+                  {order.status === 'pending' && (
+                    <div className="mt-2">
+                      <button
+                        onClick={async () => {
+                            const ok = await confirm({ message: 'Are you sure you want to cancel this order?' });
+                            if (!ok) return;
+                            try {
+                              const res = await fetch('/api/orders', {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ orderId: order._id, status: 'cancelled', trackingNote: 'Cancelled by customer' })
+                              });
+                              const json = await res.json();
+                              if (!res.ok) throw new Error(json?.error || 'Cancel failed');
+                              // remove from list
+                              setOrders(prev => prev.filter(o => o._id !== order._id));
+                            } catch (e:any) {
+                              await alert(e.message || 'Cancel failed');
+                            }
+                          }}
+                        className="mt-2 inline-flex items-center px-3 py-1 border border-red-300 rounded-md bg-white text-sm font-medium text-red-700 hover:bg-red-50"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
 

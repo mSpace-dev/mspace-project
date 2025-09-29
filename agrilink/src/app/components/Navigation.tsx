@@ -107,9 +107,6 @@ export default function Navigation() {
                 <a href="/seller/dashboard" className="text-gray-700 hover:text-green-600 transition-colors">
                   Dashboard
                 </a>
-                <a href="/seller/available-orders" className="text-gray-700 hover:text-green-600 transition-colors">
-                  Available Orders
-                </a>
                 <a href="/seller/my-orders" className="text-gray-700 hover:text-green-600 transition-colors">
                   My Orders
                 </a>
@@ -200,9 +197,6 @@ export default function Navigation() {
                 <>
                   <a href="/seller/dashboard" className="text-gray-700 hover:text-green-600 transition-colors">
                     Dashboard
-                  </a>
-                  <a href="/seller/available-orders" className="text-gray-700 hover:text-green-600 transition-colors">
-                    Available Orders
                   </a>
                   <a href="/seller/my-orders" className="text-gray-700 hover:text-green-600 transition-colors">
                     My Orders

@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import CustomerNavBar from "../../components/CustomerNavBar";
 import { useCustomerAuth } from "../../hooks/useCustomerAuth";
+import { useModal } from '../../components/ModalProvider';
 
 interface SellerInfo {
   _id: string;
@@ -119,6 +120,7 @@ export default function ProductsPage() {
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const modal = useModal();
 
   useEffect(() => {
     fetchProducts();
@@ -203,7 +205,7 @@ export default function ProductsPage() {
 
   const addToCart = async (product: Product) => {
     if (!customer) {
-      alert('Please log in to add items to your cart.');
+      await modal.alert('Please log in to add items to your cart.');
       return;
     }
 
@@ -220,20 +222,20 @@ export default function ProductsPage() {
         })
       });
 
-      if (response.ok) {
-        alert('Product added to cart successfully!');
+        if (response.ok) {
+        await modal.alert('Product added to cart successfully!');
       } else {
-        alert('Failed to add product to cart.');
+        await modal.alert('Failed to add product to cart.');
       }
     } catch (error) {
       console.error('Add to cart error:', error);
-      alert('Failed to add product to cart.');
+      await modal.alert('Failed to add product to cart.');
     }
   };
 
   const toggleWishlist = (productId: string) => {
     if (!customer) {
-      alert('Please log in to add items to your wishlist.');
+      modal.alert('Please log in to add items to your wishlist.');
       return;
     }
 
@@ -258,7 +260,7 @@ export default function ProductsPage() {
     console.log('addToCartFromSeller called with:', { sellerId, productId, productName, sellerName, price, unit });
     
     if (!customer) {
-      alert('Please log in to purchase items.');
+      modal.alert('Please log in to purchase items.');
       return;
     }
 

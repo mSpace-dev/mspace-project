@@ -40,6 +40,8 @@ export default function ProductEditModal({ product, isOpen, onClose, onSave, onD
   const [formData, setFormData] = useState<Partial<Product>>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [newImageFile, setNewImageFile] = useState<File | null>(null);
+  const [newImagePreview, setNewImagePreview] = useState<string>('');
 
   const categories = [
     { value: 'vegetables', label: 'Vegetables' },
@@ -126,6 +128,29 @@ export default function ProductEditModal({ product, isOpen, onClose, onSave, onD
     setError('');
 
     try {
+      // If there's a new image file, upload it first
+      let images = formData.images || product.images || [];
+
+      if (newImageFile) {
+        const fd = new FormData();
+        fd.append('file', newImageFile);
+
+        const uploadResp = await fetch('/api/seller/upload-image', {
+          method: 'POST',
+          body: fd,
+        });
+
+        const uploadData = await uploadResp.json();
+        if (uploadResp.ok && uploadData.url) {
+          // Replace images with new uploaded image (simple behavior)
+          images = [uploadData.url];
+        } else {
+          setError(uploadData.error || 'Image upload failed');
+          setLoading(false);
+          return;
+        }
+      }
+
       const response = await fetch(`/api/seller/products`, {
         method: 'PUT',
         headers: {
@@ -134,6 +159,7 @@ export default function ProductEditModal({ product, isOpen, onClose, onSave, onD
         body: JSON.stringify({
           productId: product._id,
           ...formData,
+          images,
           pricePerKg: Number(formData.pricePerKg),
           availableQuantity: Number(formData.availableQuantity),
         }),
@@ -148,6 +174,7 @@ export default function ProductEditModal({ product, isOpen, onClose, onSave, onD
         setError(data.error || 'Failed to update product');
       }
     } catch (err) {
+      console.error(err);
       setError('Error updating product');
     } finally {
       setLoading(false);
@@ -457,6 +484,61 @@ export default function ProductEditModal({ product, isOpen, onClose, onSave, onD
               <Trash2 className="h-4 w-4 mr-2" />
               Delete Product
             </button>
+
+            <div className="space-y-3 mr-6">
+              <label className="block text-sm font-medium text-gray-700">Product Images</label>
+              <div className="flex items-center space-x-3">
+                {(formData.images && formData.images.length > 0 ? formData.images : product.images).map((img, idx) => (
+                  <div key={idx} className="relative">
+                    <img src={img} alt={`img-${idx}`} className="h-16 w-16 object-cover rounded" />
+                  </div>
+                ))}
+              </div>
+              <div className="flex items-center space-x-2 mt-2">
+                <input
+                  id="new-image-input"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={e => {
+                    const file = e.target.files?.[0] || null;
+                    setNewImageFile(file);
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onloadend = () => setNewImagePreview(reader.result as string);
+                      reader.readAsDataURL(file);
+                    } else {
+                      setNewImagePreview('');
+                    }
+                  }}
+                />
+
+                <label htmlFor="new-image-input" className="inline-flex items-center px-4 py-2 bg-gray-200 text-gray-800 rounded-lg cursor-pointer hover:bg-gray-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7M16 3v4M8 3v4m8 4l-4 4-2-2-4 4" />
+                  </svg>
+                  <span className="text-sm font-medium">Choose Image</span>
+                </label>
+
+                <div className="text-sm text-gray-600 max-w-xs break-words leading-5">
+                  {newImageFile ? (
+                    <div>
+                      <div className="font-medium">{newImageFile.name}</div>
+                      <div className="text-xs text-gray-500">{(newImageFile.size / 1024).toFixed(1)} KB</div>
+                    </div>
+                  ) : (
+                    <div>
+                      <div className="font-medium text-gray-400">No file chosen</div>
+                      <div className="text-xs text-gray-400">Accepted: JPG, PNG, GIF</div>
+                    </div>
+                  )}
+                </div>
+
+                {newImagePreview && (
+                  <img src={newImagePreview} alt="new-preview" className="h-12 w-12 object-cover rounded" />
+                )}
+              </div>
+            </div>
 
             <div className="flex space-x-3">
               <button
