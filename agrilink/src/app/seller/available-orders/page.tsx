@@ -60,10 +60,10 @@ export default function AvailableOrdersPage() {
       <div style="background: white; padding: 30px; border-radius: 12px; max-width: 400px; width: 90%;">
         <h3 style="margin: 0 0 20px 0; color: #333; font-size: 18px;">Set Estimated Delivery Date</h3>
         <p style="margin: 0 0 15px 0; color: #666; font-size: 14px;">When do you expect to deliver this order?</p>
-        <input type="date" id="deliveryDate" min="${minDate}" 
-               style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; margin-bottom: 20px;" />
-        <div style="display: flex; gap: 10px; justify-content: flex-end;">
-          <button id="cancelBtn" style="padding: 10px 20px; border: 1px solid #ddd; background: white; border-radius: 6px; cursor: pointer;">Cancel</button>
+   <input type="date" id="deliveryDate" min="${minDate}" 
+     style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; margin-bottom: 20px; color: #000;" />
+   <div style="display: flex; gap: 10px; justify-content: flex-end;">
+     <button id="cancelBtn" style="padding: 10px 20px; border: 1px solid #ddd; background: white; border-radius: 6px; cursor: pointer; color: #000;">Cancel</button>
           <button id="confirmBtn" style="padding: 10px 20px; border: none; background: #16a34a; color: white; border-radius: 6px; cursor: pointer;">Claim Order</button>
         </div>
       </div>
@@ -194,7 +194,7 @@ export default function AvailableOrdersPage() {
                   </p>
                 </div>
                 <div className="text-right">
-                  <div className="text-lg font-semibold text-gray-900">Rs. {order.totalAmount.toFixed(2)}</div>
+                  <div className="text-lg font-semibold text-red-600">Rs. {order.totalAmount.toFixed(2)}</div>
                   <div className="text-sm text-gray-600">{order.paymentMethod.toUpperCase()}</div>
                 </div>
               </div>
@@ -206,7 +206,7 @@ export default function AvailableOrdersPage() {
                     {order.items.map((item: any, index: number) => (
                       <div key={index} className="flex justify-between text-sm">
                         <span className="text-gray-600">{item.name} x {item.quantity}</span>
-                        <span className="font-medium">Rs. {(item.price * item.quantity).toFixed(2)}</span>
+                        <span className="font-medium text-red-600">Rs. {(item.price * item.quantity).toFixed(2)}</span>
                       </div>
                     ))}
                   </div>
