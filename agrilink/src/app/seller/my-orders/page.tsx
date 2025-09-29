@@ -9,6 +9,9 @@ export default function MyOrdersPage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [seller, setSeller] = useState<any>(null);
+  const [editingOrderId, setEditingOrderId] = useState<string | null>(null);
+  const [statusDraft, setStatusDraft] = useState<string>('');
+  const [statusNote, setStatusNote] = useState<string>('');
 
   useEffect(() => {
     const checkAuth = () => {
@@ -224,7 +227,7 @@ export default function MyOrdersPage() {
               )}
 
               <div className="mt-6 flex justify-end space-x-3">
-                {order.status === 'processing' && (
+                        {order.status === 'processing' && (
                   <>
                     <button
                       onClick={() => updateOrderStatus(order._id, 'shipped')}
@@ -251,6 +254,63 @@ export default function MyOrdersPage() {
                 {order.status === 'delivered' && (
                   <span className="text-green-600 font-medium">✓ Order Completed</span>
                 )}
+                        {/* Inline status editor toggle - hide when consumer cancelled or already delivered */}
+                        {order.status !== 'cancelled' && order.status !== 'delivered' && (
+                          <>
+                            {!editingOrderId && (
+                              <button
+                                onClick={() => {
+                                  setEditingOrderId(order._id);
+                                  setStatusDraft(order.status || 'processing');
+                                  setStatusNote('');
+                                }}
+                                className="border border-gray-200 px-3 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-50"
+                              >
+                                Change Status
+                              </button>
+                            )}
+                            {editingOrderId === order._id && (
+                              <div className="flex items-center space-x-2">
+                                <select
+                                  value={statusDraft}
+                                  onChange={(e) => setStatusDraft(e.target.value)}
+                                  className="border px-2 py-1 rounded-md text-sm text-black"
+                                >
+                                  <option value="processing">Processing</option>
+                                  <option value="pending">Pending</option>
+                                  <option value="shipped">Shipped</option>
+                                  <option value="delivered">Delivered</option>
+                                </select>
+                                <input
+                                  type="text"
+                                  placeholder="optional note"
+                                  value={statusNote}
+                                  onChange={(e) => setStatusNote(e.target.value)}
+                                  className="border px-2 py-1 rounded-md text-sm w-56 text-black"
+                                />
+                                <button
+                                  onClick={() => {
+                                    updateOrderStatus(order._id, statusDraft, statusNote);
+                                    setEditingOrderId(null);
+                                  }}
+                                  className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-sm"
+                                >
+                                  Save
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    setEditingOrderId(null);
+                                    setStatusDraft('');
+                                    setStatusNote('');
+                                  }}
+                                  className="border px-3 py-1 rounded-md text-sm text-gray-700 hover:bg-gray-50"
+                                >
+                                  Cancel
+                                </button>
+                              </div>
+                            )}
+                          </>
+                        )}
               </div>
             </div>
           ))}

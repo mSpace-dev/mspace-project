@@ -403,37 +403,53 @@ export default function Products() {
             <p className="text-lg text-gray-600">Comprehensive features designed to empower Sri Lankan farmers</p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">💳</span>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="bg-white p-6 rounded-2xl shadow-md hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300">
+              <div className="flex items-start space-x-4">
+                <div className="w-14 h-14 rounded-lg flex items-center justify-center bg-gradient-to-br from-green-50 to-green-100 text-2xl">
+                  <span className="">💳</span>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800">Simple Interface</h3>
+                  <p className="text-sm text-gray-600 mt-1">A single-step access system to get all market information you need instantly.</p>
+                </div>
               </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-3">Simple Interface</h3>
-              <p className="text-gray-600">A single-step access system to get all market information you need instantly.</p>
             </div>
 
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">📍</span>
+            <div className="bg-white p-6 rounded-2xl shadow-md hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300">
+              <div className="flex items-start space-x-4">
+                <div className="w-14 h-14 rounded-lg flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 text-2xl">
+                  <span className="">📍</span>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800">Live Market Data</h3>
+                  <p className="text-sm text-gray-600 mt-1">Track real-time price changes and market conditions across Sri Lanka.</p>
+                </div>
               </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-3">Live Market Data</h3>
-              <p className="text-gray-600">Track real-time price changes and market conditions across Sri Lanka.</p>
             </div>
 
-            <div className="text-center">
-              <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">�</span>
+            <div className="bg-white p-6 rounded-2xl shadow-md hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300">
+              <div className="flex items-start space-x-4">
+                <div className="w-14 h-14 rounded-lg flex items-center justify-center bg-gradient-to-br from-yellow-50 to-yellow-100 text-2xl">
+                  <span className="">🔔</span>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800">Digital Alerts</h3>
+                  <p className="text-sm text-gray-600 mt-1">Receive timely notifications about price changes and market opportunities.</p>
+                </div>
               </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-3">Digital Alerts</h3>
-              <p className="text-gray-600">Receive timely notifications about price changes and market opportunities.</p>
             </div>
 
-            <div className="text-center">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🌤️</span>
+            <div className="bg-white p-6 rounded-2xl shadow-md hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300">
+              <div className="flex items-start space-x-4">
+                <div className="w-14 h-14 rounded-lg flex items-center justify-center bg-gradient-to-br from-purple-50 to-purple-100 text-2xl">
+                  <span className="">🌤️</span>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800">Weather Insights</h3>
+                  <p className="text-sm text-gray-600 mt-1">Get notified about changing weather conditions and preventive measures to protect your farm.</p>
+                </div>
               </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-3">Weather Insights</h3>
-              <p className="text-gray-600">Get notified about changing weather conditions and preventive measures to protect your farm.</p>
             </div>
           </div>
         </div>
