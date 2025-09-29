@@ -228,22 +228,63 @@ export default function Products() {
               experience, focusing on each farmer's unique needs with integrated digital support and market insights.
             </p>
             <div className="flex justify-center">
-              <div className="bg-white rounded-lg shadow-lg p-6 text-center max-w-md">
+              <div className="bg-white rounded-lg shadow-lg p-6 text-center max-w-md ">
                 <div className="text-6xl mb-4">📱</div>
                 <h3 className="text-2xl font-bold text-gray-800 mb-2">AgriLink Mobile App</h3>
                 <p className="text-gray-600 mb-4">Available on Android & iOS</p>
                 <div className="flex justify-center space-x-4">
-                  <button
-                    onClick={handleDownload}
-                    className="bg-gray-800 text-white px-4 py-2 rounded-lg text-sm cursor-pointer hover:bg-gray-700 transition-colors"
-                    aria-label="Download AgriLink App"
+                  {/* Disabled on About page: show instructions below instead */}
+                  <div
+                    className="bg-gray-800 text-white px-4 py-2 rounded-lg text-sm cursor-default opacity-95"
+                    aria-hidden="true"
                   >
                     📱 Download App
-                  </button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* How to install PWA (guidelines) */}
+      <section className="py-8 px-8 bg-white">
+        <div className="max-w-3xl mx-auto text-center">
+          <h3 className="text-2xl font-semibold text-gray-900 mb-4">How to install AgriLink on your device</h3>
+          <p className="text-gray-600 mb-6">The app on this page is a Progressive Web App (PWA). Follow the steps below to add it to your home screen.</p>
+          <div className="grid md:grid-cols-2 gap-25 text-left">
+            <div className="bg-white rounded-2xl p-8 shadow-lg border border-green-500 min-h-30 min-w-102 transform transition duration-300 hover:scale-105 hover:shadow-xl shadow-lg">
+              <div className="flex items-start space-x-6">
+                <div className="w-18 h-14 flex items-center justify-center bg-green-100 rounded-xl text-2xl">📱</div>
+                <div>
+                  <h4 className="font-semibold mb-1 text-blue-900">Android (Chrome / Edge)</h4>
+                  <p className="text-sm text-gray-600 mb-3">Quick install via browser</p>
+                  <ol className="list-decimal list-inside text-gray-600 space-y-2">
+                    <li>Open this site in Chrome or Edge on your Android device.</li>
+                    <li>Tap the browser menu (three dots) and choose "Install app" or "Add to Home screen".</li>
+                    <li>Confirm the prompt. AgriLink will appear on your Home screen and app drawer.</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-2xl p-6 shadow-lg border border-green-500 min-h-30 min-w-102 transform transition duration-300 hover:scale-105 hover:shadow-xl">
+              <div className="flex items-start space-x-4">
+                <div className="w-14 h-14 flex items-center justify-center bg-blue-100 rounded-xl text-2xl">🍎</div>
+                <div>
+                  <h4 className="font-semibold mb-1 text-blue-900">iOS (Safari)</h4>
+                  <p className="text-sm text-gray-600 mb-3">Add to Home Screen using Safari</p>
+                  <ol className="list-decimal list-inside text-gray-600 space-y-2">
+                    <li>Open this site in Safari on your iPhone or iPad.</li>
+                    <li>Tap the Share button (square with an arrow), then select "Add to Home Screen".</li>
+                    <li>Tap "Add". The app icon will be added to your Home screen.</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <p className="text-sm text-gray-500 mt-6">Note: On some devices the browser may show an install banner automatically. The Install button in the footer still works when the browser supports it.</p>
         </div>
       </section>
 
@@ -263,7 +304,7 @@ export default function Products() {
                 and price insights sourced from reliable market data across Sri Lanka.
               </p>
             </div>
-            <div className="bg-gradient-to-br from-green-100 to-blue-100 rounded-2xl p-8">
+            <div className="bg-gradient-to-br from-green-100 to-blue-100 rounded-2xl p-8 transform transition duration-300 hover:scale-105 hover:shadow-xl">
               <div className="grid grid-cols-2 gap-6">
                 <div className="text-center">
                   <div className="text-4xl mb-2">📊</div>
@@ -443,47 +484,10 @@ export default function Products() {
                 </div>
               </div>
             </div>
-            <div className="bg-white rounded-2xl shadow-xl p-8">
-              <div className="text-center mb-6">
-                <div className="text-6xl mb-4">📱</div>
-                <h3 className="text-2xl font-bold text-gray-800">Download AgriLink App</h3>
-                <p className="text-gray-600 mt-2">Available on all platforms</p>
-              </div>
-              <div className="space-y-4">
-                <button
-                  onClick={() => openUrl(playStoreUrl)}
-                  className="w-full bg-gray-800 text-white p-4 rounded-lg text-center cursor-pointer hover:bg-gray-700 transition-colors"
-                  aria-label="Open Google Play Store"
-                >
-                  <div className="flex items-center justify-center">
-                    <span className="text-2xl mr-3">📱</span>
-                    <div>
-                      <div className="font-semibold">Google Play Store</div>
-                      <div className="text-sm text-gray-300">Download for Android</div>
-                    </div>
-                  </div>
-                </button>
-
-                <button
-                  onClick={() => openUrl(appStoreUrl)}
-                  className="w-full bg-gray-800 text-white p-4 rounded-lg text-center cursor-pointer hover:bg-gray-700 transition-colors"
-                  aria-label="Open App Store"
-                >
-                  <div className="flex items-center justify-center">
-                    <span className="text-2xl mr-3">🍎</span>
-                    <div>
-                      <div className="font-semibold">App Store</div>
-                      <div className="text-sm text-gray-300">Download for iOS</div>
-                    </div>
-                  </div>
-                </button>
-                <div className="text-center pt-4">
-                  <p className="text-sm text-gray-500">Or access via web browser at agrilink.lk</p>
-                </div>
-              </div>
+            
             </div>
           </div>
-        </div>
+        
       </section>
 
       
