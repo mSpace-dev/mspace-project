@@ -21,7 +21,7 @@ import { useCustomerAuth } from "../../hooks/useCustomerAuth";
 interface PaymentMethod {
   id: string;
   name: string;
-  type: 'card' | 'digital' | 'cod' | 'bank';
+  type:  'cod' ;
   icon: React.ReactNode;
   description: string;
   processingFee?: number;
@@ -78,14 +78,7 @@ function PaymentPageInner() {
   });
 
   const paymentMethods: PaymentMethod[] = [
-    {
-      id: 'stripe',
-      name: 'Credit/Debit Card (Stripe)',
-      type: 'card',
-      icon: <CreditCard className="h-6 w-6" />,
-      description: 'Secure payment with Visa, MasterCard, American Express',
-      processingFee: 2.9
-    },
+    
     {
       id: 'cod',
       name: 'Cash on Delivery',
@@ -174,11 +167,7 @@ function PaymentPageInner() {
     return required.every(field => deliveryInfo[field as keyof typeof deliveryInfo].trim() !== '');
   };
 
-  const validateCardDetails = () => {
-    if (selectedPaymentMethod !== 'stripe') return true;
-    const required = ['cardNumber', 'expiryDate', 'cvv', 'cardholderName'];
-    return required.every(field => cardDetails[field as keyof typeof cardDetails].trim() !== '');
-  };
+  
 
   const handleProceedToPayment = () => {
     if (!validateDeliveryInfo()) {
@@ -194,10 +183,7 @@ function PaymentPageInner() {
       return;
     }
 
-    if (!validateCardDetails()) {
-      alert('Please fill in all required card details.');
-      return;
-    }
+    
 
     setIsProcessing(true);
 
@@ -566,96 +552,9 @@ function PaymentPageInner() {
                   </div>
                 </div>
 
-                {/* Card Details for Stripe */}
-                {selectedPaymentMethod === 'stripe' && (
-                  <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                    <h2 className="text-xl font-semibold text-gray-900 mb-4">Card Details</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="md:col-span-2">
-                        <label htmlFor="cardNumber" className="block text-sm font-medium text-gray-700 mb-1">
-                          Card Number *
-                        </label>
-                        <input
-                          type="text"
-                          id="cardNumber"
-                          value={cardDetails.cardNumber}
-                          onChange={(e) => handleCardDetailsChange('cardNumber', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900"
-                          placeholder="1234 5678 9012 3456"
-                          maxLength={19}
-                          required
-                        />
-                      </div>
+                
 
-                      <div>
-                        <label htmlFor="expiryDate" className="block text-sm font-medium text-gray-700 mb-1">
-                          Expiry Date *
-                        </label>
-                        <input
-                          type="text"
-                          id="expiryDate"
-                          value={cardDetails.expiryDate}
-                          onChange={(e) => handleCardDetailsChange('expiryDate', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900"
-                          placeholder="MM/YY"
-                          maxLength={5}
-                          required
-                        />
-                      </div>
-
-                      <div>
-                        <label htmlFor="cvv" className="block text-sm font-medium text-gray-700 mb-1">
-                          CVV *
-                        </label>
-                        <input
-                          type="text"
-                          id="cvv"
-                          value={cardDetails.cvv}
-                          onChange={(e) => handleCardDetailsChange('cvv', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900"
-                          placeholder="123"
-                          maxLength={4}
-                          required
-                        />
-                      </div>
-
-                      <div className="md:col-span-2">
-                        <label htmlFor="cardholderName" className="block text-sm font-medium text-gray-700 mb-1">
-                          Cardholder Name *
-                        </label>
-                        <input
-                          type="text"
-                          id="cardholderName"
-                          value={cardDetails.cardholderName}
-                          onChange={(e) => handleCardDetailsChange('cardholderName', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900"
-                          placeholder="John Doe"
-                          required
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Bank Transfer Instructions */}
-                {selectedPaymentMethod === 'bank-transfer' && (
-                  <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                    <h2 className="text-xl font-semibold text-gray-900 mb-4">Bank Transfer Details</h2>
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                      <h3 className="font-medium text-blue-900 mb-2">Transfer Instructions:</h3>
-                      <div className="text-sm text-blue-800 space-y-1">
-                        <p><strong>Bank:</strong> Commercial Bank of Ceylon</p>
-                        <p><strong>Account Name:</strong> AgriLink (Pvt) Ltd</p>
-                        <p><strong>Account Number:</strong> 8001234567</p>
-                        <p><strong>Branch:</strong> Colombo 03</p>
-                        <p><strong>Amount:</strong> LKR {total.toFixed(2)}</p>
-                      </div>
-                      <p className="text-sm text-blue-700 mt-3">
-                        Please use your order number as the reference and upload the bank slip after placing the order.
-                      </p>
-                    </div>
-                  </div>
-                )}
+                
               </div>
             )}
 

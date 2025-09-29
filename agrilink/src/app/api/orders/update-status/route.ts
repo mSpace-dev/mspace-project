@@ -15,7 +15,8 @@ export async function PUT(req: NextRequest) {
     }
 
     // Validate status
-    const validStatuses = ['processing', 'shipped', 'delivered', 'cancelled'];
+  // Sellers should not be able to mark an order as 'cancelled' - cancellation is consumer-side
+  const validStatuses = ['pending','processing', 'shipped', 'delivered'];
     if (!validStatuses.includes(status)) {
       return NextResponse.json({ 
         error: 'Invalid status. Must be one of: processing, shipped, delivered, cancelled' 
