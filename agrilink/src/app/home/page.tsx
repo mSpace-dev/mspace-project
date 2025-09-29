@@ -6,6 +6,7 @@ import Head from "next/head";
 import { useState, useEffect } from "react";
 import { useCustomerAuth } from "../../hooks/useCustomerAuth";
 import "../custom.css";
+import StatCard from "@/components/StatCard";
 
 export default function Home() {
   const { customer, isLoading, isAuthenticated } = useCustomerAuth();
@@ -446,19 +447,4 @@ export default function Home() {
   );
 }
 
-// Reusable StatCard component
-type StatCardProps = {
-  icon: string;
-  number: string;
-  label: string;
-};
-
-function StatCard({ icon, number, label }: StatCardProps) {
-  return (
-    <div className="text-center">
-      <div className="text-4xl mb-4">{icon}</div>
-      <div className="text-3xl font-bold text-green-600 mb-2">{number}</div>
-      <p className="text-gray-600 text-sm">{label}</p>
-    </div>
-  );
-}
+// StatCard moved to shared component: src/components/StatCard.tsx
