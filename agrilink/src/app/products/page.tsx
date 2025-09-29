@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { 
   ShoppingCart,
@@ -82,7 +82,7 @@ interface ProductsResponse {
   };
 }
 
-export default function ProductsPage() {
+function ProductsPageInner() {
   const { customer, isLoading: authLoading, isAuthenticated } = useCustomerAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -804,5 +804,13 @@ export default function ProductsPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-gray-50 text-green-600">Loading...</div>}>
+      <ProductsPageInner/>
+    </Suspense>
   );
 }
