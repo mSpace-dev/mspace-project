@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { trackEvent } from '@/lib/analytics';
 import CustomerUserProfile from "../../components/CustomerUserProfile";
 import { checkAuthAndLogout, CustomerData } from "../../lib/clientAuth";
 
@@ -8,6 +9,7 @@ export default function Products() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [customer, setCustomer] = useState<CustomerData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
 
   // Check if user is logged in and handle token expiration
   useEffect(() => {
@@ -31,12 +33,109 @@ export default function Products() {
     return () => clearInterval(interval);
   }, []);
 
+  // Listen for the beforeinstallprompt event so we can trigger it later
+  useEffect(() => {
+    const handler = (e: any) => {
+      // Prevent automatic prompt
+      e.preventDefault();
+      setDeferredPrompt(e);
+      // Optionally, you could show an in-UI install CTA when this is fired
+      console.log('beforeinstallprompt event captured');
+    };
+
+    const installedHandler = () => {
+      // Clear saved prompt once installed
+      setDeferredPrompt(null);
+      console.log('PWA installed');
+    };
+
+    window.addEventListener('beforeinstallprompt', handler as EventListener);
+    window.addEventListener('appinstalled', installedHandler as EventListener);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handler as EventListener);
+      window.removeEventListener('appinstalled', installedHandler as EventListener);
+    };
+  }, []);
+
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
   const navigateToHome = () => {
     window.location.href = '/home';
+  };
+
+  // Download handler: detect platform and open appropriate store or fallback
+  // NOTE: The store URLs below are placeholders. Replace `playStoreUrl` and `appStoreUrl`
+  // with the real Google Play and Apple App Store links once the app is published.
+  const playStoreUrl = 'https://play.google.com/store/apps/details?id=com.agrilink'; // TODO: replace with real app id
+  const appStoreUrl = 'https://apps.apple.com/app/idXXXXXXXXX'; // TODO: replace with real app id
+  const webFallbackUrl = 'https://agrilink.lk';
+
+  const openUrl = (url: string) => {
+    try {
+      // open in new tab/window
+      window.open(url, '_blank');
+    } catch (e) {
+      // fallback to same window
+      window.location.href = url;
+    }
+  };
+
+  const handleDownload = () => {
+    trackEvent({ category: 'pwa', action: 'download_click' });
+    // If the browser exposed the beforeinstallprompt event, use it to prompt
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      // Wait for the user's choice
+      deferredPrompt.userChoice.then((choiceResult: any) => {
+        if (choiceResult.outcome === 'accepted') {
+          trackEvent({ category: 'pwa', action: 'install_accepted' });
+          console.log('User accepted the A2HS prompt');
+        } else {
+          trackEvent({ category: 'pwa', action: 'install_dismissed' });
+          console.log('User dismissed the A2HS prompt');
+        }
+        // Clear the saved prompt since it can only be used once
+        setDeferredPrompt(null);
+      }).catch((err: any) => {
+        console.warn('Error showing install prompt', err);
+      });
+      return;
+    }
+
+    // No install prompt available: fall back to store links or instructions
+    if (typeof navigator === 'undefined') {
+      openUrl(webFallbackUrl);
+      return;
+    }
+
+    const ua = navigator.userAgent || '';
+    // Android -> Play Store
+    if (/android/i.test(ua)) {
+      trackEvent({ category: 'pwa', action: 'open_playstore' });
+      openUrl(playStoreUrl);
+      return;
+    }
+
+    // iOS: cannot prompt programmatically; show quick instructions to add to Home Screen
+    if (/iPhone|iPad|iPod/i.test(ua)) {
+      // Try App Store first (if published), otherwise show instructions
+      if (appStoreUrl.includes('idXXXXXXXXX')) {
+        // App store placeholder — show instruction instead
+        // Simple instructional fallback; you can replace with a nicer modal
+        trackEvent({ category: 'pwa', action: 'ios_instruction_shown' });
+        alert('To install AgriLink on iOS: open Safari, tap Share → Add to Home Screen.');
+      } else {
+        trackEvent({ category: 'pwa', action: 'open_appstore' });
+        openUrl(appStoreUrl);
+      }
+      return;
+    }
+
+    // Desktop/unknown -> open web fallback (landing page)
+    openUrl(webFallbackUrl);
   };
 
   return (
@@ -134,9 +233,13 @@ export default function Products() {
                 <h3 className="text-2xl font-bold text-gray-800 mb-2">AgriLink Mobile App</h3>
                 <p className="text-gray-600 mb-4">Available on Android & iOS</p>
                 <div className="flex justify-center space-x-4">
-                  <div className="bg-gray-800 text-white px-4 py-2 rounded-lg text-sm cursor-pointer hover:bg-gray-700 transition-colors">
+                  <button
+                    onClick={handleDownload}
+                    className="bg-gray-800 text-white px-4 py-2 rounded-lg text-sm cursor-pointer hover:bg-gray-700 transition-colors"
+                    aria-label="Download AgriLink App"
+                  >
                     📱 Download App
-                  </div>
+                  </button>
                 </div>
               </div>
             </div>
@@ -347,7 +450,11 @@ export default function Products() {
                 <p className="text-gray-600 mt-2">Available on all platforms</p>
               </div>
               <div className="space-y-4">
-                <div className="bg-gray-800 text-white p-4 rounded-lg text-center cursor-pointer hover:bg-gray-700 transition-colors">
+                <button
+                  onClick={() => openUrl(playStoreUrl)}
+                  className="w-full bg-gray-800 text-white p-4 rounded-lg text-center cursor-pointer hover:bg-gray-700 transition-colors"
+                  aria-label="Open Google Play Store"
+                >
                   <div className="flex items-center justify-center">
                     <span className="text-2xl mr-3">📱</span>
                     <div>
@@ -355,8 +462,13 @@ export default function Products() {
                       <div className="text-sm text-gray-300">Download for Android</div>
                     </div>
                   </div>
-                </div>
-                <div className="bg-gray-800 text-white p-4 rounded-lg text-center cursor-pointer hover:bg-gray-700 transition-colors">
+                </button>
+
+                <button
+                  onClick={() => openUrl(appStoreUrl)}
+                  className="w-full bg-gray-800 text-white p-4 rounded-lg text-center cursor-pointer hover:bg-gray-700 transition-colors"
+                  aria-label="Open App Store"
+                >
                   <div className="flex items-center justify-center">
                     <span className="text-2xl mr-3">🍎</span>
                     <div>
@@ -364,7 +476,7 @@ export default function Products() {
                       <div className="text-sm text-gray-300">Download for iOS</div>
                     </div>
                   </div>
-                </div>
+                </button>
                 <div className="text-center pt-4">
                   <p className="text-sm text-gray-500">Or access via web browser at agrilink.lk</p>
                 </div>
