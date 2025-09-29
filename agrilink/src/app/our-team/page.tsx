@@ -287,7 +287,7 @@ export default function About() {
               <div className="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
                 <div className="relative mb-6">
                   <img 
-                    src="/images/team/abeynayake.jpg" 
+                    src="/images/team/abeynayake.png" 
                     alt="D.C. Abeynayake"
                     className="w-32 h-32 rounded-full mx-auto object-cover border-4 border-orange-100"
                     onError={(e) => {
