@@ -8,6 +8,10 @@ export interface ICustomer {
   phone: string;
   district: string;
   province: string;
+  latitude?: number;
+  longitude?: number;
+  address?: string;
+  profileImage?: string;
   priceAlerts: {
     crop: string;
     maxPrice: number;
@@ -50,6 +54,23 @@ const CustomerSchema = new mongoose.Schema<ICustomer>({
     type: String,
     required: [true, 'Please provide a province'],
     trim: true,
+  },
+  latitude: {
+    type: Number,
+    required: false,
+  },
+  longitude: {
+    type: Number,
+    required: false,
+  },
+  address: {
+    type: String,
+    required: false,
+    trim: true,
+  },
+  profileImage: {
+    type: String,
+    required: false,
   },
   priceAlerts: [{
     crop: {

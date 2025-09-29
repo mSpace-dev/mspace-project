@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test SMS API - AgriLink Admin</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        button {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 Test SMS API</h1>
+        <p style="text-align: center; color: #666; margin-bottom: 30px;">
+            Send a test SMS to your Mobitel number to verify the API integration
+        </p>
+
+        <form id="smsForm">
+            <div class="form-group">
+                <label for="phone">Your Mobitel Phone Number:</label>
+                <input
+                    type="tel"
+                    id="phone"
+                    placeholder="0771234567"
+                    required
+                    pattern="^0[0-9]{9}$"
+                    title="Please enter a valid Sri Lankan mobile number (e.g., 0771234567)"
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="message">Test Message:</label>
+                <textarea
+                    id="message"
+                    placeholder="Enter your test message..."
+                    required
+                >🧪 Test SMS from AgriLink Admin Dashboard! Your API integration is working correctly.</textarea>
+            </div>
+
+            <button type="submit" id="sendButton">
+                📤 Send Test SMS
+            </button>
+        </form>
+
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('smsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const phone = document.getElementById('phone').value;
+            const message = document.getElementById('message').value;
+            const button = document.getElementById('sendButton');
+            const resultDiv = document.getElementById('result');
+
+            // Show loading state
+            button.disabled = true;
+            button.innerHTML = '<div class="loading"></div>Sending...';
+            resultDiv.style.display = 'none';
+
+            try {
+                const response = await fetch('http://localhost:3000/api/send-sms', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        recipients: [phone],
+                        message: message,
+                        category: "custom"
+                    }),
+                });
+
+                const result = await response.json();
+
+                // Show result
+                resultDiv.style.display = 'block';
+                if (result.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `
+                        <h3>✅ SMS Sent Successfully!</h3>
+                        <p><strong>Message:</strong> ${result.message}</p>
+                        <p><strong>Total Recipients:</strong> ${result.totalRecipients}</p>
+                        <p>📱 Check your phone for the test message</p>
+                    `;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `
+                        <h3>❌ SMS Failed</h3>
+                        <p><strong>Error:</strong> ${result.error || 'Unknown error'}</p>
+                    `;
+                }
+
+            } catch (error) {
+                resultDiv.style.display = 'block';
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `
+                    <h3>❌ Network Error</h3>
+                    <p>Failed to connect to the API. Make sure the server is running on port 3000.</p>
+                    <p><strong>Error:</strong> ${error.message}</p>
+                `;
+            } finally {
+                // Reset button
+                button.disabled = false;
+                button.innerHTML = '📤 Send Test SMS';
+            }
+        });
+    </script>
+</body>
+</html>

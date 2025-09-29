@@ -5,11 +5,8 @@ import {
   BarChart3, 
   PieChart as PieChartIcon, 
   Grid3X3, 
-  Calendar, 
-  MapPin, 
   TrendingUp, 
   TrendingDown, 
-  Filter,
   Wheat,
   Apple,
   Fish,
@@ -18,6 +15,8 @@ import {
 } from 'lucide-react';
 import { TableView, CommodityCardsView } from './components';
 import { CategoryChartsView, CommodityAnalysisView } from './chart-components';
+import CustomerNavBar from '../../components/CustomerNavBar';
+import { useCustomerAuth } from '../../hooks/useCustomerAuth';
 
 interface PriceData {
   id: string;
@@ -81,6 +80,7 @@ const categoryIcons = {
 };
 
 export default function Prices() {
+  const { customer, isLoading: authLoading, isAuthenticated } = useCustomerAuth();
   const [currentView, setCurrentView] = useState<ViewType>('table');
   const [prices, setPrices] = useState<PriceData[]>([]);
   const [commodityData, setCommodityData] = useState<CommodityData[]>([]);
@@ -101,7 +101,6 @@ export default function Prices() {
   });
 
   const categories = ['VEGETABLES', 'RICE', 'FRUITS', 'FISH', 'OTHER'];
-  const locations = ['Pettah', 'Dambulla', 'Narahenpita'];
   const markets = ['Pettah', 'Dambulla', 'Pettah_retail', 'Dambulla_retail', 'Narahenpita_retail'];
 
   useEffect(() => {
@@ -252,25 +251,7 @@ export default function Prices() {
 
   return (
 <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100">
-  {/* Top Navigation */}
-  <nav className="bg-white shadow-sm sticky top-0 z-50">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="flex justify-between items-center py-4">
-        <div className="flex items-center cursor-pointer" onClick={() => window.location.href = '/home'}>
-          <h1 className="text-2xl font-bold text-green-700 hover:text-green-600 transition-colors">AgriLink</h1>
-          <span className="ml-2 text-sm text-gray-500">Sri Lanka</span>
-        </div>
-        
-        {/* Navigation Links */}
-        <div className="hidden md:flex items-center space-x-8">
-          <a href="/prices" className="text-gray-700 hover:text-green-600 transition-colors font-medium">Prices</a>
-          <a href="/alerts" className="text-gray-700 hover:text-green-600 transition-colors">Alerts</a>
-          <a href="/demandforecast" className="text-gray-700 hover:text-green-600 transition-colors">Forecasts</a>
-          <a href="/customer" className="btn-agrilink text-white px-4 py-2 rounded-lg">Log In</a>
-        </div>
-      </div>
-    </div>
-  </nav>
+  <CustomerNavBar customer={customer || undefined} />
   
   <div className="flex">
     {/* Sidebar */}
@@ -409,7 +390,7 @@ export default function Prices() {
                 filters={filters} 
                 setFilters={setFilters}
                 categories={categories}
-                locations={locations}
+                locations={['Pettah', 'Dambulla', 'Narahenpita']}
                 markets={markets}
                 formatPrice={formatPrice}
                 formatChange={formatChange}

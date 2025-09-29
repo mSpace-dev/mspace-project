@@ -57,6 +57,8 @@ export default function SellerDashboard() {
   const [showEditProduct, setShowEditProduct] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [productImage, setProductImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>('');
   const router = useRouter();
 
   const [productForm, setProductForm] = useState({
@@ -186,6 +188,28 @@ export default function SellerDashboard() {
     setSuccess('');
 
     try {
+      let images: string[] = [];
+
+      // If an image file is selected upload it first
+      if (productImage) {
+        const fd = new FormData();
+        fd.append('file', productImage);
+
+        const uploadResp = await fetch('/api/seller/upload-image', {
+          method: 'POST',
+          body: fd,
+        });
+
+        const uploadData = await uploadResp.json();
+        if (uploadResp.ok && uploadData.url) {
+          images = [uploadData.url];
+        } else {
+          setError(uploadData.error || 'Image upload failed');
+          setLoading(false);
+          return;
+        }
+      }
+
       const response = await fetch('/api/seller/products', {
         method: 'POST',
         headers: {
@@ -196,6 +220,7 @@ export default function SellerDashboard() {
           sellerId: seller._id,
           pricePerKg: Number(productForm.pricePerKg),
           availableQuantity: Number(productForm.availableQuantity),
+          images,
         }),
       });
 
@@ -221,12 +246,15 @@ export default function SellerDashboard() {
             address: seller.address,
           },
         });
+        setProductImage(null);
+        setImagePreview('');
         // Refresh products
         fetchProducts(seller._id);
       } else {
         setError(data.error || 'Failed to add product');
       }
     } catch (error) {
+      console.error(error);
       setError('Error adding product');
     } finally {
       setLoading(false);
@@ -365,6 +393,12 @@ export default function SellerDashboard() {
             >
               Analytics
             </button>
+            <a
+              href="/seller/available-orders"
+              className="py-4 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm"
+            >
+              Available Orders
+            </a>
             <button
               onClick={() => setActiveTab('profile')}
               className={`py-4 px-1 border-b-2 font-medium text-sm ${
@@ -638,6 +672,28 @@ export default function SellerDashboard() {
 
               <form onSubmit={handleAddProduct} className="space-y-4">
                 <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Product Image</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={e => {
+                        const file = e.target.files?.[0] || null;
+                        setProductImage(file);
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onloadend = () => setImagePreview(reader.result as string);
+                          reader.readAsDataURL(file);
+                        } else {
+                          setImagePreview('');
+                        }
+                      }}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                    />
+                    {imagePreview && (
+                      <img src={imagePreview} alt="Preview" className="mt-2 h-24 w-24 object-cover rounded" />
+                    )}
+                  </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Product Name *

@@ -201,7 +201,7 @@ export default function AnalyticsDashboard({ products, sellerId }: AnalyticsDash
               const product = products.find(p => p._id === e.target.value);
               setSelectedProduct(product || null);
             }}
-            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
           >
             <option value="">Select a product...</option>
             {products.map(product => (

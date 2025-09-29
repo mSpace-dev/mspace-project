@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Profile API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #2d5a27;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #2d5a27;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #1e3a1c;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧑‍🌾 Customer Profile API Test</h1>
+    
+    <div class="container">
+        <h2>Test Customer Profile API</h2>
+        <p>This page tests the new customer profile API endpoints that fetch real data from the database.</p>
+        
+        <div class="form-group">
+            <label for="customerId">Customer ID:</label>
+            <input type="text" id="customerId" placeholder="Enter customer _id from database" />
+        </div>
+        
+        <button onclick="testGetProfile()">Get Customer Profile</button>
+        <button onclick="testUpdateProfile()">Update Customer Profile</button>
+        <button onclick="clearResponse()">Clear Response</button>
+        
+        <div id="response" class="response" style="margin-top: 20px;"></div>
+    </div>
+
+    <div class="container">
+        <h2>How to Test:</h2>
+        <ol>
+            <li>Register a new customer at <code>/customer</code></li>
+            <li>Check the browser console or network tab to get the customer ID</li>
+            <li>Enter the customer ID above and click "Get Customer Profile"</li>
+            <li>The response should show real data from the database</li>
+        </ol>
+        
+        <h3>What this fixes:</h3>
+        <ul>
+            <li>✅ Fetches real customer data from database</li>
+            <li>✅ Shows only customer-relevant fields (no farmer fields)</li>
+            <li>✅ Displays buyer profile information (name, email, phone, location)</li>
+            <li>✅ Shows price alerts for vegetables they want to buy</li>
+            <li>✅ Includes updatedAt timestamp</li>
+            <li>✅ Handles errors gracefully</li>
+            <li>✅ Provides refresh functionality</li>
+            <li>✅ Prevents updating unnecessary fields</li>
+        </ul>
+        
+        <h3>Customer Fields (Buyers):</h3>
+        <ul>
+            <li><strong>Personal Info:</strong> Name, Email, Phone</li>
+            <li><strong>Location:</strong> District, Province (for delivery/pickup)</li>
+            <li><strong>Preferences:</strong> Price Alerts for vegetables they want to buy</li>
+            <li><strong>Timestamps:</strong> Account creation and last update</li>
+        </ul>
+        
+        <h3>Excluded Fields:</h3>
+        <p>These farmer-specific fields are NOT included for customers:</p>
+        <ul>
+            <li>❌ Farm Size</li>
+            <li>❌ Farm Type</li>
+            <li>❌ Main Crops</li>
+            <li>❌ Experience</li>
+            <li>❌ Timezone</li>
+        </ul>
+    </div>
+
+    <script>
+        async function testGetProfile() {
+            const customerId = document.getElementById('customerId').value;
+            if (!customerId) {
+                displayResponse('Please enter a customer ID', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/customer/profile?id=${customerId}`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    displayResponse(JSON.stringify(data, null, 2), 'success');
+                } else {
+                    displayResponse(JSON.stringify(data, null, 2), 'error');
+                }
+            } catch (error) {
+                displayResponse('Error: ' + error.message, 'error');
+            }
+        }
+
+        async function testUpdateProfile() {
+            const customerId = document.getElementById('customerId').value;
+            if (!customerId) {
+                displayResponse('Please enter a customer ID', 'error');
+                return;
+            }
+
+            // Only update customer-relevant fields
+            const updateData = {
+                name: 'Updated Customer Name',
+                phone: '+94771234567',
+                district: 'Colombo',
+                province: 'Western'
+            };
+
+            try {
+                const response = await fetch(`/api/customer/profile?id=${customerId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(updateData)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    displayResponse(JSON.stringify(data, null, 2), 'success');
+                } else {
+                    displayResponse(JSON.stringify(data, null, 2), 'error');
+                }
+            } catch (error) {
+                displayResponse('Error: ' + error.message, 'error');
+            }
+        }
+
+        function displayResponse(message, type = 'normal') {
+            const responseDiv = document.getElementById('response');
+            responseDiv.textContent = message;
+            responseDiv.className = 'response';
+            if (type === 'error') {
+                responseDiv.className += ' error';
+            } else if (type === 'success') {
+                responseDiv.className += ' success';
+            }
+        }
+
+        function clearResponse() {
+            document.getElementById('response').textContent = '';
+            document.getElementById('response').className = 'response';
+        }
+    </script>
+</body>
+</html>
