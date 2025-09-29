@@ -4,16 +4,14 @@ echo 🚀 Starting AgriLink deployment...
 echo Choose deployment method:
 echo 1) Vercel (Recommended)
 echo 2) Railway
-echo 3) Docker Build
-echo 4) Run pre-deployment checks only
+echo 3) Run pre-deployment checks only
 echo.
 
-set /p choice="Enter your choice (1-4): "
+set /p choice="Enter your choice (1-3): "
 
 if "%choice%"=="1" goto vercel
 if "%choice%"=="2" goto railway
-if "%choice%"=="3" goto docker
-if "%choice%"=="4" goto checks
+if "%choice%"=="3" goto checks
 echo ❌ Invalid choice!
 goto end
 
@@ -65,26 +63,6 @@ if errorlevel 1 (
 )
 
 echo 🎉 Railway deployment successful!
-goto end
-
-:docker
-echo 🐳 Building Docker container...
-
-REM Check if Docker is installed
-docker --version >nul 2>&1
-if errorlevel 1 (
-    echo ❌ Docker is not installed. Please install Docker Desktop first.
-    goto end
-)
-
-docker build -t agrilink .
-if errorlevel 1 (
-    echo ❌ Docker build failed!
-    goto end
-)
-
-echo ✅ Docker build successful!
-echo 🚀 To run locally: docker run -p 3000:3000 agrilink
 goto end
 
 :checks

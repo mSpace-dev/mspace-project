@@ -59,34 +59,14 @@ deploy_railway() {
     fi
 }
 
-# Function to deploy using Docker
-deploy_docker() {
-    echo "🐳 Building Docker container..."
-    
-    # Check if Docker is installed
-    check_tool "docker"
-    
-    # Build Docker image
-    docker build -t agrilink .
-    
-    if [ $? -eq 0 ]; then
-        echo "✅ Docker build successful!"
-        echo "🚀 To run locally: docker run -p 3000:3000 agrilink"
-    else
-        echo "❌ Docker build failed!"
-        exit 1
-    fi
-}
-
 # Main menu
 echo "Choose deployment method:"
 echo "1) Vercel (Recommended)"
 echo "2) Railway"
-echo "3) Docker Build"
-echo "4) Run pre-deployment checks only"
+echo "3) Run pre-deployment checks only"
 echo ""
 
-read -p "Enter your choice (1-4): " choice
+read -p "Enter your choice (1-3): " choice
 
 case $choice in
     1)
@@ -96,9 +76,6 @@ case $choice in
         deploy_railway
         ;;
     3)
-        deploy_docker
-        ;;
-    4)
         echo "🔍 Running pre-deployment checks..."
         
         # Check if .env file exists
