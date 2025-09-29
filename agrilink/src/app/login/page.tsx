@@ -1,25 +1,26 @@
-'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { setCustomerAuth } from '../../lib/clientAuth';
+"use client";
 
-export default function LoginPage() {
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { setCustomerAuth } from "../../lib/clientAuth";
+
+function LoginPageInner() {
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState('');
-  const [selectedRole, setSelectedRole] = useState<string>('');
+  const [success, setSuccess] = useState("");
+  const [selectedRole, setSelectedRole] = useState<string>("");
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
     rememberMe: false,
   });
 
   useEffect(() => {
     // Get role from URL parameters
-    const role = searchParams.get('role');
+    const role = searchParams.get("role");
     if (role) {
       setSelectedRole(role);
     }
@@ -27,23 +28,23 @@ export default function LoginPage() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
   const handleGoogleLogin = () => {
     setLoading(true);
     // Redirect to Google OAuth
-    window.location.href = '/api/auth/signin/google?callbackUrl=/home';
+    window.location.href = "/api/auth/signin/google?callbackUrl=/home";
   };
 
   const tryAdminLogin = async () => {
-    const adminResponse = await fetch('/api/admin/login', {
-      method: 'POST',
+    const adminResponse = await fetch("/api/admin/login", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(formData),
     });
@@ -51,14 +52,14 @@ export default function LoginPage() {
     if (adminResponse.ok) {
       const adminData = await adminResponse.json();
       setSuccess(adminData.message);
-      
+
       // Store both admin data and tokens
-      localStorage.setItem('admin', JSON.stringify(adminData.admin));
-      localStorage.setItem('adminAccessToken', adminData.accessToken);
-      localStorage.setItem('adminRefreshToken', adminData.refreshToken);
-      
+      localStorage.setItem("admin", JSON.stringify(adminData.admin));
+      localStorage.setItem("adminAccessToken", adminData.accessToken);
+      localStorage.setItem("adminRefreshToken", adminData.refreshToken);
+
       setTimeout(() => {
-        router.push('/admin');
+        router.push("/admin");
       }, 1000);
       return true;
     }
@@ -66,10 +67,10 @@ export default function LoginPage() {
   };
 
   const trySellerLogin = async () => {
-    const sellerResponse = await fetch('/api/seller/login', {
-      method: 'POST',
+    const sellerResponse = await fetch("/api/seller/login", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(formData),
     });
@@ -77,9 +78,9 @@ export default function LoginPage() {
     if (sellerResponse.ok) {
       const sellerData = await sellerResponse.json();
       setSuccess(sellerData.message);
-      localStorage.setItem('seller', JSON.stringify(sellerData.seller));
+      localStorage.setItem("seller", JSON.stringify(sellerData.seller));
       setTimeout(() => {
-        router.push('/seller/dashboard');
+        router.push("/seller/dashboard");
       }, 1000);
       return true;
     }
@@ -87,39 +88,43 @@ export default function LoginPage() {
   };
 
   const tryCustomerLogin = async () => {
-    const customerResponse = await fetch('/api/customer/login', {
-      method: 'POST',
+    const customerResponse = await fetch("/api/customer/login", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(formData),
     });
 
     if (customerResponse.ok) {
       const customerData = await customerResponse.json();
-      
+
       // Check if the response includes a JWT token
       if (customerData.token && customerData.customer) {
         // Use new JWT-based authentication
         setCustomerAuth(customerData.token, {
-          customerId: customerData.customer._id || customerData.customer.customerId,
+          customerId:
+            customerData.customer._id || customerData.customer.customerId,
           name: customerData.customer.name,
           email: customerData.customer.email,
           phone: customerData.customer.phone,
           district: customerData.customer.district,
-          province: customerData.customer.province
+          province: customerData.customer.province,
         });
-        
+
         setSuccess(customerData.message);
         setTimeout(() => {
-          router.push('/customer/dashboard');
+          router.push("/customer/dashboard");
         }, 1000);
       } else {
         // Fallback to old system if no token
-        localStorage.setItem('customer', JSON.stringify(customerData.customer));
+        localStorage.setItem(
+          "customer",
+          JSON.stringify(customerData.customer)
+        );
         setSuccess(customerData.message);
         setTimeout(() => {
-          router.push('/customer/dashboard');
+          router.push("/customer/dashboard");
         }, 1000);
       }
       return true;
@@ -130,17 +135,17 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setSuccess('');
+    setSuccess("");
 
     try {
       // If role is specified, try role-specific login first
-      if (selectedRole === 'customer') {
+      if (selectedRole === "customer") {
         const success = await tryCustomerLogin();
         if (success) return;
-      } else if (selectedRole === 'seller') {
+      } else if (selectedRole === "seller") {
         const success = await trySellerLogin();
         if (success) return;
-      } else if (selectedRole === 'admin') {
+      } else if (selectedRole === "admin") {
         const success = await tryAdminLogin();
         if (success) return;
       }
@@ -161,8 +166,9 @@ export default function LoginPage() {
       }
 
       // If all login attempts fail
-      throw new Error('Invalid email or password. Please check your credentials.');
-
+      throw new Error(
+        "Invalid email or password. Please check your credentials."
+      );
     } catch (error) {
     } finally {
       setLoading(false);
@@ -182,11 +188,13 @@ export default function LoginPage() {
       <header className="relative z-10 bg-black/40 backdrop-blur-sm border-b border-green-500/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <div className="flex items-center cursor-pointer" onClick={() => window.location.href = '/home'}>
+            <div
+              className="flex items-center cursor-pointer"
+              onClick={() => (window.location.href = "/home")}
+            >
               <h1 className="text-2xl font-bold bg-gradient-to-r from-white via-green-100 to-green-200 bg-clip-text text-transparent hover:from-green-200 hover:to-green-300 transition-all duration-300">
                 AgriLink
               </h1>
-              
             </div>
           </div>
         </div>
@@ -209,7 +217,6 @@ export default function LoginPage() {
               </div>
             )}
           </div>
-
 
           {success && (
             <div className="mb-4 p-3 bg-green-500/10 border border-green-500/20 text-green-400 rounded-lg">
@@ -274,7 +281,7 @@ export default function LoginPage() {
               disabled={loading}
               className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 disabled:from-green-800 disabled:to-green-800 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-green-500/30 disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed"
             >
-              {loading ? 'Signing In...' : 'Sign In'}
+              {loading ? "Signing In..." : "Sign In"}
             </button>
           </form>
 
@@ -315,13 +322,13 @@ export default function LoginPage() {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
               />
             </svg>
-            <span>{loading ? 'Connecting...' : 'Continue with Google'}</span>
+            <span>{loading ? "Connecting..." : "Continue with Google"}</span>
           </button>
 
           {/* Signup Link */}
           <div className="mt-8 text-center">
             <p className="text-gray-400 text-sm">
-              Don&apos;t have an account?{' '}
+              Don&apos;t have an account?{" "}
               <a
                 href="/signup"
                 className="text-green-400 hover:text-green-300 transition-colors font-medium underline underline-offset-2 decoration-green-400/50 hover:decoration-green-300"
@@ -333,6 +340,14 @@ export default function LoginPage() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-gray-950 text-green-400">Loading...</div>}>
+      <LoginPageInner />
+    </Suspense>
   );
 }
 
