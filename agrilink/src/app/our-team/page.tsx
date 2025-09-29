@@ -371,31 +371,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="bg-gradient-to-r from-green-600 to-blue-600 py-16">
-        <div className="max-w-4xl mx-auto text-center px-6">
-          <h2 className="text-3xl font-bold text-white mb-6">
-            Join the AgriLink Community
-          </h2>
-          <p className="text-green-100 text-lg mb-8">
-            Be part of Sri Lanka&apos;s agricultural transformation. Connect with us today.
-          </p>
-          <div className="flex justify-center gap-4">
-            <a
-              href="/signup"
-              className="bg-white text-green-600 hover:bg-gray-100 font-semibold px-8 py-4 rounded-xl text-lg transition-all duration-200"
-            >
-              Get Started
-            </a>
-            <a
-              href="/contact"
-              className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-green-600 font-semibold px-8 py-4 rounded-xl text-lg transition-all duration-200"
-            >
-              Contact Us
-            </a>
-          </div>
-        </div>
-      </section>
+      
     </div>
   );
 }

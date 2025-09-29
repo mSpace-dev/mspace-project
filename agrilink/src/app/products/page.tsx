@@ -114,6 +114,9 @@ export default function ProductsPage() {
     provinces: [] as string[],
     qualities: [] as string[]
   });
+
+  // Ensure UI includes the new 'grain' category (singular) even if API returns 'grains' or omits it
+  const computedCategories = Array.from(new Set([...(filterOptions.categories || []), 'grain']));
   
   // UI states
   const [showFilters, setShowFilters] = useState(false);
@@ -149,6 +152,20 @@ export default function ProductsPage() {
       
       // Hide message after 5 seconds
       setTimeout(() => setShowSuccessMessage(false), 5000);
+    }
+  }, [searchParams]);
+
+  // Initialize filters from URL query params (e.g., ?category=vegetables)
+  useEffect(() => {
+    const categoryParam = searchParams.get('category');
+    if (categoryParam) {
+      // Normalize some category names (API may use singular 'grain')
+      const normalized = categoryParam === 'grains' ? 'grain' : categoryParam;
+      setFilters(prev => ({
+        ...prev,
+        category: normalized
+      }));
+      setCurrentPage(1);
     }
   }, [searchParams]);
 
@@ -282,7 +299,7 @@ export default function ProductsPage() {
     const icons: { [key: string]: string } = {
       vegetables: '🥬',
       fruits: '🍎',
-      grains: '🌾',
+      grain: '🌾', // singular form
       spices: '🌶️',
       herbs: '🌿',
       dairy: '🥛',
@@ -410,7 +427,7 @@ export default function ProductsPage() {
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
                 >
                   <option value="all">All Categories</option>
-                  {filterOptions.categories.map(category => (
+                  {computedCategories.map(category => (
                     <option key={category} value={category}>
                       {getCategoryIcon(category)} {category.charAt(0).toUpperCase() + category.slice(1)}
                     </option>
