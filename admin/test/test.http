@@ -1,13 +1,13 @@
-POST http://localhost:3000/api/sms/send
+POST http://localhost:3001/api/sms/send
 Content-Type: application/json
 
 {
   
-  "applicationId": "APP_009085",
+  "applicationId": "APP_009097",
   "password": "password",
   "message": "Hello",
   "destinationAddresses": [
-    "tel:#31#0702029244"
+    "tel:94702029244"
   ],
   "sourceAddress": "tel:94710988816",
   "deliveryStatusRequest": "1",
@@ -19,6 +19,6 @@ Content-Type: application/json
 HTTP/1.1 502  - Bad Gateway
 vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
 content-type: application/json
-date: Mon, 22 Sep 2025 05:14:35 GMT
+date: Mon, 29 Sep 2025 06:06:57 GMT
 connection: close
 transfer-encoding: chunked
