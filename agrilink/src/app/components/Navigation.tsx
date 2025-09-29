@@ -145,7 +145,7 @@ export default function Navigation() {
                 <a href="/contact" className="text-gray-700 hover:text-green-600 transition-colors">
                   Contact
                 </a>
-                <a href="/customer/cart" className="relative text-gray-700 hover:text-green-600 transition-colors">
+                <button onClick={() => router.push('/customer/orders')} className="relative text-gray-700 hover:text-green-600 transition-colors">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5-5M17 21a2 2 0 100-4 2 2 0 000 4zM9 21a2 2 0 100-4 2 2 0 000 4z" />
                   </svg>
@@ -154,7 +154,7 @@ export default function Navigation() {
                       {cartCount}
                     </span>
                   )}
-                </a>
+                </button>
                 {customer ? (
                   <CustomerUserProfile 
                     isLoggedIn={true} 
@@ -239,7 +239,7 @@ export default function Navigation() {
                   <a href="/contact" className="text-gray-700 hover:text-green-600 transition-colors">
                     Contact
                   </a>
-                  <a href="/customer/cart" className="relative text-gray-700 hover:text-green-600 transition-colors flex items-center">
+                  <button onClick={() => { router.push('/customer/orders'); setIsMobileMenuOpen(false); }} className="relative text-gray-700 hover:text-green-600 transition-colors flex items-center">
                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5-5M17 21a2 2 0 100-4 2 2 0 000 4zM9 21a2 2 0 100-4 2 2 0 000 4z" />
                     </svg>
@@ -249,7 +249,7 @@ export default function Navigation() {
                         {cartCount}
                       </span>
                     )}
-                  </a>
+                  </button>
                   <div className="pt-2">
                     {customer ? (
                       <CustomerUserProfile 

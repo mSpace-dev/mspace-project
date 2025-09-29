@@ -202,7 +202,7 @@ export default function CustomerUserProfile({
               </svg>
             ),
             label: "Your Cart",
-            href: "/customer/cart",
+            href: "/customer/orders",
             description: "View items in your cart"
           },
           {

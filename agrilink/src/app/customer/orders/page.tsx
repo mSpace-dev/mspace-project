@@ -6,6 +6,7 @@ import { useCustomerAuth } from "../../../hooks/useCustomerAuth";
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState<any[]>([]);
+  const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { customer, isLoading: authLoading, isAuthenticated, redirectToLogin } = useCustomerAuth();
@@ -35,7 +36,30 @@ export default function OrdersPage() {
         console.log('Orders API response:', json);
         
         if (!res.ok) throw new Error(json?.error || 'Failed to load orders');
-        setOrders(json.orders || []);
+        let loaded = json.orders || [];
+
+        // Check URL for cancellation flag
+        try {
+          const params = new URLSearchParams(window.location.search);
+          const canceled = params.get('canceled');
+          const canceledOrderId = params.get('orderId');
+          if (canceled === 'true' && canceledOrderId) {
+            // Remove cancelled order from list
+            loaded = (loaded || []).filter((o:any) => String(o._id) !== String(canceledOrderId));
+            setMessage('Order cancelled successfully.');
+            // remove query params from URL to avoid repeated message
+            const newUrl = new URL(window.location.href);
+            newUrl.searchParams.delete('canceled');
+            newUrl.searchParams.delete('orderId');
+            window.history.replaceState({}, '', newUrl.toString());
+            // Clear message after 5 seconds
+            setTimeout(() => setMessage(null), 5000);
+          }
+        } catch (err) {
+          // ignore
+        }
+
+        setOrders(loaded);
       } catch (e: any) { 
         console.error('Error loading orders:', e);
         setError(e.message);
@@ -52,6 +76,9 @@ export default function OrdersPage() {
       <CustomerNavBar customer={customer || undefined} />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <h1 className="text-3xl font-bold text-gray-900 mb-6">Your Orders</h1>
+        {message && (
+          <div className="mb-6 rounded border border-green-200 bg-green-50 p-4 text-green-700">{message}</div>
+        )}
         {loading && <div className="py-10 text-gray-600">Loading…</div>}
         {error && <div className="mb-6 rounded border border-red-200 bg-red-50 p-4 text-red-700">{error}</div>}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
