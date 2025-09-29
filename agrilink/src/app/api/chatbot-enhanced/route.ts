@@ -307,6 +307,7 @@ const categorizeProduct = (productName: string): string => {
       name.includes('lime') || name.includes('dehi') ||
       name.includes('avocado') || name.includes('apple') ||
       name.includes('grapes') || name.includes('watermelon') ||
+      name.includes('strawberry') || name.includes('strawberries') ||
       name.includes('guava') || name.includes('pera')) {
     return 'Fruits';
   }
